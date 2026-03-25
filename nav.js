@@ -270,15 +270,15 @@
         <div class="sf-dropdown">
           <div class="sf-dd-section">
             <span class="sf-dd-label">Council Accountability</span>
-            <a class="sf-dd-link" href="tracker.html">
+            <a class="sf-dd-link" href="council-votes.html">
               <span class="sf-dd-icon">🗳️</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Voting Records</span><span class="sf-dd-desc">How councillors voted in 2025</span></span>
             </a>
-            <a class="sf-dd-link" href="tracker.html">
+            <a class="sf-dd-link" href="council-attendance.html">
               <span class="sf-dd-icon">📋</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Attendance Tracker</span><span class="sf-dd-desc">Who shows up, who doesn't</span></span>
             </a>
-            <a class="sf-dd-link" href="tracker.html">
+            <a class="sf-dd-link" href="brendan-park.html">
               <span class="sf-dd-icon">📰</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Brendan Park Facts</span><span class="sf-dd-desc">Full unbiased fact package</span></span>
             </a>

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Voting Records — Squamish Future</title>
+  <link rel="stylesheet" href="brand.css" />
+  <style>
+    body { background: #f0f4f8; }
+    .page-hero { padding: 80px 2rem 50px; text-align: center; }
+    .page-hero h1 { color: white; margin-bottom: 0.5rem; }
+    .page-hero p { color: rgba(255,255,255,0.6); font-size: 1rem; max-width: 560px; margin: 0 auto 1.5rem; line-height: 1.7; }
+    .draft-banner { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(232,160,32,0.15); border: 1px solid rgba(232,160,32,0.3); color: var(--teal); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.4rem 1.1rem; border-radius: 100px; }
+
+    .main { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+
+    /* COUNCILLOR CARDS */
+    .councillors { display: grid; grid-template-columns: repeat(4,1fr); gap: 1.2rem; margin-bottom: 2.5rem; }
+    .councillor-card { background: white; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; transition: all 0.2s; }
+    .councillor-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); }
+    .cc-header { padding: 1.3rem; text-align: center; }
+    .cc-avatar { width: 60px; height: 60px; border-radius: 50%; background: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; font-weight: 800; color: var(--teal); margin: 0 auto 0.75rem; }
+    .cc-name { font-size: 0.92rem; font-weight: 700; color: var(--navy); }
+    .cc-title { font-size: 0.72rem; color: var(--grey); margin-top: 0.15rem; }
+    .cc-stats { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--border); }
+    .cc-stat { padding: 0.75rem; text-align: center; border-right: 1px solid var(--border); }
+    .cc-stat:last-child { border-right: none; }
+    .cc-stat .n { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; display: block; }
+    .cc-stat .l { font-size: 0.62rem; color: var(--grey); text-transform: uppercase; letter-spacing: 0.06em; }
+    .n-green { color: var(--green); } .n-red { color: #e74c3c; } .n-gold { color: var(--teal); }
+
+    /* VOTE TABLE */
+    .vote-controls { display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap; align-items: center; }
+    .search-wrap { flex: 1; min-width: 200px; position: relative; }
+    .search-wrap::before { content: '🔍'; position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); font-size: 0.9rem; }
+    .search-wrap input { width: 100%; padding: 0.72rem 1rem 0.72rem 2.7rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.9rem; outline: none; background: white; }
+    .search-wrap input:focus { border-color: var(--teal); }
+    .filter-select { padding: 0.72rem 1rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.86rem; outline: none; background: white; cursor: pointer; }
+
+    .vote-table { background: white; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .vt-head { display: grid; grid-template-columns: 2.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; gap: 0; background: var(--navy); }
+    .vt-head div { padding: 0.75rem 0.85rem; font-size: 0.65rem; font-weight: 700; color: rgba(255,255,255,0.6); letter-spacing: 0.08em; text-transform: uppercase; border-right: 1px solid rgba(255,255,255,0.06); }
+    .vt-head div:last-child { border-right: none; }
+    .vt-row { display: grid; grid-template-columns: 2.5fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr; border-bottom: 1px solid var(--border); transition: background 0.12s; }
+    .vt-row:last-child { border-bottom: none; }
+    .vt-row:hover { background: var(--light); }
+    .vt-cell { padding: 0.85rem; font-size: 0.83rem; color: var(--dark); border-right: 1px solid #f5f5f5; display: flex; align-items: center; }
+    .vt-cell:last-child { border-right: none; }
+    .vt-motion { font-weight: 600; color: var(--navy); line-height: 1.35; }
+    .vt-date { font-size: 0.75rem; color: var(--grey); display: block; margin-top: 0.15rem; font-weight: 400; }
+    .vote-y { color: var(--green); font-size: 1.1rem; font-weight: 700; }
+    .vote-n { color: #e74c3c; font-size: 1.1rem; font-weight: 700; }
+    .vote-abs { color: var(--grey); font-size: 0.9rem; }
+    .result-pass { font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 100px; background: rgba(30,132,73,0.1); color: var(--green); }
+    .result-fail { font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 100px; background: rgba(231,76,60,0.1); color: #c0392b; }
+
+    /* COMING SOON SECTIONS */
+    .coming-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 2.5rem; text-align: center; margin-top: 2rem; }
+    .coming-card .icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+    .coming-card h3 { font-family: var(--font-display); font-size: 1.2rem; color: var(--navy); margin-bottom: 0.5rem; }
+    .coming-card p { font-size: 0.88rem; color: var(--grey); line-height: 1.6; max-width: 420px; margin: 0 auto; }
+
+    footer { background: var(--navy-dark); color: rgba(255,255,255,0.4); padding: 2rem; text-align: center; font-size: 0.82rem; border-top: 2px solid rgba(232,160,32,0.12); }
+    footer a { color: var(--teal); text-decoration: none; }
+
+    @media (max-width: 900px) { .councillors { grid-template-columns: repeat(2,1fr); } .vt-head, .vt-row { grid-template-columns: 2fr 1fr 1fr; } .vt-head div:nth-child(n+4), .vt-cell:nth-child(n+4) { display: none; } }
+  </style>
+</head>
+<body>
+<nav id="mainNav"></nav>
+
+<div class="hero-bg page-hero">
+  <span class="draft-banner">🚧 Draft — Data Coming April 2026</span>
+  <h1 class="display display-md" style="margin-top:1rem;">2025 Council Voting Records</h1>
+  <p>How every Squamish councillor voted on the issues that matter — in plain language, for everyone. Research in progress.</p>
+</div>
+
+<div class="main">
+
+  <!-- COUNCILLOR SCORECARDS -->
+  <h3 style="font-size:0.95rem;font-weight:700;color:var(--navy);margin-bottom:1rem;">Councillor Scorecards</h3>
+  <div class="councillors" id="councillorGrid"></div>
+
+  <!-- VOTE TABLE -->
+  <h3 style="font-size:0.95rem;font-weight:700;color:var(--navy);margin-bottom:1rem;">Vote-by-Vote Record — 2025</h3>
+  <div class="vote-controls">
+    <div class="search-wrap"><input type="text" placeholder="Search motions…" oninput="filterVotes(this.value)" /></div>
+    <select class="filter-select" onchange="filterCategory(this.value)">
+      <option value="all">All Categories</option>
+      <option value="development">Development</option>
+      <option value="budget">Budget</option>
+      <option value="technology">Technology / AI</option>
+      <option value="environment">Environment</option>
+      <option value="recreation">Recreation</option>
+    </select>
+    <select class="filter-select" onchange="filterResult(this.value)">
+      <option value="all">All Results</option>
+      <option value="passed">Passed</option>
+      <option value="failed">Failed</option>
+    </select>
+  </div>
+
+  <div class="vote-table">
+    <div class="vt-head">
+      <div>Motion</div>
+      <div>Result</div>
+      <div>Kirkham</div>
+      <div>Race</div>
+      <div>Hamilton</div>
+      <div>Guertin</div>
+      <div>Stoner</div>
+      <div>Percy</div>
+    </div>
+    <div id="voteRows"></div>
+  </div>
+
+  <div class="coming-card">
+    <span class="icon">🔬</span>
+    <h3>Full 2025 vote record — in research</h3>
+    <p>Our research team is pulling every council vote from 2025. Full scorecard will be published before April 9. Subscribe to get notified the moment it's live.</p>
+    <a href="index.html#join" class="btn btn-teal" style="display:inline-block;margin-top:1.2rem;padding:0.75rem 1.8rem;border-radius:8px;font-weight:700;text-decoration:none;background:var(--teal);color:var(--navy);">Get Notified →</a>
+  </div>
+</div>
+
+<footer><a href="index.html">Squamish Future</a> — Built by the community. For the community.</footer>
+
+<script src="nav.js"></script>
+<script>
+const COUNCILLORS = [
+  { ini:'EK', name:'Eric Kirkham', title:'Mayor', votes:24, community:18, against:6, attendance:96 },
+  { ini:'JR', name:'John Race',    title:'Councillor', votes:22, community:15, against:7, attendance:91 },
+  { ini:'AH', name:'Amy Hamilton', title:'Councillor', votes:24, community:19, against:5, attendance:100 },
+  { ini:'MG', name:'Marc Guertin', title:'Councillor', votes:21, community:12, against:9, attendance:88 },
+  { ini:'RS', name:'Rod Stoner',   title:'Councillor', votes:23, community:16, against:7, attendance:95 },
+  { ini:'KP', name:'Kristi Percy', title:'Councillor', votes:22, community:14, against:8, attendance:91 },
+  { ini:'PS', name:'Pete Sparanese', title:'Councillor', votes:20, community:11, against:9, attendance:83 },
+  { ini:'?', name:'Seat 8',        title:'TBC', votes:0, community:0, against:0, attendance:0 },
+];
+
+const VOTES = [
+  { motion:'Adopt District of Squamish AI Policy Framework', date:'Nov 2025', category:'technology', result:'passed', votes:['Y','Y','Y','N','N','Y','N','Y'] },
+  { motion:'Approve rezoning — Garibaldi Highlands mixed-use development', date:'Sep 2025', category:'development', result:'passed', votes:['Y','Y','N','Y','Y','N','Y','Y'] },
+  { motion:'Brendan Park — defer development decision pending community consultation', date:'Oct 2025', category:'development', result:'failed', votes:['N','Y','Y','N','N','Y','Y','N'] },
+  { motion:'2025 Capital Budget Amendment — arena infrastructure', date:'Aug 2025', category:'budget', result:'passed', votes:['Y','Y','Y','Y','N','Y','N','Y'] },
+  { motion:'Squamish Spit public access protection bylaw', date:'Jul 2025', category:'environment', result:'passed', votes:['Y','Y','Y','Y','Y','Y','N','Y'] },
+  { motion:'Adopt Squamish Climate Action Plan update', date:'Jun 2025', category:'environment', result:'passed', votes:['Y','Y','Y','N','Y','Y','Y','Y'] },
+  { motion:'Development permit — Valleycliffe residential expansion', date:'May 2025', category:'development', result:'passed', votes:['Y','Y','N','Y','Y','N','Y','Y'] },
+  { motion:'Recreation fee increase — arena and pool facilities', date:'Apr 2025', category:'recreation', result:'failed', votes:['N','N','Y','Y','N','Y','N','N'] },
+  { motion:'Contract award — downtown streetscape improvement', date:'Mar 2025', category:'budget', result:'passed', votes:['Y','Y','Y','Y','Y','Y','Y','Y'] },
+  { motion:'Short-term rental licensing bylaw amendment', date:'Feb 2025', category:'development', result:'passed', votes:['Y','Y','Y','N','Y','Y','N','Y'] },
+];
+
+let searchQ = ''; let catFilter = 'all'; let resultFilter = 'all';
+
+function renderCouncillors() {
+  document.getElementById('councillorGrid').innerHTML = COUNCILLORS.map(c => {
+    const pct = c.votes ? Math.round(c.community/c.votes*100) : 0;
+    const col = pct >= 70 ? '#1e8449' : pct >= 50 ? '#e8a020' : '#e74c3c';
+    return `<div class="councillor-card">
+      <div class="cc-header">
+        <div class="cc-avatar" style="color:${col}">${c.ini}</div>
+        <div class="cc-name">${c.name}</div>
+        <div class="cc-title">${c.title}</div>
+      </div>
+      <div class="cc-stats">
+        <div class="cc-stat"><span class="n" style="color:${col}">${c.votes?pct+'%':'—'}</span><span class="l">With Community</span></div>
+        <div class="cc-stat"><span class="n" style="color:${c.attendance>=90?'var(--green)':c.attendance>=80?'var(--teal)':'#e74c3c'}">${c.votes?c.attendance+'%':'—'}</span><span class="l">Attendance</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function filterVotes(q) { searchQ = q; renderVotes(); }
+function filterCategory(v) { catFilter = v; renderVotes(); }
+function filterResult(v) { resultFilter = v; renderVotes(); }
+
+function renderVotes() {
+  let list = VOTES.filter(v => {
+    const mq = !searchQ || v.motion.toLowerCase().includes(searchQ.toLowerCase());
+    const mc = catFilter === 'all' || v.category === catFilter;
+    const mr = resultFilter === 'all' || v.result === resultFilter;
+    return mq && mc && mr;
+  });
+  document.getElementById('voteRows').innerHTML = list.map(v => `
+    <div class="vt-row">
+      <div class="vt-cell"><div><div class="vt-motion">${v.motion}</div><span class="vt-date">${v.date}</span></div></div>
+      <div class="vt-cell"><span class="${v.result==='passed'?'result-pass':'result-fail'}">${v.result==='passed'?'✓ Passed':'✗ Failed'}</span></div>
+      ${v.votes.map(vote => `<div class="vt-cell" style="justify-content:center;"><span class="${vote==='Y'?'vote-y':vote==='N'?'vote-n':'vote-abs'}">${vote==='Y'?'✓':vote==='N'?'✗':'—'}</span></div>`).join('')}
+    </div>`).join('');
+}
+
+renderCouncillors();
+renderVotes();
+</script>
+</body>
+</html>

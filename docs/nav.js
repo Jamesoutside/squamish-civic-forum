@@ -240,22 +240,22 @@
 
   // ── BUILD NAV HTML ────────────────────────────────────────────────
   var navHTML = `
-    <a href="index.html" class="sf-nav-logo">Squamish <span>Future</span></a>
+    <a href="../index.html" class="sf-nav-logo">Squamish <span>Future</span></a>
 
     <ul class="sf-nav-links" id="sfNavLinks">
 
       <li class="sf-nav-item">
-        <a class="sf-nav-link" href="tracker.html">
+        <a class="sf-nav-link" href="../tracker.html">
           Issues <span class="sf-nav-arrow">▾</span>
         </a>
         <div class="sf-dropdown">
           <div class="sf-dd-section">
             <span class="sf-dd-label">Community Issues</span>
-            <a class="sf-dd-link" href="tracker.html">
+            <a class="sf-dd-link" href="../tracker.html">
               <span class="sf-dd-icon">📊</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Issues Tracker</span><span class="sf-dd-desc">Vote on what matters most</span></span>
             </a>
-            <a class="sf-dd-link" href="submit.html">
+            <a class="sf-dd-link" href="../submit.html">
               <span class="sf-dd-icon">📝</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Submit an Issue</span><span class="sf-dd-desc">Tell us what's on your mind</span></span>
             </a>
@@ -270,15 +270,15 @@
         <div class="sf-dropdown">
           <div class="sf-dd-section">
             <span class="sf-dd-label">Council Accountability</span>
-            <a class="sf-dd-link" href="tracker.html">
+            <a class="sf-dd-link" href="../council-votes.html">
               <span class="sf-dd-icon">🗳️</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Voting Records</span><span class="sf-dd-desc">How councillors voted in 2025</span></span>
             </a>
-            <a class="sf-dd-link" href="tracker.html">
+            <a class="sf-dd-link" href="../council-attendance.html">
               <span class="sf-dd-icon">📋</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Attendance Tracker</span><span class="sf-dd-desc">Who shows up, who doesn't</span></span>
             </a>
-            <a class="sf-dd-link" href="tracker.html">
+            <a class="sf-dd-link" href="../brendan-park.html">
               <span class="sf-dd-icon">📰</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Brendan Park Facts</span><span class="sf-dd-desc">Full unbiased fact package</span></span>
             </a>
@@ -287,21 +287,21 @@
       </li>
 
       <li class="sf-nav-item">
-        <a class="sf-nav-link" href="events.html">
+        <a class="sf-nav-link" href="../events.html">
           Events <span class="sf-nav-arrow">▾</span>
         </a>
         <div class="sf-dropdown">
           <div class="sf-dd-section">
             <span class="sf-dd-label">Get Involved</span>
-            <a class="sf-dd-link" href="events.html">
+            <a class="sf-dd-link" href="../events.html">
               <span class="sf-dd-icon">📅</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Upcoming Events</span><span class="sf-dd-desc">Meetings, forums, coffees</span></span>
             </a>
-            <a class="sf-dd-link" href="events.html">
+            <a class="sf-dd-link" href="../events.html">
               <span class="sf-dd-icon">🏠</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Host an Event</span><span class="sf-dd-desc">Kitchen coffee to community forum</span></span>
             </a>
-            <a class="sf-dd-link" href="volunteer.html">
+            <a class="sf-dd-link" href="../volunteer.html">
               <span class="sf-dd-icon">🤝</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Volunteer</span><span class="sf-dd-desc">Find a role, book a shift</span></span>
             </a>
@@ -310,24 +310,24 @@
       </li>
 
       <li class="sf-nav-item">
-        <a class="sf-nav-link" href="members.html">
+        <a class="sf-nav-link" href="../members.html">
           Community <span class="sf-nav-arrow">▾</span>
         </a>
         <div class="sf-dropdown">
           <div class="sf-dd-section">
             <span class="sf-dd-label">Our People</span>
-            <a class="sf-dd-link" href="members.html">
+            <a class="sf-dd-link" href="../members.html">
               <span class="sf-dd-icon">👥</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Member Directory</span><span class="sf-dd-desc">The people building this</span></span>
             </a>
-            <a class="sf-dd-link" href="candidate.html">
+            <a class="sf-dd-link" href="../candidate.html">
               <span class="sf-dd-icon">🗳️</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Run for Council</span><span class="sf-dd-desc">We'll vet and support you</span></span>
             </a>
           </div>
           <div class="sf-dd-section">
             <span class="sf-dd-label">Support Us</span>
-            <a class="sf-dd-link" href="donate.html">
+            <a class="sf-dd-link" href="../donate.html">
               <span class="sf-dd-icon">💛</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Donate</span><span class="sf-dd-desc">Fund the research and events</span></span>
             </a>
@@ -361,22 +361,22 @@
         <div class="sf-dropdown">
           <div class="sf-dd-section">
             <span class="sf-dd-label">Squamish Future</span>
-            <a class="sf-dd-link" href="index.html#mission">
+            <a class="sf-dd-link" href="../index.html#mission">
               <span class="sf-dd-icon">🎯</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Our Mission</span><span class="sf-dd-desc">Why we exist</span></span>
             </a>
-            <a class="sf-dd-link" href="index.html#about">
+            <a class="sf-dd-link" href="../index.html#about">
               <span class="sf-dd-icon">🏛️</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Structure</span><span class="sf-dd-desc">Two streams, six working groups</span></span>
             </a>
-            <a class="sf-dd-link" href="index.html#newsletter">
+            <a class="sf-dd-link" href="../index.html#newsletter">
               <span class="sf-dd-icon">📬</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Newsletter</span><span class="sf-dd-desc">5-min weekly digest</span></span>
             </a>
           </div>
           <div class="sf-dd-section">
             <span class="sf-dd-label">Members</span>
-            <a class="sf-dd-link" href="portal.html">
+            <a class="sf-dd-link" href="../portal.html">
               <span class="sf-dd-icon">🔐</span>
               <span class="sf-dd-text"><span class="sf-dd-name">Member Portal</span><span class="sf-dd-desc">Internal team dashboard</span></span>
             </a>
@@ -385,7 +385,7 @@
       </li>
 
       <li class="sf-nav-item">
-        <a class="sf-nav-link sf-nav-cta" href="index.html#join">Join Us</a>
+        <a class="sf-nav-link sf-nav-cta" href="../index.html#join">Join Us</a>
       </li>
 
     </ul>

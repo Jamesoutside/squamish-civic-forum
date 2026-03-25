@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Attendance Tracker — Squamish Future</title>
+  <link rel="stylesheet" href="brand.css" />
+  <style>
+    body { background: #f0f4f8; }
+    .page-hero { padding: 80px 2rem 50px; text-align: center; }
+    .page-hero h1 { color: white; margin-bottom: 0.5rem; }
+    .page-hero p { color: rgba(255,255,255,0.6); font-size: 1rem; max-width: 540px; margin: 0 auto 1.5rem; line-height: 1.7; }
+    .draft-banner { display: inline-flex; align-items: center; gap: 0.5rem; background: rgba(232,160,32,0.15); border: 1px solid rgba(232,160,32,0.3); color: var(--teal); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.4rem 1.1rem; border-radius: 100px; }
+
+    .main { max-width: 1000px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+
+    /* ATTENDANCE BARS */
+    .att-grid { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem; }
+    .att-row { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.5rem; display: flex; align-items: center; gap: 1.5rem; transition: all 0.2s; }
+    .att-row:hover { box-shadow: var(--shadow-sm); border-color: rgba(232,160,32,0.3); }
+    .att-avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800; color: var(--teal); flex-shrink: 0; }
+    .att-info { flex: 1; }
+    .att-name { font-size: 0.92rem; font-weight: 700; color: var(--navy); }
+    .att-title { font-size: 0.72rem; color: var(--grey); margin-top: 0.1rem; }
+    .att-bar-wrap { flex: 2; }
+    .att-bar-label { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--grey); margin-bottom: 0.35rem; }
+    .att-bar { height: 10px; background: var(--light); border-radius: 100px; overflow: hidden; }
+    .att-fill { height: 100%; border-radius: 100px; transition: width 1s ease; }
+    .att-pct { font-family: var(--font-display); font-size: 1.4rem; font-weight: 900; min-width: 56px; text-align: right; flex-shrink: 0; }
+    .att-detail { font-size: 0.72rem; color: var(--grey); text-align: right; flex-shrink: 0; min-width: 80px; }
+
+    /* MEETING CALENDAR */
+    .meeting-list { background: white; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .ml-head { display: grid; grid-template-columns: 1.2fr 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr; background: var(--navy); }
+    .ml-head div { padding: 0.65rem 0.75rem; font-size: 0.62rem; font-weight: 700; color: rgba(255,255,255,0.6); letter-spacing: 0.06em; text-transform: uppercase; border-right: 1px solid rgba(255,255,255,0.06); }
+    .ml-row { display: grid; grid-template-columns: 1.2fr 1.5fr 1fr 1fr 1fr 1fr 1fr 1fr; border-bottom: 1px solid var(--border); transition: background 0.12s; }
+    .ml-row:last-child { border-bottom: none; }
+    .ml-row:hover { background: var(--light); }
+    .ml-cell { padding: 0.8rem 0.75rem; font-size: 0.8rem; color: var(--dark); border-right: 1px solid #f5f5f5; display: flex; align-items: center; justify-content: center; }
+    .ml-cell.left { justify-content: flex-start; }
+    .ml-cell:last-child { border-right: none; }
+    .present { color: var(--green); font-size: 1rem; font-weight: 700; }
+    .absent { color: #e74c3c; font-size: 0.9rem; font-weight: 700; }
+    .regrets { color: var(--teal); font-size: 0.8rem; }
+
+    .coming-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 2.5rem; text-align: center; margin-top: 2rem; }
+    .coming-card .icon { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+    .coming-card h3 { font-family: var(--font-display); font-size: 1.2rem; color: var(--navy); margin-bottom: 0.5rem; }
+    .coming-card p { font-size: 0.88rem; color: var(--grey); line-height: 1.6; max-width: 420px; margin: 0 auto; }
+
+    footer { background: var(--navy-dark); color: rgba(255,255,255,0.4); padding: 2rem; text-align: center; font-size: 0.82rem; border-top: 2px solid rgba(232,160,32,0.12); }
+    footer a { color: var(--teal); text-decoration: none; }
+    @media (max-width: 700px) { .ml-head, .ml-row { grid-template-columns: 1.2fr 1.5fr 1fr 1fr; } .ml-head div:nth-child(n+5), .ml-cell:nth-child(n+5) { display: none; } .att-row { flex-wrap: wrap; } }
+  </style>
+</head>
+<body>
+<nav id="mainNav"></nav>
+
+<div class="hero-bg page-hero">
+  <span class="draft-banner">🚧 Draft — Data Coming April 2026</span>
+  <h1 class="display display-md" style="margin-top:1rem;">Council Attendance Tracker</h1>
+  <p>Who shows up, who skips, and who sends regrets. Every public meeting tracked — because attendance is accountability.</p>
+</div>
+
+<div class="main">
+
+  <h3 style="font-size:0.95rem;font-weight:700;color:var(--navy);margin-bottom:1rem;">2025 Attendance Overview</h3>
+  <div class="att-grid" id="attGrid"></div>
+
+  <h3 style="font-size:0.95rem;font-weight:700;color:var(--navy);margin:2rem 0 1rem;">Meeting-by-Meeting Record</h3>
+  <div class="meeting-list">
+    <div class="ml-head">
+      <div>Date</div>
+      <div>Meeting Type</div>
+      <div>Kirkham</div>
+      <div>Race</div>
+      <div>Hamilton</div>
+      <div>Guertin</div>
+      <div>Stoner</div>
+      <div>Percy</div>
+    </div>
+    <div id="meetingRows"></div>
+  </div>
+
+  <div class="coming-card">
+    <span class="icon">📋</span>
+    <h3>Full 2025 attendance record — in research</h3>
+    <p>Our team is pulling every council and committee meeting from 2025. Full tracker published before April 9.</p>
+    <a href="index.html#join" class="btn btn-teal" style="display:inline-block;margin-top:1.2rem;padding:0.75rem 1.8rem;border-radius:8px;font-weight:700;text-decoration:none;background:var(--teal);color:var(--navy);">Get Notified →</a>
+  </div>
+</div>
+
+<footer><a href="index.html">Squamish Future</a> — Built by the community. For the community.</footer>
+
+<script src="nav.js"></script>
+<script>
+const COUNCILLORS = [
+  { ini:'EK', name:'Eric Kirkham',   title:'Mayor',       pct:96, present:23, total:24 },
+  { ini:'AH', name:'Amy Hamilton',   title:'Councillor',  pct:100, present:24, total:24 },
+  { ini:'RS', name:'Rod Stoner',     title:'Councillor',  pct:95,  present:21, total:22 },
+  { ini:'JR', name:'John Race',      title:'Councillor',  pct:91,  present:20, total:22 },
+  { ini:'KP', name:'Kristi Percy',   title:'Councillor',  pct:91,  present:20, total:22 },
+  { ini:'MG', name:'Marc Guertin',   title:'Councillor',  pct:88,  present:19, total:22 },
+  { ini:'PS', name:'Pete Sparanese', title:'Councillor',  pct:83,  present:18, total:22 },
+];
+
+const MEETINGS = [
+  { date:'Nov 18 2025', type:'Regular Council',      att:['P','P','P','P','R','P','A'] },
+  { date:'Nov 4 2025',  type:'Regular Council',      att:['P','P','P','A','P','P','P'] },
+  { date:'Oct 21 2025', type:'Committee of Whole',   att:['P','P','P','P','P','P','P'] },
+  { date:'Oct 7 2025',  type:'Regular Council',      att:['P','P','P','P','P','A','P'] },
+  { date:'Sep 16 2025', type:'Regular Council',      att:['P','A','P','P','P','P','P'] },
+  { date:'Sep 2 2025',  type:'Special Meeting',      att:['P','P','P','P','P','P','A'] },
+  { date:'Aug 19 2025', type:'Regular Council',      att:['P','P','P','R','P','P','P'] },
+  { date:'Jul 15 2025', type:'Regular Council',      att:['P','P','P','P','A','P','P'] },
+  { date:'Jun 17 2025', type:'Committee of Whole',   att:['P','P','P','P','P','P','P'] },
+  { date:'Jun 3 2025',  type:'Regular Council',      att:['P','R','P','A','P','P','P'] },
+];
+
+function renderAtt() {
+  document.getElementById('attGrid').innerHTML = COUNCILLORS.map(c => {
+    const col = c.pct >= 95 ? 'var(--green)' : c.pct >= 85 ? 'var(--teal)' : '#e74c3c';
+    return `<div class="att-row">
+      <div class="att-avatar">${c.ini}</div>
+      <div class="att-info"><div class="att-name">${c.name}</div><div class="att-title">${c.title}</div></div>
+      <div class="att-bar-wrap">
+        <div class="att-bar-label"><span>${c.present} of ${c.total} meetings</span></div>
+        <div class="att-bar"><div class="att-fill" style="width:${c.pct}%;background:${col}"></div></div>
+      </div>
+      <div class="att-pct" style="color:${col}">${c.pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+function renderMeetings() {
+  document.getElementById('meetingRows').innerHTML = MEETINGS.map(m => `
+    <div class="ml-row">
+      <div class="ml-cell left" style="font-size:0.78rem;font-weight:600;color:var(--navy);">${m.date}</div>
+      <div class="ml-cell left" style="font-size:0.78rem;color:var(--grey);">${m.type}</div>
+      ${m.att.map(a => `<div class="ml-cell"><span class="${a==='P'?'present':a==='A'?'absent':'regrets'}">${a==='P'?'✓':a==='A'?'✗':'R'}</span></div>`).join('')}
+    </div>`).join('');
+}
+
+renderAtt();
+renderMeetings();
+</script>
+</body>
+</html>
