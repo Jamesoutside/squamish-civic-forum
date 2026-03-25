@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Master Plan — Squamish Future</title>
+  <link rel="stylesheet" href="../brand.css" />
+  <style>
+    body { background: #f0f4f8; }
+    .doc-wrap { max-width: 860px; margin: 0 auto; padding: 2.5rem 2rem 6rem; }
+
+    /* ── SUMMARY HERO ── */
+    .summary-hero {
+      background: var(--navy); border-radius: 20px; overflow: hidden; margin-bottom: 2rem;
+    }
+    .sh-top { padding: 2.5rem 3rem; }
+    .sh-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.6rem; display: block; }
+    .sh-title { font-family: var(--font-display); font-size: 2.2rem; color: white; margin-bottom: 0.5rem; line-height: 1.15; }
+    .sh-tag { font-family: var(--font-display); font-size: 1rem; color: rgba(255,255,255,0.5); font-style: italic; margin-bottom: 1.5rem; }
+    .sh-desc { font-size: 0.95rem; color: rgba(255,255,255,0.65); line-height: 1.75; max-width: 640px; }
+    .sh-stats { display: grid; grid-template-columns: repeat(4,1fr); border-top: 1px solid rgba(232,160,32,0.2); }
+    .sh-stat { padding: 1.2rem 1.5rem; border-right: 1px solid rgba(232,160,32,0.12); }
+    .sh-stat:last-child { border-right: none; }
+    .sh-stat .n { font-family: var(--font-display); font-size: 1.8rem; font-weight: 900; color: var(--teal); display: block; }
+    .sh-stat .l { font-size: 0.7rem; color: rgba(255,255,255,0.4); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.2rem; display: block; }
+    .sh-callout { background: rgba(232,160,32,0.1); border-left: 4px solid var(--teal); padding: 1rem 1.5rem; margin: 1.5rem 3rem; border-radius: 0 8px 8px 0; }
+    .sh-callout p { font-family: var(--font-display); font-size: 1.1rem; color: white; font-style: italic; line-height: 1.55; }
+
+    /* ── SECTION BLOCKS ── */
+    .doc-section { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; }
+    .ds-header { padding: 1.3rem 2rem; display: flex; align-items: center; gap: 1rem; border-bottom: 1px solid var(--border); }
+    .ds-num { width: 36px; height: 36px; border-radius: 10px; background: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: 800; color: var(--teal); flex-shrink: 0; }
+    .ds-title { font-family: var(--font-display); font-size: 1.2rem; color: var(--navy); }
+    .ds-body { padding: 1.8rem 2rem; }
+
+    /* ── STAT ROW ── */
+    .stat-row { display: grid; gap: 1rem; margin-bottom: 1.5rem; }
+    .stat-row.four { grid-template-columns: repeat(4,1fr); }
+    .stat-row.three { grid-template-columns: repeat(3,1fr); }
+    .stat-card { background: var(--light); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.2rem; text-align: center; }
+    .stat-card .sn { font-family: var(--font-display); font-size: 1.8rem; font-weight: 900; color: var(--navy); display: block; }
+    .stat-card .sl { font-size: 0.72rem; color: var(--grey); text-transform: uppercase; letter-spacing: 0.08em; margin-top: 0.2rem; display: block; }
+    .stat-card.gold .sn { color: var(--teal); }
+
+    /* ── ICON GRID ── */
+    .icon-grid { display: grid; gap: 0.75rem; }
+    .icon-grid.two { grid-template-columns: 1fr 1fr; }
+    .icon-grid.three { grid-template-columns: repeat(3,1fr); }
+    .ig-card { background: var(--light); border: 1px solid var(--border); border-radius: 12px; padding: 1.1rem 1.2rem; }
+    .ig-icon { font-size: 1.6rem; margin-bottom: 0.5rem; display: block; }
+    .ig-title { font-size: 0.88rem; font-weight: 700; color: var(--navy); margin-bottom: 0.25rem; }
+    .ig-desc { font-size: 0.8rem; color: var(--grey); line-height: 1.5; }
+
+    /* ── TWO COLUMNS ── */
+    .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .col-block { background: var(--light); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem 1.4rem; }
+    .col-block h4 { font-size: 0.72rem; font-weight: 700; color: var(--teal); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.75rem; }
+    .col-block ul { list-style: none; }
+    .col-block ul li { font-size: 0.85rem; color: var(--dark); padding: 0.25rem 0 0.25rem 1rem; position: relative; border-bottom: 1px solid rgba(0,0,0,0.04); }
+    .col-block ul li:last-child { border-bottom: none; }
+    .col-block ul li::before { content: '→'; position: absolute; left: 0; color: var(--teal); font-weight: 700; }
+
+    /* ── TIMELINE / PHASE ── */
+    .phase-list { display: flex; flex-direction: column; gap: 0; }
+    .phase-row { display: flex; gap: 1.2rem; padding: 1rem 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+    .phase-row:last-child { border-bottom: none; }
+    .phase-dot-wrap { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; padding-top: 2px; }
+    .phase-dot { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; border: 2px solid var(--border); flex-shrink: 0; }
+    .phase-dot.done { background: var(--green); border-color: var(--green); }
+    .phase-dot.current { background: var(--navy); border-color: var(--teal); box-shadow: 0 0 0 5px rgba(232,160,32,0.15); }
+    .phase-dot.upcoming { background: white; }
+    .phase-line { width: 2px; flex: 1; background: var(--border); margin: 4px 0; min-height: 20px; }
+    .phase-info { flex: 1; padding-bottom: 0.5rem; }
+    .phase-label { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.35rem; }
+    .phase-name { font-size: 0.92rem; font-weight: 700; color: var(--navy); }
+    .phase-badge { font-size: 0.68rem; font-weight: 700; padding: 0.18rem 0.65rem; border-radius: 100px; }
+    .pb-done { background: rgba(30,132,73,0.1); color: var(--green); }
+    .pb-current { background: rgba(232,160,32,0.12); color: var(--teal); }
+    .pb-upcoming { background: var(--light); color: var(--grey); }
+    .phase-date { font-size: 0.75rem; color: var(--grey); margin-bottom: 0.35rem; }
+    .phase-items { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+    .phase-item { font-size: 0.72rem; background: var(--light); border: 1px solid var(--border); color: var(--dark); padding: 0.18rem 0.6rem; border-radius: 100px; }
+
+    /* ── ACTION TABLE ── */
+    .action-table { width: 100%; border-collapse: collapse; }
+    .action-table th { background: var(--navy); color: white; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 0.7rem 1rem; text-align: left; }
+    .action-table td { padding: 0.75rem 1rem; font-size: 0.87rem; border-bottom: 1px solid var(--border); color: var(--dark); }
+    .action-table tr:last-child td { border-bottom: none; }
+    .action-table tr:nth-child(even) td { background: var(--light); }
+    .action-table .num { font-weight: 800; color: var(--teal); }
+    .action-table .due { font-weight: 600; white-space: nowrap; }
+    .action-table .due.urgent { color: #e74c3c; }
+    .action-table .due.soon { color: var(--teal); }
+
+    /* ── CALLOUT ── */
+    .callout { background: var(--navy); border-radius: 12px; padding: 1.5rem 2rem; margin: 1rem 0; }
+    .callout p { font-family: var(--font-display); font-size: 1rem; color: white; font-style: italic; line-height: 1.6; margin: 0; }
+    .callout.gold { background: rgba(232,160,32,0.1); border: 1px solid rgba(232,160,32,0.25); }
+    .callout.gold p { color: var(--navy); }
+
+    /* ── BUDGET TABLE ── */
+    .budget-table { width: 100%; border-collapse: collapse; }
+    .budget-table th { background: var(--navy); color: white; font-size: 0.72rem; font-weight: 700; padding: 0.7rem 1rem; text-align: left; }
+    .budget-table td { padding: 0.75rem 1rem; font-size: 0.87rem; border-bottom: 1px solid var(--border); }
+    .budget-table tr:last-child td { background: rgba(232,160,32,0.08); font-weight: 700; border-top: 2px solid var(--teal); border-bottom: none; }
+    .budget-table tr:nth-child(even) td { background: var(--light); }
+
+    /* ── NAV STICKY TOC ── */
+    .toc-bar { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1rem 1.5rem; margin-bottom: 2rem; display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; }
+    .toc-bar span { font-size: 0.72rem; font-weight: 700; color: var(--grey); text-transform: uppercase; letter-spacing: 0.08em; margin-right: 0.5rem; }
+    .toc-link { font-size: 0.78rem; font-weight: 600; color: var(--navy); text-decoration: none; padding: 0.3rem 0.75rem; border-radius: 100px; border: 1px solid var(--border); transition: all 0.15s; }
+    .toc-link:hover { background: var(--navy); color: white; border-color: var(--navy); }
+
+    footer { background: var(--navy-dark); color: rgba(255,255,255,0.4); padding: 2rem; text-align: center; font-size: 0.82rem; border-top: 2px solid rgba(232,160,32,0.12); }
+    footer a { color: var(--teal); text-decoration: none; }
+
+    @media (max-width: 700px) {
+      .sh-top { padding: 1.8rem; } .sh-callout { margin: 1rem 1.5rem; }
+      .sh-stats { grid-template-columns: repeat(2,1fr); }
+      .stat-row.four { grid-template-columns: repeat(2,1fr); }
+      .icon-grid.three { grid-template-columns: 1fr 1fr; }
+      .two-col { grid-template-columns: 1fr; }
+      .ds-body { padding: 1.2rem 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="sf-nav" id="mainNav"></nav>
+
+<div class="doc-wrap">
+
+  <!-- ── EXECUTIVE SUMMARY HERO ── -->
+  <div class="summary-hero" id="summary">
+    <div class="sh-top">
+      <span class="sh-label">Executive Summary · March 2026</span>
+      <div class="sh-title">Squamish Future — Master Plan</div>
+      <div class="sh-tag">Built by the community. For the community.</div>
+      <div class="sh-desc">A non-partisan civic organization designed to solve every major gap from three election campaigns — an MP nomination, a federal MP campaign, and a BC MLA campaign. One platform, one direction, one movement for the 2026 Squamish municipal election. This is the V1 implementation of that thinking.</div>
+    </div>
+    <div class="sh-callout">
+      <p>"For busy people who care about Squamish — we do the research so you don't have to. Real data. Real issues. Considered recommendations. Five minutes to stay informed."</p>
+    </div>
+    <div class="sh-stats">
+      <div class="sh-stat"><span class="n">Non-partisan</span><span class="l">Structure</span></div>
+      <div class="sh-stat"><span class="n">4,000+</span><span class="l">Member Goal</span></div>
+      <div class="sh-stat"><span class="n">Oct 2026</span><span class="l">Election Target</span></div>
+      <div class="sh-stat"><span class="n">3 Seats</span><span class="l">Council Goal</span></div>
+    </div>
+  </div>
+
+  <!-- ── WHAT THIS SOLVES ── -->
+  <div class="doc-section" id="problem">
+    <div class="ds-header"><div class="ds-num">00</div><div class="ds-title">What This Solves</div></div>
+    <div class="ds-body">
+      <p style="font-size:0.95rem;color:var(--grey);line-height:1.75;margin-bottom:1.5rem;">After three campaigns, these were the same problems every time. Squamish Future is built specifically to fix each one.</p>
+      <div class="icon-grid two">
+        <div class="ig-card"><span class="ig-icon">⚡</span><div class="ig-title">No shared platform</div><div class="ig-desc">Good people got fired up and scattered in five directions. No coordination, no way to consolidate energy into votes.</div></div>
+        <div class="ig-card"><span class="ig-icon">📭</span><div class="ig-title">No information</div><div class="ig-desc">Residents voted blind. No council scorecards, no plain-language summaries, no fact packages on major decisions.</div></div>
+        <div class="ig-card"><span class="ig-icon">🏃</span><div class="ig-title">Candidates ran alone</div><div class="ig-desc">Good people didn't run because they had no support, no research team, no base behind them.</div></div>
+        <div class="ig-card"><span class="ig-icon">🙉</span><div class="ig-title">Nobody was listening</div><div class="ig-desc">Issues that mattered to hockey parents, old Squamish families, hunters, renters — never made it into the room.</div></div>
+        <div class="ig-card"><span class="ig-icon">🔥</span><div class="ig-title">Always reactive</div><div class="ig-desc">By the time people got frustrated, decisions were already made. No early warning system, no proactive mobilization.</div></div>
+        <div class="ig-card" style="background:var(--navy);border-color:var(--navy);">
+          <span class="ig-icon">🎯</span>
+          <div class="ig-title" style="color:white;">Squamish Future fixes all five.</div>
+          <div class="ig-desc" style="color:rgba(255,255,255,0.6);">One platform. One direction. One movement — built before the campaign starts, not during it.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc-bar">
+    <span>Jump to:</span>
+    <a class="toc-link" href="#mission">Mission</a>
+    <a class="toc-link" href="#structure">Structure</a>
+    <a class="toc-link" href="#platform">Platform</a>
+    <a class="toc-link" href="#budget">Budget</a>
+    <a class="toc-link" href="#base">Base Building</a>
+    <a class="toc-link" href="#roadmap">Election Roadmap</a>
+    <a class="toc-link" href="#actions">30-Day Actions</a>
+  </div>
+
+  <!-- ── 01 MISSION ── -->
+  <div class="doc-section" id="mission">
+    <div class="ds-header"><div class="ds-num">01</div><div class="ds-title">Mission & Purpose</div></div>
+    <div class="ds-body">
+      <div class="callout" style="margin-bottom:1.5rem;"><p>"For busy people who care about Squamish — we do the research so you don't have to. Real data. Real issues. Considered recommendations. 5 minutes to stay informed."</p></div>
+      <div class="icon-grid two">
+        <div class="ig-card"><span class="ig-icon">🔍</span><div class="ig-title">Research-Driven</div><div class="ig-desc">Track council votes, attend meetings, dig into the facts. Real information — not spin.</div></div>
+        <div class="ig-card"><span class="ig-icon">⚖️</span><div class="ig-title">Non-Partisan</div><div class="ig-desc">No party lines. No ideology. Just Squamish residents who care about getting things right.</div></div>
+        <div class="ig-card"><span class="ig-icon">📣</span><div class="ig-title">Community-First</div><div class="ig-desc">We listen before we speak. Your issues shape our platform — not the other way around.</div></div>
+        <div class="ig-card"><span class="ig-icon">🗳️</span><div class="ig-title">Candidate-Ready</div><div class="ig-desc">Vet candidates, publish questionnaires, and help the community make the best choice.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 02 STRUCTURE ── -->
+  <div class="doc-section" id="structure">
+    <div class="ds-header"><div class="ds-num">02</div><div class="ds-title">Organizational Structure</div></div>
+    <div class="ds-body">
+      <div class="two-col" style="margin-bottom:1.5rem;">
+        <div class="col-block">
+          <h4>🌐 Public Stream</h4>
+          <ul>
+            <li>Issues platform and research</li>
+            <li>Council scorecards and vote tracking</li>
+            <li>Candidate questionnaires (published)</li>
+            <li>Community events and forums</li>
+            <li>Newsletter and social media</li>
+          </ul>
+        </div>
+        <div class="col-block">
+          <h4>🔒 Private Stream</h4>
+          <ul>
+            <li>Candidate vetting and support</li>
+            <li>Strategy and coordination</li>
+            <li>Resource allocation decisions</li>
+            <li>Confidential candidate conversations</li>
+            <li>Internal task delegation</li>
+          </ul>
+        </div>
+      </div>
+      <p style="font-size:0.9rem;font-weight:700;color:var(--navy);margin-bottom:0.75rem;">Working Groups</p>
+      <div class="icon-grid three">
+        <div class="ig-card"><span class="ig-icon">📣</span><div class="ig-title">Media & Comms</div><div class="ig-desc">Social media, newsletter, press, brand voice</div></div>
+        <div class="ig-card"><span class="ig-icon">⚙️</span><div class="ig-title">Operations</div><div class="ig-desc">Coordinator, systems, budget, admin</div></div>
+        <div class="ig-card"><span class="ig-icon">🔬</span><div class="ig-title">Data & Research</div><div class="ig-desc">Council watch, voting records, fact packages</div></div>
+        <div class="ig-card"><span class="ig-icon">🎪</span><div class="ig-title">Events</div><div class="ig-desc">Community events, forums, coffee meetups</div></div>
+        <div class="ig-card"><span class="ig-icon">🔗</span><div class="ig-title">Coordination</div><div class="ig-desc">Strategy, fundraising, coalition, candidates</div></div>
+        <div class="ig-card"><span class="ig-icon">🗳️</span><div class="ig-title">Candidate Pipeline</div><div class="ig-desc">Vetting, support, talking points, endorsements</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 03 PLATFORM ── -->
+  <div class="doc-section" id="platform">
+    <div class="ds-header"><div class="ds-num">03</div><div class="ds-title">Digital Platform (Prototype)</div></div>
+    <div class="ds-body">
+      <div class="callout gold" style="margin-bottom:1.5rem;"><p>All pages below are prototype builds. Nothing is currently live or hosted. Pending: domain registration, deployment, email platform, and data backend.</p></div>
+      <div class="icon-grid two">
+        <div class="ig-card"><span class="ig-icon">🏠</span><div class="ig-title">Homepage</div><div class="ig-desc">Mission, issues, email signup, events, join form</div></div>
+        <div class="ig-card"><span class="ig-icon">📊</span><div class="ig-title">Issues Tracker</div><div class="ig-desc">Community submissions with voting, status tracking, research updates</div></div>
+        <div class="ig-card"><span class="ig-icon">📝</span><div class="ig-title">Submit an Issue</div><div class="ig-desc">4-step resident input form — category, urgency, description, involvement</div></div>
+        <div class="ig-card"><span class="ig-icon">📅</span><div class="ig-title">Events</div><div class="ig-desc">Listings, registration, and host-your-own form (kitchen coffee to forum)</div></div>
+        <div class="ig-card"><span class="ig-icon">🤝</span><div class="ig-title">Volunteer Hub</div><div class="ig-desc">Open roles with claim system, shift calendar, volunteer register with skills</div></div>
+        <div class="ig-card"><span class="ig-icon">🗳️</span><div class="ig-title">Candidate Pipeline</div><div class="ig-desc">Confidential vetting form, scoring matrix, nomination system</div></div>
+        <div class="ig-card"><span class="ig-icon">💛</span><div class="ig-title">Donate</div><div class="ig-desc">Fundraising with tiers, progress bar, BC contribution law notice</div></div>
+        <div class="ig-card"><span class="ig-icon">🔐</span><div class="ig-title">Member Portal</div><div class="ig-desc">Internal dashboard, group alignment, kanban task board, objectives tracker</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 04 BUDGET ── -->
+  <div class="doc-section" id="budget">
+    <div class="ds-header"><div class="ds-num">04</div><div class="ds-title">Budget Framework</div></div>
+    <div class="ds-body">
+      <div class="stat-row four" style="margin-bottom:1.5rem;">
+        <div class="stat-card gold"><span class="sn">$40/hr</span><span class="sl">Coordinator Rate</span></div>
+        <div class="stat-card"><span class="sn">15 hrs</span><span class="sl">Per Week</span></div>
+        <div class="stat-card"><span class="sn">~$3,400</span><span class="sl">Monthly Budget</span></div>
+        <div class="stat-card"><span class="sn">~$40k</span><span class="sl">Annual Estimate</span></div>
+      </div>
+      <table class="budget-table">
+        <thead><tr><th>Category</th><th>Monthly</th><th>Annual</th></tr></thead>
+        <tbody>
+          <tr><td>Coordinator (Kristina · 15 hrs @ $40/hr)</td><td>$2,400</td><td>$28,800</td></tr>
+          <tr><td>Website + hosting</td><td>$50</td><td>$600</td></tr>
+          <tr><td>Email platform (MailerLite)</td><td>$30–80</td><td>$360–960</td></tr>
+          <tr><td>Events (venue, materials, catering)</td><td>$200–500</td><td>$2,400–6,000</td></tr>
+          <tr><td>Social advertising</td><td>$100–300</td><td>$1,200–3,600</td></tr>
+          <tr><td>Research + tools</td><td>$50</td><td>$600</td></tr>
+          <tr><td>Contingency</td><td>$200</td><td>$2,400</td></tr>
+          <tr><td><strong>TOTAL</strong></td><td><strong>~$3,000–3,600</strong></td><td><strong>~$36,000–43,000</strong></td></tr>
+        </tbody>
+      </table>
+      <p style="font-size:0.82rem;color:var(--grey);margin-top:1rem;line-height:1.6;"><strong>Funding sources:</strong> Founding member contributions ($200–500 each) · Optional membership dues ($10–20/year) · Community fundraising events · Small business sponsors (non-political)</p>
+    </div>
+  </div>
+
+  <!-- ── 05 BASE BUILDING ── -->
+  <div class="doc-section" id="base">
+    <div class="ds-header"><div class="ds-num">05</div><div class="ds-title">Base Building Strategy</div></div>
+    <div class="ds-body">
+      <div class="phase-list">
+        <div class="phase-row">
+          <div class="phase-dot-wrap"><div class="phase-dot current">🌱</div><div class="phase-line"></div></div>
+          <div class="phase-info">
+            <div class="phase-label"><span class="phase-name">Seed — 0 to 400 members</span><span class="phase-badge pb-current">Months 1–3</span></div>
+            <div class="phase-date">Personal networks, April 9 founding meeting, community group ambassador network</div>
+            <div class="phase-items"><span class="phase-item">Personal emails from core 5</span><span class="phase-item">April 9 meeting</span><span class="phase-item">SCORA ambassador</span><span class="phase-item">Squamish Moms</span><span class="phase-item">Church + faith groups</span></div>
+          </div>
+        </div>
+        <div class="phase-row">
+          <div class="phase-dot-wrap"><div class="phase-dot upcoming">📈</div><div class="phase-line"></div></div>
+          <div class="phase-info">
+            <div class="phase-label"><span class="phase-name">Growth — 400 to 2,000 members</span><span class="phase-badge pb-upcoming">Months 4–9</span></div>
+            <div class="phase-date">Newsletter word-of-mouth, Facebook content, events, council watch press coverage</div>
+            <div class="phase-items"><span class="phase-item">Weekly newsletter</span><span class="phase-item">Facebook content</span><span class="phase-item">Monthly events</span><span class="phase-item">Council scorecard press</span></div>
+          </div>
+        </div>
+        <div class="phase-row">
+          <div class="phase-dot-wrap"><div class="phase-dot upcoming">🔥</div></div>
+          <div class="phase-info">
+            <div class="phase-label"><span class="phase-name">Movement — 2,000 to 4,000 members</span><span class="phase-badge pb-upcoming">Months 10–24</span></div>
+            <div class="phase-date">Platform becomes go-to source, candidate endorsements carry weight, Sea to Sky expansion</div>
+            <div class="phase-items"><span class="phase-item">Candidate endorsements</span><span class="phase-item">Whistler + Pemberton</span><span class="phase-item">Slate building</span></div>
+          </div>
+        </div>
+      </div>
+      <div style="margin-top:1.5rem;">
+        <p style="font-size:0.85rem;font-weight:700;color:var(--navy);margin-bottom:0.75rem;">Ambassador Targets</p>
+        <div class="icon-grid three">
+          <div class="ig-card"><span class="ig-icon">🏒</span><div class="ig-title">SCORA + Sports</div><div class="ig-desc">Hockey, arena, rec clubs</div></div>
+          <div class="ig-card"><span class="ig-icon">👩</span><div class="ig-title">Squamish Moms</div><div class="ig-desc">Largest Facebook group reach</div></div>
+          <div class="ig-card"><span class="ig-icon">⛪</span><div class="ig-title">Faith Groups</div><div class="ig-desc">Church communities</div></div>
+          <div class="ig-card"><span class="ig-icon">🌲</span><div class="ig-title">Hunters + Outdoor</div><div class="ig-desc">Underserved voices</div></div>
+          <div class="ig-card"><span class="ig-icon">💼</span><div class="ig-title">Chamber</div><div class="ig-desc">Business network</div></div>
+          <div class="ig-card"><span class="ig-icon">🏘️</span><div class="ig-title">Old Squamish</div><div class="ig-desc">Long-term families + history</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 06 ELECTION ROADMAP ── -->
+  <div class="doc-section" id="roadmap">
+    <div class="ds-header"><div class="ds-num">06</div><div class="ds-title">Election Roadmap — 2026</div></div>
+    <div class="ds-body">
+      <div class="callout" style="margin-bottom:1.5rem;"><p>~6,500 votes cast in 2022 · ~2,800 to win a council seat · 7 seats total · We're targeting 3</p></div>
+      <div class="stat-row three" style="margin-bottom:1.5rem;">
+        <div class="stat-card gold"><span class="sn">1,600</span><span class="sl">Base votes at 40% turnout</span></div>
+        <div class="stat-card"><span class="sn">+800–1,200</span><span class="sl">Coalition + canvassing</span></div>
+        <div class="stat-card"><span class="sn">2,400–2,800</span><span class="sl">Votes per endorsed candidate</span></div>
+      </div>
+      <div class="phase-list">
+        <div class="phase-row">
+          <div class="phase-dot-wrap"><div class="phase-dot done">✓</div><div class="phase-line"></div></div>
+          <div class="phase-info">
+            <div class="phase-label"><span class="phase-name">Phase 0 — Launch & Brand</span><span class="phase-badge pb-done">Done · Mar 2026</span></div>
+            <div class="phase-items"><span class="phase-item">Brand system</span><span class="phase-item">8-page website</span><span class="phase-item">Incorporation package</span><span class="phase-item">Master plan</span><span class="phase-item">Core team</span></div>
+          </div>
+        </div>
+        <div class="phase-row">
+          <div class="phase-dot-wrap"><div class="phase-dot current">🏗️</div><div class="phase-line"></div></div>
+          <div class="phase-info">
+            <div class="phase-label"><span class="phase-name">Phase 1 — Foundation</span><span class="phase-badge pb-current">Now → June 2026</span></div>
+            <div class="phase-items"><span class="phase-item">Site live</span><span class="phase-item">Society filed</span><span class="phase-item">Coordinator hired</span><span class="phase-item">April 9 meeting</span><span class="phase-item">Newsletter #1</span></div>
+          </div>
+        </div>
+        <div class="phase-row">
+          <div class="phase-dot-wrap"><div class="phase-dot upcoming">👥</div><div class="phase-line"></div></div>
+          <div class="phase-info">
+            <div class="phase-label"><span class="phase-name">Phase 2 — Base Build</span><span class="phase-badge pb-upcoming">May–Aug 2026</span></div>
+            <div class="phase-items"><span class="phase-item">1,000 subscribers</span><span class="phase-item">Ambassador network</span><span class="phase-item">Monthly events</span><span class="phase-item">Council scorecards</span><span class="phase-item">$5k raised</span></div>
+          </div>
+        </div>
+        <div class="phase-row">
+          <div class="phase-dot-wrap"><div class="phase-dot upcoming">🎯</div><div class="phase-line"></div></div>
+          <div class="phase-info">
+            <div class="phase-label"><span class="phase-name">Phase 3 — Candidates</span><span class="phase-badge pb-upcoming">Jun–Sep 2026</span></div>
+            <div class="phase-items"><span class="phase-item">5+ candidates identified</span><span class="phase-item">3 vetted + endorsed</span><span class="phase-item">Public questionnaire</span><span class="phase-item">September forum</span></div>
+          </div>
+        </div>
+        <div class="phase-row">
+          <div class="phase-dot-wrap"><div class="phase-dot upcoming">📣</div><div class="phase-line"></div></div>
+          <div class="phase-info">
+            <div class="phase-label"><span class="phase-name">Phase 4 — Campaign</span><span class="phase-badge pb-upcoming">Sep–Oct 2026</span></div>
+            <div class="phase-items"><span class="phase-item">Endorsed slate</span><span class="phase-item">Door-knocking</span><span class="phase-item">Voter ID database</span><span class="phase-item">$15k raised</span><span class="phase-item">2,000 members</span></div>
+          </div>
+        </div>
+        <div class="phase-row">
+          <div class="phase-dot-wrap"><div class="phase-dot upcoming">🗳️</div></div>
+          <div class="phase-info">
+            <div class="phase-label"><span class="phase-name">Phase 5 — GOTV</span><span class="phase-badge pb-upcoming">October 2026</span></div>
+            <div class="phase-items"><span class="phase-item">Voter contact plan</span><span class="phase-item">Advance voting reminders</span><span class="phase-item">Election day coordination</span><span class="phase-item">Ride-to-polls</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 07 30-DAY ACTIONS ── -->
+  <div class="doc-section" id="actions">
+    <div class="ds-header"><div class="ds-num">07</div><div class="ds-title">30-Day Action Plan</div></div>
+    <div class="ds-body">
+      <table class="action-table">
+        <thead><tr><th>#</th><th>Action</th><th>Owner</th><th>By</th></tr></thead>
+        <tbody>
+          <tr><td class="num">1</td><td>Send founding email from all core members to full Squamish networks</td><td>Austin + core 5</td><td class="due urgent">Mar 28</td></tr>
+          <tr><td class="num">2</td><td>Register squamishfuture.ca domain</td><td>Austin</td><td class="due urgent">This week</td></tr>
+          <tr><td class="num">3</td><td>Set up MailerLite account + email signup form</td><td>Kristina</td><td class="due soon">Apr 1</td></tr>
+          <tr><td class="num">4</td><td>Create and launch Facebook page</td><td>Sarah M.</td><td class="due soon">Apr 1</td></tr>
+          <tr><td class="num">5</td><td>Deploy website live on Netlify</td><td>Austin</td><td class="due">Apr 7</td></tr>
+          <tr><td class="num">6</td><td>Pull all 2025 council AI-related votes</td><td>Research team</td><td class="due">Apr 7</td></tr>
+          <tr><td class="num">7</td><td>Full Brendan Park fact package</td><td>Research team</td><td class="due">Apr 7</td></tr>
+          <tr><td class="num">8</td><td>Pull council attendance records 2024–25</td><td>Research team</td><td class="due">Apr 7</td></tr>
+          <tr><td class="num">9</td><td>April 9 community founding meeting</td><td>All</td><td class="due">Apr 9</td></tr>
+          <tr><td class="num">10</td><td>File BC Society incorporation ($40 online)</td><td>Austin</td><td class="due">Apr 15</td></tr>
+          <tr><td class="num">11</td><td>Open society bank account</td><td>Austin</td><td class="due">After filing</td></tr>
+          <tr><td class="num">12</td><td>Confirm + onboard coordinator (Kristina, $40/hr)</td><td>Austin</td><td class="due">Apr 15</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div style="text-align:center;padding:1rem 0;">
+    <a href="society-package.html" class="btn btn-navy" style="display:inline-block;padding:0.85rem 2rem;border-radius:8px;font-size:0.95rem;font-weight:700;text-decoration:none;margin-right:0.75rem;">View Incorporation Package →</a>
+    <a href="index.html" class="btn btn-teal" style="display:inline-block;padding:0.85rem 2rem;border-radius:8px;font-size:0.95rem;font-weight:700;text-decoration:none;background:var(--teal);color:var(--navy);">Back to Documents</a>
+  </div>
+
+</div>
+
+<footer>
+  <a href="../index.html">Squamish Future</a> — Master Plan v1.0 — March 2026 — Prototype · Confidential
+</footer>
+
+<script src="../nav.js"></script>
+</body>
+</html>

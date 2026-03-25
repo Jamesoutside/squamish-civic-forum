@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Run for Council — Squamish Future</title>
+  <meta name="description" content="Thinking about running for Squamish council? Squamish Future vets, supports, and amplifies community-aligned candidates." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0f2a4a; --blue: #1a5276; --sky: #2e86c1; --gold: #e8a020;
+      --green: #1e8449; --light: #f0f6ff; --white: #ffffff;
+      --grey: #6b7280; --dark: #111827; --border: #dce8f5; --purple: #6c3483;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--dark); background: var(--light); line-height: 1.6; }
+
+    nav {
+      background: rgba(15,42,74,0.97); padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between; height: 64px;
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--white); text-decoration: none; }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
+    .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta { background: #e8a020; color: #0f2a4a !important; padding: 0.45rem 1.1rem; border-radius: 6px; font-weight: 700 !important; }
+
+    /* HERO */
+    .page-hero {
+      background: linear-gradient(150deg, #0a1f38 0%, var(--navy) 40%, #1a4a6a 100%);
+      padding: 90px 2rem 70px; text-align: center; position: relative; overflow: hidden;
+    }
+    .page-hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center, rgba(232,160,32,0.08) 0%, transparent 70%);
+    }
+    .page-hero .label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; display: block; position: relative; z-index: 1; }
+    .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.2rem, 5vw, 3.5rem); color: white; margin-bottom: 1rem; line-height: 1.15; position: relative; z-index: 1; }
+    .page-hero h1 span { color: var(--gold); }
+    .page-hero p { color: rgba(255,255,255,0.65); font-size: 1.05rem; max-width: 600px; margin: 0 auto 2.5rem; line-height: 1.7; position: relative; z-index: 1; }
+    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; position: relative; z-index: 1; }
+    .btn-gold { background: var(--gold); color: var(--navy); text-decoration: none; padding: 0.9rem 2rem; border-radius: 8px; font-weight: 700; font-size: 1rem; transition: all 0.2s; display: inline-block; border: none; cursor: pointer; }
+    .btn-gold:hover { background: #f0b030; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,32,0.4); }
+    .btn-outline { border: 2px solid rgba(255,255,255,0.3); color: white; text-decoration: none; padding: 0.9rem 2rem; border-radius: 8px; font-weight: 600; font-size: 1rem; transition: all 0.2s; display: inline-block; }
+    .btn-outline:hover { border-color: white; background: rgba(255,255,255,0.08); }
+
+    /* HOW IT WORKS */
+    .section { padding: 80px 2rem; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--sky); margin-bottom: 0.75rem; display: block; }
+    .section-title { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 3.5vw, 2.6rem); color: var(--navy); line-height: 1.2; margin-bottom: 1rem; }
+    .section-sub { font-size: 1rem; color: var(--grey); max-width: 580px; line-height: 1.7; }
+
+    .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; margin-top: 3rem; }
+    .step-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 14px;
+      padding: 1.8rem 1.5rem; position: relative; text-align: center;
+    }
+    .step-num {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--navy); color: white;
+      font-size: 1.1rem; font-weight: 800;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+    }
+    .step-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
+    .step-card p { font-size: 0.85rem; color: var(--grey); line-height: 1.5; }
+    .step-connector {
+      position: absolute; top: 2.8rem; right: -0.9rem;
+      width: 1.8rem; height: 2px; background: var(--border); z-index: 1;
+    }
+    .step-card:last-child .step-connector { display: none; }
+
+    /* WHAT WE OFFER */
+    .offer-section { background: var(--navy); }
+    .offer-section .section-label { color: var(--gold); }
+    .offer-section .section-title { color: white; }
+    .offer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-top: 3rem; }
+    .offer-card {
+      background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 14px; padding: 1.8rem;
+    }
+    .offer-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+    .offer-card h3 { color: var(--gold); font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .offer-card p { color: rgba(255,255,255,0.6); font-size: 0.88rem; line-height: 1.6; }
+    .offer-list { list-style: none; margin-top: 0.75rem; }
+    .offer-list li { font-size: 0.83rem; color: rgba(255,255,255,0.55); padding: 0.2rem 0; padding-left: 1rem; position: relative; }
+    .offer-list li::before { content: '→'; position: absolute; left: 0; color: var(--gold); }
+
+    /* VALUES */
+    .values-section { background: var(--light); }
+    .values-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+    .value-list { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem; }
+    .value-row {
+      display: flex; gap: 1rem; align-items: flex-start;
+      background: var(--white); padding: 1.2rem 1.5rem; border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+    .value-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .value-row h4 { font-size: 0.92rem; font-weight: 700; color: var(--navy); margin-bottom: 0.2rem; }
+    .value-row p { font-size: 0.84rem; color: var(--grey); line-height: 1.5; }
+    .scoring-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden;
+      box-shadow: 0 4px 30px rgba(15,42,74,0.07);
+    }
+    .scoring-header { background: var(--navy); padding: 1.2rem 1.5rem; }
+    .scoring-header h3 { color: white; font-size: 1rem; font-weight: 700; }
+    .scoring-header p { color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 0.2rem; }
+    .scoring-row { padding: 0.9rem 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+    .scoring-row:last-child { border-bottom: none; }
+    .scoring-label { font-size: 0.85rem; color: var(--dark); font-weight: 500; }
+    .scoring-bar-wrap { flex: 1; margin: 0 1rem; height: 6px; background: var(--light); border-radius: 100px; overflow: hidden; }
+    .scoring-bar { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--sky), var(--navy)); }
+    .scoring-pct { font-size: 0.78rem; font-weight: 700; color: var(--navy); min-width: 32px; text-align: right; }
+
+    /* THE FORM */
+    .form-section-wrap { background: var(--white); }
+    .form-layout { display: grid; grid-template-columns: 1fr 340px; gap: 3rem; align-items: start; }
+
+    .candidate-form { background: var(--light); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; }
+    .candidate-form h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); margin-bottom: 0.4rem; }
+    .candidate-form > p { color: var(--grey); font-size: 0.9rem; margin-bottom: 2rem; }
+
+    .form-block { margin-bottom: 2rem; padding-bottom: 2rem; border-bottom: 1px solid var(--border); }
+    .form-block:last-of-type { border-bottom: none; }
+    .form-block-title { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--sky); margin-bottom: 1.2rem; }
+
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-size: 0.83rem; font-weight: 600; color: var(--navy); margin-bottom: 0.35rem; }
+    .field .hint { font-size: 0.75rem; color: var(--grey); font-weight: 400; margin-left: 0.3rem; }
+    .field input, .field select, .field textarea {
+      width: 100%; padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 0.93rem; font-family: 'Inter', sans-serif;
+      color: var(--dark); background: var(--white); outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field input:focus, .field select:focus, .field textarea:focus {
+      border-color: var(--sky); box-shadow: 0 0 0 3px rgba(46,134,193,0.1);
+    }
+    .field textarea { resize: vertical; min-height: 90px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+    .interest-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; margin-bottom: 1rem; }
+    .int-opt { display: none; }
+    .int-label {
+      padding: 0.75rem 1rem; border: 2px solid var(--border); border-radius: 8px;
+      cursor: pointer; font-size: 0.83rem; font-weight: 600; color: var(--grey);
+      display: flex; align-items: center; gap: 0.5rem; transition: all 0.2s;
+      background: var(--white);
+    }
+    .int-opt:checked + .int-label { border-color: var(--sky); background: rgba(46,134,193,0.07); color: var(--navy); }
+
+    .scale-group { margin-bottom: 1rem; }
+    .scale-group label { display: block; font-size: 0.83rem; font-weight: 600; color: var(--navy); margin-bottom: 0.6rem; }
+    .scale-opts { display: flex; gap: 0.4rem; }
+    .scale-btn {
+      flex: 1; padding: 0.5rem 0; border: 1.5px solid var(--border); border-radius: 6px;
+      background: var(--white); font-size: 0.8rem; font-weight: 600; color: var(--grey);
+      cursor: pointer; transition: all 0.2s; text-align: center;
+    }
+    .scale-btn:hover { border-color: var(--sky); }
+    .scale-btn.sel { background: var(--navy); border-color: var(--navy); color: white; }
+
+    .privacy-box {
+      padding: 1rem; background: rgba(46,134,193,0.05); border: 1px solid rgba(46,134,193,0.15);
+      border-radius: 8px; font-size: 0.8rem; color: var(--grey); line-height: 1.5; margin-bottom: 1.5rem;
+    }
+    .privacy-box strong { color: var(--navy); }
+
+    .submit-btn {
+      width: 100%; background: var(--navy); color: white; border: none;
+      padding: 1rem; border-radius: 8px; font-size: 1rem; font-weight: 700;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .submit-btn:hover { background: var(--blue); transform: translateY(-1px); }
+
+    /* SIDEBAR */
+    .candidate-sidebar { position: sticky; top: 80px; }
+    .sidebar-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.2rem; }
+    .sidebar-card h4 { font-size: 0.9rem; font-weight: 700; color: var(--navy); margin-bottom: 0.6rem; }
+    .sidebar-card p { font-size: 0.82rem; color: var(--grey); line-height: 1.5; }
+    .timeline-item { display: flex; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .timeline-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--sky); flex-shrink: 0; margin-top: 0.3rem; }
+    .timeline-item .tdate { font-size: 0.75rem; font-weight: 700; color: var(--sky); }
+    .timeline-item .tdesc { font-size: 0.8rem; color: var(--grey); }
+    .stat-cards { display: flex; flex-direction: column; gap: 0.6rem; }
+    .stat-card { padding: 0.8rem 1rem; background: var(--light); border-radius: 8px; display: flex; align-items: center; gap: 0.75rem; }
+    .stat-card .sn { font-size: 1.4rem; font-weight: 800; color: var(--navy); min-width: 44px; font-family: 'Playfair Display', serif; }
+    .stat-card .sd { font-size: 0.78rem; color: var(--grey); line-height: 1.3; }
+
+    /* SUCCESS */
+    .success-overlay { display: none; position: fixed; inset: 0; background: rgba(15,42,74,0.85); z-index: 999; align-items: center; justify-content: center; }
+    .success-overlay.active { display: flex; }
+    .success-modal { background: white; border-radius: 20px; padding: 3rem; text-align: center; max-width: 460px; margin: 1rem; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .success-modal .icon { font-size: 3.5rem; display: block; margin-bottom: 1rem; }
+    .success-modal h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--navy); margin-bottom: 0.75rem; }
+    .success-modal p { color: var(--grey); line-height: 1.7; margin-bottom: 1.5rem; }
+    .success-modal a { background: var(--gold); color: var(--navy); text-decoration: none; padding: 0.8rem 2rem; border-radius: 8px; font-weight: 700; display: inline-block; }
+
+    footer { background: #080f1a; color: rgba(255,255,255,0.4); padding: 2rem; text-align: center; font-size: 0.82rem; }
+    footer a { color: var(--gold); text-decoration: none; }
+
+    @media (max-width: 900px) {
+      .form-layout { grid-template-columns: 1fr; }
+      .candidate-sidebar { position: static; }
+      .steps-grid { grid-template-columns: 1fr 1fr; }
+      .offer-grid { grid-template-columns: 1fr 1fr; }
+      .values-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .steps-grid, .offer-grid { grid-template-columns: 1fr; }
+      .interest-grid { grid-template-columns: 1fr; }
+      .field-row { grid-template-columns: 1fr; }
+      .nav-links li:not(:last-child) { display: none; }
+      .step-connector { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Squamish <span>Future</span></a>
+  <ul class="nav-links">
+    <li><a href="tracker.html">Issues Tracker</a></li>
+    <li><a href="donate.html">Donate</a></li>
+    <li><a href="index.html#events">Events</a></li>
+    <li><a href="index.html#join" class="nav-cta">Join Us</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="page-hero">
+  <span class="label">Candidate Pipeline</span>
+  <h1>Squamish needs people like you<br><span>on the ballot.</span></h1>
+  <p>We find, vet, support, and amplify community-aligned candidates for Squamish council. If you're thinking about running — or know someone who should — start here.</p>
+  <div class="hero-btns">
+    <a href="#apply" class="btn-gold">I'm Thinking About Running →</a>
+    <a href="#nominate" class="btn-outline">Nominate Someone</a>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="section" style="background: var(--white);">
+  <div class="container">
+    <span class="section-label">The Process</span>
+    <h2 class="section-title">How the candidate pipeline works</h2>
+    <p class="section-sub">We don't run candidates. We support the right ones. Here's how it works from expression of interest to election night.</p>
+    <div class="steps-grid">
+      <div class="step-card">
+        <div class="step-connector"></div>
+        <div class="step-num">1</div>
+        <h3>Expression of Interest</h3>
+        <p>You fill out the private form below. Completely confidential — just between you and our vetting team.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-connector"></div>
+        <div class="step-num">2</div>
+        <h3>Private Conversation</h3>
+        <p>We reach out for a 1-on-1 conversation. No commitment needed — just an honest talk about fit, values, and readiness.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-connector"></div>
+        <div class="step-num">3</div>
+        <h3>Vetting & Scoring</h3>
+        <p>Our team assesses community alignment, platform fit, and credibility using our published scoring framework.</p>
+      </div>
+      <div class="step-card">
+        <div class="step-num">4</div>
+        <h3>Support & Endorsement</h3>
+        <p>Endorsed candidates get our full public support: talking points, research, base access, event invitations, and community backing.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT WE OFFER -->
+<section class="section offer-section">
+  <div class="container">
+    <span class="section-label">What You Get</span>
+    <h2 class="section-title">We do the heavy lifting.</h2>
+    <p class="section-sub" style="color:rgba(255,255,255,0.6)">Running for council is hard. We make it easier by putting our entire platform behind the right people.</p>
+    <div class="offer-grid">
+      <div class="offer-card">
+        <span class="offer-icon">🔬</span>
+        <h3>Research & Briefings</h3>
+        <p>Full issue briefing packages on every major topic — Brendan Park, housing, rec, infrastructure. You show up informed.</p>
+        <ul class="offer-list">
+          <li>Issue fact sheets</li>
+          <li>Council vote history</li>
+          <li>Constituent sentiment data</li>
+          <li>Opposition research</li>
+        </ul>
+      </div>
+      <div class="offer-card">
+        <span class="offer-icon">📣</span>
+        <h3>Base & Reach</h3>
+        <p>Access to our 4,000-member base, email list, and social channels. Your message reaches thousands of engaged voters.</p>
+        <ul class="offer-list">
+          <li>Email newsletter feature</li>
+          <li>Social media promotion</li>
+          <li>Event invitations</li>
+          <li>Door-knocking volunteer lists</li>
+        </ul>
+      </div>
+      <div class="offer-card">
+        <span class="offer-icon">🎯</span>
+        <h3>Campaign Support</h3>
+        <p>We don't run your campaign — but we give you everything you need to run it well.</p>
+        <ul class="offer-list">
+          <li>Talking points on key issues</li>
+          <li>Canvassing scripts</li>
+          <li>Debate prep</li>
+          <li>Media prep</li>
+          <li>Fundraising introductions</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VALUES & SCORING -->
+<section class="section values-section">
+  <div class="container">
+    <div class="values-grid">
+      <div>
+        <span class="section-label">What We Look For</span>
+        <h2 class="section-title">Values that get our support</h2>
+        <p class="section-sub">We're non-partisan — we don't care about party labels. We care about these things.</p>
+        <div class="value-list">
+          <div class="value-row">
+            <span class="value-icon">🏔️</span>
+            <div>
+              <h4>Community-First</h4>
+              <p>You make decisions based on what's best for Squamish residents — not developers, not ideology, not career advancement.</p>
+            </div>
+          </div>
+          <div class="value-row">
+            <span class="value-icon">📊</span>
+            <div>
+              <h4>Evidence-Based</h4>
+              <p>You believe in facts. You change your mind when evidence changes. You cite sources.</p>
+            </div>
+          </div>
+          <div class="value-row">
+            <span class="value-icon">🤝</span>
+            <div>
+              <h4>Accountable</h4>
+              <p>You show up. You vote. You explain your decisions. You respond to constituents.</p>
+            </div>
+          </div>
+          <div class="value-row">
+            <span class="value-icon">🔓</span>
+            <div>
+              <h4>Transparent</h4>
+              <p>No hidden agendas. No backroom deals. You tell people what you're doing and why.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="scoring-card">
+          <div class="scoring-header">
+            <h3>Candidate Scoring Matrix</h3>
+            <p>How we evaluate candidates — published openly</p>
+          </div>
+          <div class="scoring-row">
+            <span class="scoring-label">Community alignment</span>
+            <div class="scoring-bar-wrap"><div class="scoring-bar" style="width:30%"></div></div>
+            <span class="scoring-pct">30%</span>
+          </div>
+          <div class="scoring-row">
+            <span class="scoring-label">Platform fit with our issues</span>
+            <div class="scoring-bar-wrap"><div class="scoring-bar" style="width:25%"></div></div>
+            <span class="scoring-pct">25%</span>
+          </div>
+          <div class="scoring-row">
+            <span class="scoring-label">Electability & credibility</span>
+            <div class="scoring-bar-wrap"><div class="scoring-bar" style="width:20%"></div></div>
+            <span class="scoring-pct">20%</span>
+          </div>
+          <div class="scoring-row">
+            <span class="scoring-label">Track record / community involvement</span>
+            <div class="scoring-bar-wrap"><div class="scoring-bar" style="width:15%"></div></div>
+            <span class="scoring-pct">15%</span>
+          </div>
+          <div class="scoring-row">
+            <span class="scoring-label">Transparency & accountability</span>
+            <div class="scoring-bar-wrap"><div class="scoring-bar" style="width:10%"></div></div>
+            <span class="scoring-pct">10%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORM -->
+<section class="section form-section-wrap" id="apply">
+  <div class="container">
+    <div class="form-layout">
+      <div>
+        <div class="candidate-form">
+          <h2>Expression of Interest</h2>
+          <p>Completely confidential. Shared only with the Squamish Future vetting team. No commitment required.</p>
+
+          <!-- SECTION 1: ABOUT YOU -->
+          <div class="form-block">
+            <div class="form-block-title">About You</div>
+            <div class="field-row">
+              <div class="field">
+                <label>First Name</label>
+                <input type="text" placeholder="First name" />
+              </div>
+              <div class="field">
+                <label>Last Name</label>
+                <input type="text" placeholder="Last name" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Email</label>
+                <input type="email" placeholder="your@email.com" />
+              </div>
+              <div class="field">
+                <label>Phone</label>
+                <input type="tel" placeholder="(250) 000-0000" />
+              </div>
+            </div>
+            <div class="field-row">
+              <div class="field">
+                <label>Neighbourhood</label>
+                <select>
+                  <option value="">Select area</option>
+                  <option>Downtown Squamish</option>
+                  <option>Garibaldi Highlands</option>
+                  <option>Brackendale</option>
+                  <option>Valleycliffe</option>
+                  <option>Dentville</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>Years in Squamish</label>
+                <select>
+                  <option value="">Select</option>
+                  <option>1–3 years</option>
+                  <option>3–10 years</option>
+                  <option>10–20 years</option>
+                  <option>20+ years</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label>Current occupation / professional background</label>
+              <input type="text" placeholder="e.g. Contractor, nurse, teacher, small business owner…" />
+            </div>
+            <div class="field">
+              <label>Community involvement <span class="hint">(groups, boards, volunteering)</span></label>
+              <textarea placeholder="Tell us how you're already connected to Squamish — SCORA, sports clubs, faith community, business groups, etc." rows="3"></textarea>
+            </div>
+          </div>
+
+          <!-- SECTION 2: INTEREST LEVEL -->
+          <div class="form-block">
+            <div class="form-block-title">Your Interest</div>
+            <div class="field">
+              <label>What are you interested in?</label>
+            </div>
+            <div class="interest-grid">
+              <input type="radio" name="interest" id="int1" class="int-opt" />
+              <label class="int-label" for="int1"><span>🤔</span> Seriously considering running</label>
+              <input type="radio" name="interest" id="int2" class="int-opt" />
+              <label class="int-label" for="int2"><span>💡</span> Curious — want to learn more</label>
+              <input type="radio" name="interest" id="int3" class="int-opt" />
+              <label class="int-label" for="int3"><span>👥</span> Nominating someone else</label>
+              <input type="radio" name="interest" id="int4" class="int-opt" />
+              <label class="int-label" for="int4"><span>🤝</span> Want to help campaigns</label>
+            </div>
+            <div class="field">
+              <label>Which seat(s) are you / they interested in?</label>
+              <select>
+                <option value="">Select</option>
+                <option>Squamish District Councillor</option>
+                <option>Mayor of Squamish</option>
+                <option>School Trustee</option>
+                <option>Not sure yet</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Why are you considering running? <span class="hint">— be honest, this is private</span></label>
+              <textarea placeholder="What made you start thinking about this? What would you do differently?" rows="4"></textarea>
+            </div>
+          </div>
+
+          <!-- SECTION 3: TOP ISSUES -->
+          <div class="form-block">
+            <div class="form-block-title">Your Platform</div>
+            <div class="field">
+              <label>What are your top 3 issues for Squamish?</label>
+              <textarea placeholder="List them in order of priority. Be specific — what's the problem and what would you actually do?" rows="4"></textarea>
+            </div>
+            <div class="field">
+              <label>What's your position on development in Squamish?</label>
+              <textarea placeholder="Growth vs. preservation? Who should have input? What's your view on specific projects?" rows="3"></textarea>
+            </div>
+            <div class="field">
+              <label>What's your position on recreation and public space?</label>
+              <textarea placeholder="Arena access, trails, public lands, Squamish Spit…" rows="3"></textarea>
+            </div>
+            <div class="field">
+              <label>What's your position on housing affordability?</label>
+              <textarea placeholder="Rental protection, density, affordability targets…" rows="3"></textarea>
+            </div>
+          </div>
+
+          <!-- SECTION 4: READINESS -->
+          <div class="form-block">
+            <div class="form-block-title">Readiness Check</div>
+            <p style="font-size:0.85rem; color:var(--grey); margin-bottom:1.5rem;">Rate yourself honestly — this helps us provide the right support.</p>
+
+            <div class="scale-group">
+              <label>How ready are you to run right now?</label>
+              <div class="scale-opts">
+                <button class="scale-btn" onclick="selectScale(this, 'ready')">1<br><span style="font-size:0.65rem">Not at all</span></button>
+                <button class="scale-btn" onclick="selectScale(this, 'ready')">2</button>
+                <button class="scale-btn" onclick="selectScale(this, 'ready')">3<br><span style="font-size:0.65rem">Maybe</span></button>
+                <button class="scale-btn" onclick="selectScale(this, 'ready')">4</button>
+                <button class="scale-btn sel" onclick="selectScale(this, 'ready')">5<br><span style="font-size:0.65rem">Very ready</span></button>
+              </div>
+            </div>
+
+            <div class="scale-group">
+              <label>How well-known are you in the community?</label>
+              <div class="scale-opts">
+                <button class="scale-btn" onclick="selectScale(this, 'known')">1<br><span style="font-size:0.65rem">Not known</span></button>
+                <button class="scale-btn sel" onclick="selectScale(this, 'known')">2</button>
+                <button class="scale-btn" onclick="selectScale(this, 'known')">3<br><span style="font-size:0.65rem">Some circles</span></button>
+                <button class="scale-btn" onclick="selectScale(this, 'known')">4</button>
+                <button class="scale-btn" onclick="selectScale(this, 'known')">5<br><span style="font-size:0.65rem">Well known</span></button>
+              </div>
+            </div>
+
+            <div class="scale-group">
+              <label>How much time can you commit to a campaign? (hours/week)</label>
+              <div class="scale-opts">
+                <button class="scale-btn" onclick="selectScale(this, 'time')">5h</button>
+                <button class="scale-btn sel" onclick="selectScale(this, 'time')">10h</button>
+                <button class="scale-btn" onclick="selectScale(this, 'time')">20h</button>
+                <button class="scale-btn" onclick="selectScale(this, 'time')">30h</button>
+                <button class="scale-btn" onclick="selectScale(this, 'time')">40h+</button>
+              </div>
+            </div>
+
+            <div class="field" style="margin-top:1.2rem;">
+              <label>Do you have any concerns about running? <span class="hint">(optional — helps us support you)</span></label>
+              <textarea placeholder="Personal, professional, financial, family… be honest, this is private" rows="3"></textarea>
+            </div>
+            <div class="field">
+              <label>Is there anything in your background we should know about? <span class="hint">(private — we need to know early)</span></label>
+              <textarea placeholder="Past controversies, public statements, professional history that might come up…" rows="3"></textarea>
+            </div>
+          </div>
+
+          <!-- SECTION 5: ENDORSEMENT -->
+          <div class="form-block">
+            <div class="form-block-title">References & Community Standing</div>
+            <div class="field">
+              <label>Who in Squamish would vouch for you? <span class="hint">(2–3 names, will be contacted privately)</span></label>
+              <textarea placeholder="Name, how they know you, and their contact if you have it" rows="3"></textarea>
+            </div>
+            <div class="field">
+              <label>How did you hear about Squamish Future?</label>
+              <select>
+                <option value="">Select</option>
+                <option>Friend or contact</option>
+                <option>Facebook</option>
+                <option>Community event</option>
+                <option>My Sea to Sky</option>
+                <option>Google</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Anything else you want to tell us?</label>
+              <textarea placeholder="Anything at all…" rows="3"></textarea>
+            </div>
+          </div>
+
+          <div class="privacy-box">
+            🔒 <strong>Confidentiality guarantee:</strong> This form is seen only by the Squamish Future vetting team — maximum 3 people. It is never shared publicly, never given to media, and never shared with other candidates. Submitting this does not commit you to anything.
+          </div>
+
+          <button class="submit-btn" onclick="submitCandidate()">Submit Confidentially →</button>
+        </div>
+      </div>
+
+      <!-- SIDEBAR -->
+      <div class="candidate-sidebar">
+        <div class="sidebar-card">
+          <h4>⏰ Election Timeline</h4>
+          <div style="margin-top:0.75rem;">
+            <div class="timeline-item">
+              <div class="timeline-dot" style="background:var(--gold)"></div>
+              <div><div class="tdate">Now — June 2026</div><div class="tdesc">Candidate pipeline open. Conversations + vetting.</div></div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div><div class="tdate">July 2026</div><div class="tdesc">Endorsement decisions made. Campaigns begin.</div></div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div><div class="tdate">Sep 2026</div><div class="tdesc">Candidate forum. Public questionnaire published.</div></div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot"></div>
+              <div><div class="tdate">Oct 2026</div><div class="tdesc">Nomination deadline. GOTV push begins.</div></div>
+            </div>
+            <div class="timeline-item">
+              <div class="timeline-dot" style="background:var(--green)"></div>
+              <div><div class="tdate">Election Day 2026</div><div class="tdesc">Squamish decides.</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h4>📊 Squamish Election Math</h4>
+          <div class="stat-cards" style="margin-top:0.75rem;">
+            <div class="stat-card"><span class="sn">~6,500</span><span class="sd">Votes cast in 2022 municipal election</span></div>
+            <div class="stat-card"><span class="sn">~2,800</span><span class="sd">Votes needed to win a council seat</span></div>
+            <div class="stat-card"><span class="sn">30%</span><span class="sd">Typical voter turnout — low = opportunity</span></div>
+            <div class="stat-card"><span class="sn">7</span><span class="sd">Council seats — we're targeting 3</span></div>
+          </div>
+        </div>
+
+        <div class="sidebar-card">
+          <h4>🤫 Complete privacy</h4>
+          <p>Your expression of interest is seen by a maximum of 3 vetting team members. It is never published, shared, or used without your explicit consent. You can withdraw at any time.</p>
+        </div>
+
+        <div class="sidebar-card" id="nominate">
+          <h4>Nominate someone</h4>
+          <p style="margin-bottom:1rem;">Know someone who should run? Tell us about them — we'll reach out privately.</p>
+          <div class="field">
+            <label>Their name</label>
+            <input type="text" placeholder="Full name" />
+          </div>
+          <div class="field">
+            <label>How to reach them</label>
+            <input type="text" placeholder="Email, phone, or how you know them" />
+          </div>
+          <div class="field">
+            <label>Why them?</label>
+            <textarea rows="3" placeholder="What makes them right for Squamish?"></textarea>
+          </div>
+          <button style="width:100%; background:var(--navy); color:white; border:none; padding:0.75rem; border-radius:8px; font-weight:700; cursor:pointer; transition:all 0.2s;" onmouseover="this.style.background='#1a5276'" onmouseout="this.style.background='var(--navy)'" onclick="alert('Nomination submitted. Thank you — we will reach out to them privately.')">Submit Nomination →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUCCESS MODAL -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-modal">
+    <span class="icon">🎯</span>
+    <h2>We'll be in touch.</h2>
+    <p>Your expression of interest has been received by the Squamish Future vetting team. We'll reach out for a private conversation within 5 business days. Remember — submitting this commits you to nothing.</p>
+    <a href="index.html">Back to Squamish Future →</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Squamish Future</a> — Built by the community. For the community. · Squamish, BC · Non-partisan Society
+</footer>
+
+<script>
+  function selectScale(btn, group) {
+    btn.closest('.scale-opts').querySelectorAll('.scale-btn').forEach(b => b.classList.remove('sel'));
+    btn.classList.add('sel');
+  }
+
+  function submitCandidate() {
+    document.getElementById('successOverlay').classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+<script src="nav.js"></script>
+</body>
+</html>

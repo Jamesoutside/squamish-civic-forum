@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Events — SQUAMISH FUTURE</title>
+  <link rel="stylesheet" href="brand.css" />
+  <style>
+    /* ── PAGE STYLES ─────────────────────────────── */
+    .page-hero { padding: 90px 2rem 60px; text-align: center; }
+    .page-hero h1 { color: var(--white); margin-bottom: 0.4rem; }
+    .page-hero p { color: rgba(255,255,255,0.6); font-size: 1.05rem; max-width: 560px; margin: 0 auto 2rem; line-height: 1.7; }
+    .hero-btns { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+    .main { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+
+    /* TAB NAV */
+    .tab-nav { display: flex; gap: 0; border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 2.5rem; background: var(--white); }
+    .tab-btn { flex: 1; padding: 0.85rem 1rem; border: none; background: none; font-family: var(--font-body); font-size: 0.88rem; font-weight: 600; color: var(--grey); cursor: pointer; transition: all 0.2s; border-right: 1px solid var(--border); text-align: center; }
+    .tab-btn:last-child { border-right: none; }
+    .tab-btn.active { background: var(--navy); color: var(--white); }
+    .tab-btn:hover:not(.active) { background: var(--light); color: var(--navy); }
+
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* EVENTS LIST */
+    .events-controls { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 2rem; }
+    .search-wrap { flex: 1; min-width: 200px; position: relative; }
+    .search-wrap::before { content: '🔍'; position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); font-size: 0.9rem; }
+    .search-wrap input { width: 100%; padding: 0.72rem 1rem 0.72rem 2.7rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.92rem; outline: none; transition: border-color 0.2s; }
+    .search-wrap input:focus { border-color: var(--teal); }
+    .filter-select { padding: 0.72rem 1rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.88rem; outline: none; background: var(--white); color: var(--dark); cursor: pointer; }
+
+    .events-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+
+    .event-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden; transition: all 0.22s;
+    }
+    .event-card:hover { box-shadow: var(--shadow-md); border-color: rgba(0,196,179,0.3); transform: translateY(-2px); }
+    .event-header { background: var(--navy); padding: 1.2rem 1.5rem; display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+    .event-date-block { flex-shrink: 0; text-align: center; }
+    .event-date-block .month { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); display: block; }
+    .event-date-block .day { font-family: var(--font-display); font-size: 2rem; font-weight: 900; color: var(--white); line-height: 1; display: block; }
+    .event-date-block .year { font-size: 0.7rem; color: rgba(255,255,255,0.4); display: block; }
+    .event-header-info { flex: 1; }
+    .event-header-info h3 { color: var(--white); font-size: 1rem; font-weight: 700; margin-bottom: 0.3rem; line-height: 1.3; }
+    .event-type-pill { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 100px; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; }
+    .type-community { background: rgba(0,196,179,0.2); color: var(--teal); }
+    .type-forum { background: rgba(108,52,131,0.3); color: #c39bd3; }
+    .type-coffee { background: rgba(232,160,32,0.25); color: var(--amber); }
+    .type-gotv { background: rgba(30,132,73,0.25); color: #82e0aa; }
+    .type-volunteer { background: rgba(46,134,193,0.25); color: #7fb3d3; }
+
+    .event-body { padding: 1.5rem; }
+    .event-meta { display: flex; gap: 1.2rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+    .event-meta span { font-size: 0.8rem; color: var(--grey); display: flex; align-items: center; gap: 0.35rem; }
+    .event-desc { font-size: 0.88rem; color: var(--grey); line-height: 1.6; margin-bottom: 1.2rem; }
+    .event-spots { display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.2rem; }
+    .spots-bar { flex: 1; height: 6px; background: var(--light); border-radius: 100px; overflow: hidden; }
+    .spots-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--teal), var(--teal-dark)); }
+    .spots-label { font-size: 0.75rem; color: var(--grey); white-space: nowrap; }
+    .event-actions { display: flex; gap: 0.75rem; }
+    .btn-register { flex: 1; background: var(--teal); color: var(--navy); border: none; padding: 0.7rem 1rem; border-radius: 8px; font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .btn-register:hover { background: var(--teal-dark); box-shadow: var(--shadow-teal); }
+    .btn-register:disabled { background: var(--border); color: var(--grey); cursor: not-allowed; box-shadow: none; }
+    .btn-details { background: none; border: 1.5px solid var(--border); color: var(--grey); padding: 0.7rem 1rem; border-radius: 8px; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-details:hover { border-color: var(--navy); color: var(--navy); }
+
+    /* HOST AN EVENT */
+    .host-intro { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; margin-bottom: 3rem; }
+    .host-types { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+    .host-type { background: var(--white); border: 2px solid var(--border); border-radius: 14px; padding: 1.5rem; text-align: center; cursor: pointer; transition: all 0.2s; }
+    .host-type:hover, .host-type.selected { border-color: var(--teal); background: var(--teal-light); }
+    .host-type .ht-icon { font-size: 2.2rem; display: block; margin-bottom: 0.75rem; }
+    .host-type h4 { font-size: 0.9rem; font-weight: 700; color: var(--navy); margin-bottom: 0.3rem; }
+    .host-type p { font-size: 0.78rem; color: var(--grey); line-height: 1.4; }
+
+    .host-form-card { background: var(--white); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; box-shadow: var(--shadow-md); }
+    .host-form-card h3 { font-family: var(--font-display); font-size: 1.4rem; color: var(--navy); margin-bottom: 0.4rem; }
+    .host-form-card > p { color: var(--grey); font-size: 0.88rem; margin-bottom: 2rem; }
+
+    .form-section-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); margin: 1.5rem 0 1rem; display: block; }
+    .sf-field { margin-bottom: 1rem; }
+    .sf-field label { display: block; font-size: 0.83rem; font-weight: 600; color: var(--navy); margin-bottom: 0.35rem; }
+    .sf-field input, .sf-field select, .sf-field textarea { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.93rem; font-family: var(--font-body); color: var(--dark); background: var(--white); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .sf-field input:focus, .sf-field select:focus, .sf-field textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,196,179,0.1); }
+    .sf-field textarea { resize: vertical; min-height: 80px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-note { font-size: 0.8rem; color: var(--grey); padding: 0.8rem 1rem; background: var(--light); border-radius: 8px; margin-bottom: 1.5rem; line-height: 1.5; }
+
+    .submit-btn { width: 100%; background: var(--navy); color: white; border: none; padding: 0.95rem; border-radius: 8px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .submit-btn:hover { background: var(--navy-mid); transform: translateY(-1px); }
+
+    .host-sidebar { }
+    .sidebar-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.2rem; }
+    .sidebar-card h4 { font-size: 0.9rem; font-weight: 700; color: var(--navy); margin-bottom: 0.6rem; }
+    .sidebar-card p { font-size: 0.83rem; color: var(--grey); line-height: 1.55; }
+    .sidebar-card ul { list-style: none; margin-top: 0.5rem; }
+    .sidebar-card ul li { font-size: 0.82rem; color: var(--grey); padding: 0.2rem 0 0.2rem 1rem; position: relative; line-height: 1.4; }
+    .sidebar-card ul li::before { content: '→'; position: absolute; left: 0; color: var(--teal); }
+
+    /* CALENDAR */
+    .calendar-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+    .cal-header { background: var(--navy); padding: 1.2rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .cal-header h3 { color: var(--white); font-size: 1rem; font-weight: 700; }
+    .cal-nav { display: flex; gap: 0.5rem; }
+    .cal-nav button { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 32px; height: 32px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; }
+    .cal-nav button:hover { background: rgba(0,196,179,0.2); border-color: var(--teal); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); }
+    .cal-day-header { padding: 0.6rem; text-align: center; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--grey); background: var(--light); border-bottom: 1px solid var(--border); }
+    .cal-day { padding: 0.6rem; min-height: 72px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); cursor: pointer; transition: background 0.15s; position: relative; }
+    .cal-day:nth-child(7n) { border-right: none; }
+    .cal-day:hover { background: var(--teal-light); }
+    .cal-day.today { background: rgba(0,196,179,0.06); }
+    .cal-day.today .day-num { background: var(--teal); color: var(--navy); }
+    .cal-day.other-month .day-num { color: #d1d5db; }
+    .cal-day.has-event { background: rgba(0,196,179,0.04); }
+    .day-num { display: inline-flex; align-items: center; justify-content: center; width: 26px; height: 26px; border-radius: 50%; font-size: 0.82rem; font-weight: 600; color: var(--dark); }
+    .cal-event-dot { font-size: 0.7rem; margin-top: 0.2rem; padding: 0.1rem 0.4rem; border-radius: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; cursor: pointer; }
+    .dot-community { background: rgba(0,196,179,0.15); color: var(--teal-dark); font-size: 0.65rem; font-weight: 600; }
+    .dot-coffee { background: rgba(232,160,32,0.15); color: #8a6010; font-size: 0.65rem; font-weight: 600; }
+    .dot-forum { background: rgba(108,52,131,0.12); color: #6c3483; font-size: 0.65rem; font-weight: 600; }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,42,74,0.75); z-index: 999; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: white; border-radius: 20px; max-width: 520px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .modal-header { background: var(--navy); padding: 1.5rem 2rem; border-radius: 20px 20px 0 0; }
+    .modal-header h3 { color: white; font-size: 1.1rem; font-weight: 700; margin-bottom: 0.2rem; }
+    .modal-header p { color: rgba(255,255,255,0.55); font-size: 0.85rem; }
+    .modal-body { padding: 2rem; }
+    .modal-close { float: right; background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+    .modal-close:hover { background: rgba(255,255,255,0.2); }
+    .register-btn { width: 100%; background: var(--teal); color: var(--navy); border: none; padding: 0.9rem; border-radius: 8px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.2s; margin-top: 1rem; }
+    .register-btn:hover { background: var(--teal-dark); }
+
+    footer { background: var(--navy-dark); color: rgba(255,255,255,0.4); padding: 2rem; text-align: center; font-size: 0.82rem; border-top: 2px solid rgba(0,196,179,0.12); }
+    footer a { color: var(--teal); text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .events-grid { grid-template-columns: 1fr; }
+      .host-intro { grid-template-columns: 1fr; }
+      .host-types { grid-template-columns: 1fr 1fr; }
+      .field-row { grid-template-columns: 1fr; }
+      .tab-btn { font-size: 0.78rem; padding: 0.7rem 0.5rem; }
+      .sf-nav-links li:not(:last-child) { display: none; }
+    }
+    @media (max-width: 500px) { .host-types { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="sf-nav" id="mainNav"></nav>
+
+<!-- HERO -->
+<div class="hero-bg page-hero">
+  <span class="section-label" style="display:block; text-align:center; margin-bottom:0.75rem;">Community Events</span>
+  <h1 class="display display-md">Show up. Shape things.</h1>
+  <p>From full community forums to a coffee in someone's kitchen — every event builds the movement. Find one near you, or host your own.</p>
+  <div class="hero-btns">
+    <button class="btn btn-teal" onclick="switchTab('upcoming')">Browse Events</button>
+    <button class="btn btn-outline-white" onclick="switchTab('host')">Host an Event</button>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- TABS -->
+  <div class="tab-nav">
+    <button class="tab-btn active" id="tab-upcoming" onclick="switchTab('upcoming')">📅 Upcoming Events</button>
+    <button class="tab-btn" id="tab-calendar" onclick="switchTab('calendar')">🗓️ Calendar View</button>
+    <button class="tab-btn" id="tab-host" onclick="switchTab('host')">🏠 Host an Event</button>
+  </div>
+
+  <!-- ── TAB 1: UPCOMING EVENTS ── -->
+  <div class="tab-panel active" id="panel-upcoming">
+    <div class="events-controls">
+      <div class="search-wrap">
+        <input type="text" placeholder="Search events…" oninput="filterEvents(this.value)" />
+      </div>
+      <select class="filter-select" onchange="filterByType(this.value)">
+        <option value="all">All Types</option>
+        <option value="community">Community Meeting</option>
+        <option value="coffee">Coffee Meetup</option>
+        <option value="forum">Issues Forum</option>
+        <option value="volunteer">Volunteer Session</option>
+        <option value="gotv">GOTV Event</option>
+      </select>
+      <select class="filter-select" onchange="filterByMonth(this.value)">
+        <option value="all">All Months</option>
+        <option value="4">April 2026</option>
+        <option value="5">May 2026</option>
+        <option value="6">June 2026</option>
+      </select>
+    </div>
+    <div class="events-grid" id="eventsGrid"></div>
+  </div>
+
+  <!-- ── TAB 2: CALENDAR ── -->
+  <div class="tab-panel" id="panel-calendar">
+    <div class="calendar-wrap">
+      <div class="cal-header">
+        <h3 id="calMonthTitle">April 2026</h3>
+        <div class="cal-nav">
+          <button onclick="changeMonth(-1)">‹</button>
+          <button onclick="changeMonth(1)">›</button>
+        </div>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <p style="font-size:0.8rem; color:var(--grey); margin-top:1rem; text-align:center;">Click any date to see events. Click an event dot to register.</p>
+  </div>
+
+  <!-- ── TAB 3: HOST AN EVENT ── -->
+  <div class="tab-panel" id="panel-host">
+    <div class="host-intro">
+      <div>
+        <span class="section-label">Host with Us</span>
+        <h2 class="display display-sm" style="color:var(--navy); margin-bottom:0.5rem;">Your space is our platform</h2>
+        <div class="teal-rule"></div>
+        <p style="color:var(--grey); line-height:1.75; margin-bottom:1rem;">The best civic conversations don't happen in council chambers — they happen around kitchen tables, in living rooms, and over coffee at the local café. If you have a space and a willing group, we'll help you fill it and make it count.</p>
+        <p style="color:var(--grey); line-height:1.75;">Submit your event idea below. Our coordinator will reach out within 48 hours with support, talking points, and promotional materials. We do the heavy lifting.</p>
+      </div>
+      <div>
+        <div class="host-types">
+          <div class="host-type selected" onclick="selectHostType(this, 'coffee')">
+            <span class="ht-icon">☕</span>
+            <h4>Kitchen Coffee</h4>
+            <p>5–15 people. Casual, at your home. We provide the agenda and talking points.</p>
+          </div>
+          <div class="host-type" onclick="selectHostType(this, 'business')">
+            <span class="ht-icon">🏪</span>
+            <h4>Business Meetup</h4>
+            <p>Host at your business. Great way to connect your customers to civic life.</p>
+          </div>
+          <div class="host-type" onclick="selectHostType(this, 'community')">
+            <span class="ht-icon">🏛️</span>
+            <h4>Community Forum</h4>
+            <p>Larger event. We help book venue, promotion, and run the event with you.</p>
+          </div>
+          <div class="host-type" onclick="selectHostType(this, 'outdoors')">
+            <span class="ht-icon">🌲</span>
+            <h4>Outdoor / Trail</h4>
+            <p>A hike, a cleanup, a trail event — community in Squamish's natural setting.</p>
+          </div>
+          <div class="host-type" onclick="selectHostType(this, 'sports')">
+            <span class="ht-icon">🏒</span>
+            <h4>Sports / Rec</h4>
+            <p>At the rink, the field, or a rec centre. Meet people where they already are.</p>
+          </div>
+          <div class="host-type" onclick="selectHostType(this, 'online')">
+            <span class="ht-icon">💻</span>
+            <h4>Online / Zoom</h4>
+            <p>Can't host in person? Online events reach the whole Sea to Sky corridor.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 300px; gap:2rem; align-items:start;">
+      <div class="host-form-card">
+        <h3>Submit Your Event</h3>
+        <p>We'll review and confirm within 48 hours. Our coordinator will reach out with support.</p>
+
+        <span class="form-section-label">About You</span>
+        <div class="field-row">
+          <div class="sf-field"><label>First Name</label><input type="text" placeholder="First name" /></div>
+          <div class="sf-field"><label>Last Name</label><input type="text" placeholder="Last name" /></div>
+        </div>
+        <div class="field-row">
+          <div class="sf-field"><label>Email</label><input type="email" placeholder="your@email.com" /></div>
+          <div class="sf-field"><label>Phone</label><input type="tel" placeholder="(250) 000-0000" /></div>
+        </div>
+        <div class="sf-field"><label>Neighbourhood</label>
+          <select>
+            <option value="">Select area</option>
+            <option>Downtown Squamish</option><option>Garibaldi Highlands</option>
+            <option>Brackendale</option><option>Valleycliffe</option>
+            <option>Dentville</option><option>Other</option>
+          </select>
+        </div>
+
+        <span class="form-section-label">Event Details</span>
+        <div class="sf-field"><label>Event Type</label>
+          <select id="hostTypeSelect">
+            <option value="coffee">☕ Kitchen Coffee (home, casual)</option>
+            <option value="business">🏪 Business Meetup</option>
+            <option value="community">🏛️ Community Forum (larger)</option>
+            <option value="outdoors">🌲 Outdoor / Trail Event</option>
+            <option value="sports">🏒 Sports / Recreation</option>
+            <option value="online">💻 Online / Zoom</option>
+          </select>
+        </div>
+        <div class="sf-field"><label>Event Title / Name (optional)</label><input type="text" placeholder='e.g. "Coffee in Brackendale" or leave blank and we\'ll help' /></div>
+        <div class="field-row">
+          <div class="sf-field"><label>Preferred Date</label><input type="date" /></div>
+          <div class="sf-field"><label>Preferred Time</label><input type="time" /></div>
+        </div>
+        <div class="sf-field"><label>Location / Address</label><input type="text" placeholder="Home address, business name, or 'TBD — need venue help'" /></div>
+        <div class="field-row">
+          <div class="sf-field"><label>Expected Attendees</label>
+            <select><option>1–5</option><option>5–15</option><option>15–30</option><option>30–60</option><option>60+</option></select>
+          </div>
+          <div class="sf-field"><label>Is this public or private?</label>
+            <select><option>Public — open to all</option><option>Semi-private — invited guests</option><option>Private — my network only</option></select>
+          </div>
+        </div>
+
+        <span class="form-section-label">What You Want to Cover</span>
+        <div class="sf-field"><label>What issues or topics do you want to focus on?</label>
+          <textarea placeholder="Development? Housing? Recreation? Council accountability? Or just a general Squamish Future intro?"></textarea>
+        </div>
+        <div class="sf-field"><label>What support do you need from us?</label>
+          <textarea rows="2" placeholder="Talking points, printed materials, a presenter, help with promotion, venue suggestions…"></textarea>
+        </div>
+        <div class="sf-field"><label>Anything else?</label>
+          <textarea rows="2" placeholder="Groups you'll be reaching out to, special circumstances, questions…"></textarea>
+        </div>
+
+        <div class="form-note">🙌 We welcome <strong>all</strong> types of events — a coffee with 3 neighbours counts. The movement is built one kitchen at a time.</div>
+        <button class="submit-btn" onclick="submitHostForm()">Submit Event for Review →</button>
+      </div>
+
+      <div class="host-sidebar">
+        <div class="sidebar-card">
+          <h4>🛠️ What we provide</h4>
+          <ul>
+            <li>Talking points on top issues</li>
+            <li>Printed materials (if needed)</li>
+            <li>Squamish Future presenter (if requested)</li>
+            <li>Event promotion on our channels</li>
+            <li>Email signup sheet template</li>
+            <li>Follow-up support for attendees</li>
+          </ul>
+        </div>
+        <div class="sidebar-card">
+          <h4>☕ What a Kitchen Coffee looks like</h4>
+          <p style="font-size:0.82rem; color:var(--grey); line-height:1.55;">You invite 5–15 people. We give you a simple 45-min agenda. You run it. We help capture new members. Takes less than an hour — and each one builds the base.</p>
+        </div>
+        <div class="sidebar-card">
+          <h4>📅 Timeline</h4>
+          <p style="font-size:0.82rem; color:var(--grey); line-height:1.55;">Submit at least <strong>1 week</strong> before your event. We'll confirm within 48 hours and send you everything you need.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- REGISTER MODAL -->
+<div class="modal-overlay" id="registerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <h3 id="modalTitle">Register for Event</h3>
+      <p id="modalSubtitle">Confirm your spot</p>
+    </div>
+    <div class="modal-body">
+      <div class="sf-field"><label>First Name</label><input type="text" placeholder="First name" /></div>
+      <div class="sf-field"><label>Email</label><input type="email" placeholder="your@email.com" /></div>
+      <div class="sf-field"><label>Phone (optional)</label><input type="tel" placeholder="(250) 000-0000" /></div>
+      <div class="sf-field"><label>Neighbourhood</label>
+        <select><option>Select area</option><option>Downtown Squamish</option><option>Garibaldi Highlands</option><option>Brackendale</option><option>Valleycliffe</option><option>Other</option></select>
+      </div>
+      <div class="sf-field"><label>How did you hear about this event?</label>
+        <select><option>Squamish Future newsletter</option><option>Facebook</option><option>Friend</option><option>Community group</option><option>Other</option></select>
+      </div>
+      <div class="sf-field"><label>Any accessibility needs or questions? (optional)</label><input type="text" placeholder="Parking, accessibility, dietary…" /></div>
+      <button class="register-btn" onclick="completeRegistration()">✓ Confirm My Spot</button>
+      <p style="font-size:0.75rem; color:var(--grey); text-align:center; margin-top:0.75rem;">You'll receive a confirmation email with event details.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div class="modal-header"><h3>You're registered! 🎉</h3><p>See you there.</p></div>
+    <div class="modal-body" style="text-align:center;">
+      <div style="font-size:3rem; margin-bottom:1rem;">✅</div>
+      <p id="successMsg" style="color:var(--grey); margin-bottom:1.5rem; line-height:1.7;"></p>
+      <a href="volunteer.html" class="btn btn-teal" style="display:inline-block; margin-bottom:0.75rem;">Volunteer at This Event →</a><br>
+      <button onclick="document.getElementById('successModal').classList.remove('active')" style="background:none; border:none; color:var(--grey); cursor:pointer; font-size:0.88rem;">Close</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">SQUAMISH FUTURE</a> — Built by the community. For the community. · Squamish, BC
+</footer>
+
+<script>
+// ── EVENT DATA ─────────────────────────────────────────────────
+const EVENTS = [
+  { id:1, title:"Community Founding Meeting", type:"community", month:4, day:9, year:2026, time:"6:30 PM", location:"Squamish Public Library — Main Hall", desc:"Our first open community gathering. Come hear the vision, share your issues, and help shape what Squamish Future stands for. Everyone welcome.", spots:80, registered:34 },
+  { id:2, title:"Coffee in Garibaldi Highlands", type:"coffee", month:4, day:14, year:2026, time:"10:00 AM", location:"Private home — Garibaldi Highlands (address on registration)", desc:"Informal coffee meetup for Garibaldi Highlands residents. Hosted by a community member. Bring your questions and your neighbours.", spots:15, registered:7 },
+  { id:3, title:"Research Volunteer Session", type:"volunteer", month:4, day:18, year:2026, time:"9:00 AM", location:"Online — Zoom link on registration", desc:"Help us pull 2025 council voting records and build our first scorecard. No experience needed — just willingness to dig in.", spots:12, registered:9 },
+  { id:4, title:"Coffee at The Ledge Brewing Co.", type:"coffee", month:4, day:22, year:2026, time:"5:30 PM", location:"The Ledge Brewing Co., Downtown Squamish", desc:"After-work informal meetup at The Ledge. Business owners, workers, anyone who wants to chat Squamish issues over a pint.", spots:25, registered:11 },
+  { id:5, title:"Issues Forum — Development & Land", type:"forum", month:5, day:7, year:2026, time:"7:00 PM", location:"Brennan Park Recreation Centre, Meeting Room B", desc:"Deep dive into Brendan Park, the Spit, and upcoming development decisions. Panel of researchers + open Q&A.", spots:60, registered:28 },
+  { id:6, title:"Coffee in Brackendale", type:"coffee", month:5, day:12, year:2026, time:"10:00 AM", location:"Private home — Brackendale (address on registration)", desc:"Hosted by a long-time Brackendale resident. Focus on Brackendale-specific issues — flooding, infrastructure, community services.", spots:12, registered:4 },
+  { id:7, title:"Canvassing Training Day", type:"volunteer", month:5, day:16, year:2026, time:"10:00 AM", location:"Squamish Future HQ (TBD)", desc:"Learn how to knock doors, have conversations, and log supporter data. We'll cover the script, objection handling, and the app.", spots:20, registered:6 },
+  { id:8, title:"Monthly Coffee with Civic", type:"coffee", month:5, day:28, year:2026, time:"6:00 PM", location:"Zephyr Café, Downtown Squamish", desc:"Monthly open meetup. No agenda — just Squamish residents talking about what matters. New faces always welcome.", spots:30, registered:12 },
+  { id:9, title:"Issues Forum — Housing & Affordability", type:"forum", month:6, day:10, year:2026, time:"7:00 PM", location:"Squamish Public Library — Main Hall", desc:"Full fact presentation on Squamish's rental vacancy rate, development pipeline, and what policy levers actually work.", spots:80, registered:19 },
+  { id:10, title:"Candidate Forum Planning Meeting", type:"community", month:6, day:18, year:2026, time:"6:00 PM", location:"Online — Zoom", desc:"Internal + open planning session for the September Candidate Forum. Help us design the format, questions, and logistics.", spots:25, registered:8 },
+];
+
+const TYPE_INFO = {
+  community: { label:"Community Meeting", cls:"type-community", icon:"🏛️" },
+  coffee:    { label:"Coffee Meetup",     cls:"type-coffee",    icon:"☕" },
+  forum:     { label:"Issues Forum",      cls:"type-forum",     icon:"🎙️" },
+  volunteer: { label:"Volunteer Session", cls:"type-volunteer", icon:"🤝" },
+  gotv:      { label:"GOTV Event",        cls:"type-gotv",      icon:"🗳️" },
+};
+const MONTHS = ["","January","February","March","April","May","June","July","August","September","October","November","December"];
+
+let currentFilter = 'all';
+let currentTypeFilter = 'all';
+let currentMonthFilter = 'all';
+let calMonth = 4; let calYear = 2026;
+let activeEventId = null;
+
+function filterEvents(q) {
+  renderEvents(q);
+}
+function filterByType(v) { currentTypeFilter = v; renderEvents(); }
+function filterByMonth(v) { currentMonthFilter = v; renderEvents(); }
+
+function renderEvents(q='') {
+  const grid = document.getElementById('eventsGrid');
+  let list = EVENTS.filter(e => {
+    const matchType = currentTypeFilter === 'all' || e.type === currentTypeFilter;
+    const matchMonth = currentMonthFilter === 'all' || e.month === parseInt(currentMonthFilter);
+    const matchQ = !q || e.title.toLowerCase().includes(q.toLowerCase()) || e.desc.toLowerCase().includes(q.toLowerCase()) || e.location.toLowerCase().includes(q.toLowerCase());
+    return matchType && matchMonth && matchQ;
+  });
+  if (!list.length) { grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:3rem; color:var(--grey);">No events found. <a href="#" onclick="switchTab(\'host\')" style="color:var(--teal)">Host your own →</a></div>'; return; }
+  grid.innerHTML = list.map(e => {
+    const t = TYPE_INFO[e.type] || TYPE_INFO.community;
+    const pct = Math.round((e.registered / e.spots) * 100);
+    const full = e.registered >= e.spots;
+    return `
+    <div class="event-card">
+      <div class="event-header">
+        <div class="event-date-block">
+          <span class="month">${MONTHS[e.month].substr(0,3)}</span>
+          <span class="day">${e.day}</span>
+          <span class="year">${e.year}</span>
+        </div>
+        <div class="event-header-info">
+          <h3>${e.title}</h3>
+          <span class="event-type-pill ${t.cls}">${t.icon} ${t.label}</span>
+        </div>
+      </div>
+      <div class="event-body">
+        <div class="event-meta">
+          <span>🕐 ${e.time}</span>
+          <span>📍 ${e.location.split(',')[0]}</span>
+        </div>
+        <div class="event-desc">${e.desc}</div>
+        <div class="event-spots">
+          <div class="spots-bar"><div class="spots-fill" style="width:${pct}%"></div></div>
+          <span class="spots-label">${full ? '🔴 Full' : `${e.spots - e.registered} spots left`}</span>
+        </div>
+        <div class="event-actions">
+          <button class="btn-register" ${full ? 'disabled' : ''} onclick="openRegister(${e.id})">${full ? 'Join Waitlist' : 'Register Free →'}</button>
+          <button class="btn-details" onclick="alert('${e.title}\\n\\n${e.desc}\\n\\nLocation: ${e.location}\\nDate: ${MONTHS[e.month]} ${e.day}, ${e.year} at ${e.time}')">Details</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openRegister(id) {
+  activeEventId = id;
+  const e = EVENTS.find(ev => ev.id === id);
+  document.getElementById('modalTitle').textContent = 'Register: ' + e.title;
+  document.getElementById('modalSubtitle').textContent = `${MONTHS[e.month]} ${e.day}, ${e.year} · ${e.time}`;
+  document.getElementById('registerModal').classList.add('active');
+}
+function closeModal() { document.getElementById('registerModal').classList.remove('active'); }
+function completeRegistration() {
+  const e = EVENTS.find(ev => ev.id === activeEventId);
+  document.getElementById('registerModal').classList.remove('active');
+  document.getElementById('successMsg').textContent = `You're registered for ${e.title} on ${MONTHS[e.month]} ${e.day} at ${e.time}. A confirmation email is on its way.`;
+  document.getElementById('successModal').classList.add('active');
+  e.registered = Math.min(e.registered + 1, e.spots);
+  renderEvents();
+}
+
+// ── CALENDAR ───────────────────────────────────────────────────
+function renderCalendar() {
+  const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  document.getElementById('calMonthTitle').textContent = `${MONTHS[calMonth]} ${calYear}`;
+  const grid = document.getElementById('calGrid');
+  let html = days.map(d => `<div class="cal-day-header">${d}</div>`).join('');
+  const first = new Date(calYear, calMonth-1, 1).getDay();
+  const total = new Date(calYear, calMonth, 0).getDate();
+  const prevTotal = new Date(calYear, calMonth-1, 0).getDate();
+  const today = new Date(); const isThisMonth = today.getMonth()+1 === calMonth && today.getFullYear() === calYear;
+  for (let i=0; i<first; i++) {
+    html += `<div class="cal-day other-month"><span class="day-num">${prevTotal - first + i + 1}</span></div>`;
+  }
+  for (let d=1; d<=total; d++) {
+    const dayEvents = EVENTS.filter(e => e.month === calMonth && e.day === d && e.year === calYear);
+    const isToday = isThisMonth && d === today.getDate();
+    html += `<div class="cal-day ${isToday?'today':''} ${dayEvents.length?'has-event':''}">
+      <span class="day-num">${d}</span>
+      ${dayEvents.map(e => `<div class="cal-event-dot dot-${e.type}" onclick="openRegister(${e.id})">${TYPE_INFO[e.type]?.icon} ${e.title.split(' ').slice(0,2).join(' ')}</div>`).join('')}
+    </div>`;
+  }
+  const remaining = 42 - first - total;
+  for (let i=1; i<=remaining; i++) html += `<div class="cal-day other-month"><span class="day-num">${i}</span></div>`;
+  grid.innerHTML = html;
+}
+function changeMonth(dir) {
+  calMonth += dir;
+  if (calMonth > 12) { calMonth = 1; calYear++; }
+  if (calMonth < 1)  { calMonth = 12; calYear--; }
+  renderCalendar();
+}
+
+// ── HOST TYPE SELECT ───────────────────────────────────────────
+function selectHostType(el, type) {
+  document.querySelectorAll('.host-type').forEach(t => t.classList.remove('selected'));
+  el.classList.add('selected');
+  document.getElementById('hostTypeSelect').value = type;
+}
+function submitHostForm() { alert('Your event has been submitted for review! Our coordinator will reach out within 48 hours with support, talking points, and materials.'); }
+
+// ── TABS ──────────────────────────────────────────────────────
+function switchTab(tab) {
+  ['upcoming','calendar','host'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t===tab);
+    document.getElementById('panel-'+t).classList.toggle('active', t===tab);
+  });
+  if (tab === 'calendar') renderCalendar();
+}
+
+// INIT
+renderEvents();
+</script>
+<script src="nav.js"></script>
+</body>
+</html>

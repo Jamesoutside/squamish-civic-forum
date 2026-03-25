@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Community Members — Squamish Future</title>
+  <link rel="stylesheet" href="brand.css" />
+  <style>
+    .page-hero { padding: 90px 2rem 60px; text-align: center; }
+    .page-hero h1 { color: var(--white); margin-bottom: 0.5rem; }
+    .page-hero p { color: rgba(255,255,255,0.6); font-size: 1.05rem; max-width: 540px; margin: 0 auto 2rem; line-height: 1.7; }
+    .hero-stats { display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap; }
+    .hstat .n { font-family: var(--font-display); font-size: 2rem; font-weight: 900; color: var(--teal); display: block; }
+    .hstat .l { font-size: 0.72rem; color: rgba(255,255,255,0.45); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .main { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+
+    /* CONTROLS */
+    .controls { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; align-items: center; }
+    .search-wrap { flex: 1; min-width: 220px; position: relative; }
+    .search-wrap::before { content: '🔍'; position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); font-size: 0.9rem; }
+    .search-wrap input { width: 100%; padding: 0.75rem 1rem 0.75rem 2.7rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.92rem; outline: none; transition: border-color 0.2s; background: var(--white); }
+    .search-wrap input:focus { border-color: var(--teal); }
+    .filter-select { padding: 0.72rem 1rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.88rem; outline: none; background: var(--white); color: var(--dark); cursor: pointer; }
+    .view-toggle { display: flex; gap: 0; border: 1.5px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .vt-btn { background: var(--white); border: none; padding: 0.65rem 0.9rem; cursor: pointer; font-size: 0.95rem; transition: all 0.15s; color: var(--grey); }
+    .vt-btn.active { background: var(--navy); color: white; }
+
+    /* GRID VIEW */
+    .members-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.2rem; }
+    .member-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; text-align: center; transition: all 0.2s; }
+    .member-card:hover { box-shadow: var(--shadow-md); border-color: rgba(232,160,32,0.35); transform: translateY(-2px); }
+    .mc-avatar { width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 800; color: white; margin: 0 auto 0.85rem; }
+    .mc-name { font-size: 0.92rem; font-weight: 700; color: var(--navy); margin-bottom: 0.2rem; }
+    .mc-hood { font-size: 0.78rem; color: var(--grey); margin-bottom: 0.6rem; }
+    .mc-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; justify-content: center; }
+    .mc-tag { font-size: 0.65rem; font-weight: 700; padding: 0.18rem 0.55rem; border-radius: 100px; }
+    .mc-joined { font-size: 0.7rem; color: #9ca3af; margin-top: 0.75rem; }
+    .mc-role { font-size: 0.72rem; font-weight: 700; margin-top: 0.4rem; }
+    .role-lead { color: var(--teal); }
+    .role-ambassador { color: #6c3483; }
+    .role-volunteer { color: var(--green); }
+    .role-member { color: var(--grey); }
+
+    /* LIST VIEW */
+    .members-list { display: none; background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .list-header { display: grid; grid-template-columns: 2.2fr 1.2fr 1.2fr 1fr 0.8fr; gap: 1rem; padding: 0.75rem 1.4rem; background: var(--navy); font-size: 0.68rem; font-weight: 700; color: rgba(255,255,255,0.55); letter-spacing: 0.08em; text-transform: uppercase; }
+    .list-row { display: grid; grid-template-columns: 2.2fr 1.2fr 1.2fr 1fr 0.8fr; gap: 1rem; padding: 0.85rem 1.4rem; border-bottom: 1px solid var(--border); align-items: center; transition: background 0.12s; }
+    .list-row:last-child { border-bottom: none; }
+    .list-row:hover { background: var(--light); }
+    .lr-id { display: flex; align-items: center; gap: 0.75rem; }
+    .lr-av { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 800; color: white; flex-shrink: 0; }
+    .lr-name { font-size: 0.88rem; font-weight: 600; color: var(--navy); }
+    .lr-sub { font-size: 0.72rem; color: var(--grey); }
+
+    /* JOIN BANNER */
+    .join-banner { background: var(--navy); border-radius: 16px; padding: 2rem 2.5rem; display: flex; align-items: center; justify-content: space-between; gap: 2rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+    .join-banner h3 { font-family: var(--font-display); font-size: 1.3rem; color: white; margin-bottom: 0.3rem; }
+    .join-banner p { color: rgba(255,255,255,0.55); font-size: 0.88rem; }
+
+    /* NEIGHBOURHOOD MAP */
+    .hood-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2.5rem; }
+    .hood-card { background: var(--white); border: 1px solid var(--border); border-radius: 12px; padding: 1.2rem; display: flex; align-items: center; gap: 1rem; transition: all 0.2s; cursor: pointer; }
+    .hood-card:hover { border-color: var(--teal); box-shadow: var(--shadow-sm); }
+    .hood-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .hood-name { font-size: 0.88rem; font-weight: 700; color: var(--navy); }
+    .hood-count { font-size: 0.78rem; color: var(--grey); }
+    .hood-bar { height: 4px; background: var(--light); border-radius: 100px; margin-top: 0.4rem; overflow: hidden; }
+    .hood-fill { height: 100%; background: var(--teal); border-radius: 100px; }
+
+    footer { background: var(--navy-dark); color: rgba(255,255,255,0.4); padding: 2rem; text-align: center; font-size: 0.82rem; border-top: 2px solid rgba(232,160,32,0.12); }
+    footer a { color: var(--teal); text-decoration: none; }
+
+    @media (max-width: 900px) { .members-grid { grid-template-columns: repeat(3, 1fr); } .hood-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 600px) { .members-grid { grid-template-columns: repeat(2, 1fr); } .hood-grid { grid-template-columns: 1fr; } .list-header, .list-row { grid-template-columns: 2fr 1fr 0.8fr; } .list-header :nth-child(3), .list-row :nth-child(3), .list-header :nth-child(4), .list-row :nth-child(4) { display: none; } }
+  </style>
+</head>
+<body>
+
+<nav class="sf-nav" id="mainNav"></nav>
+
+<div class="hero-bg page-hero">
+  <span class="section-label" style="display:block;text-align:center;margin-bottom:0.75rem;">Community Members</span>
+  <h1 class="display display-md">The people building Squamish Future</h1>
+  <p>Every member is a neighbour who cares. From Brackendale to downtown, Garibaldi Highlands to Valleycliffe — this is your community showing up.</p>
+  <div class="hero-stats">
+    <div class="hstat"><span class="n">47</span><span class="l">Members</span></div>
+    <div class="hstat"><span class="n">6</span><span class="l">Neighbourhoods</span></div>
+    <div class="hstat"><span class="n">5</span><span class="l">Working Groups</span></div>
+    <div class="hstat"><span class="n">Apr 9</span><span class="l">Next Event</span></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- JOIN BANNER -->
+  <div class="join-banner">
+    <div>
+      <h3>Not on the list yet?</h3>
+      <p>Join Squamish Future — free, takes 60 seconds. Your name gets added when you sign up.</p>
+    </div>
+    <a href="index.html#join" class="btn btn-teal">Join the Community →</a>
+  </div>
+
+  <!-- NEIGHBOURHOOD BREAKDOWN -->
+  <div class="section-title-row" style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+    <h3 style="font-size:0.95rem;font-weight:700;color:var(--navy);">📍 Members by Neighbourhood</h3>
+  </div>
+  <div class="hood-grid" id="hoodGrid"></div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <div class="search-wrap">
+      <input type="text" placeholder="Search members…" oninput="filterMembers(this.value)" />
+    </div>
+    <select class="filter-select" onchange="filterHood(this.value)">
+      <option value="all">All Neighbourhoods</option>
+      <option value="Downtown Squamish">Downtown Squamish</option>
+      <option value="Garibaldi Highlands">Garibaldi Highlands</option>
+      <option value="Brackendale">Brackendale</option>
+      <option value="Valleycliffe">Valleycliffe</option>
+      <option value="Dentville">Dentville</option>
+      <option value="Sea to Sky">Sea to Sky</option>
+    </select>
+    <select class="filter-select" onchange="filterRole(this.value)">
+      <option value="all">All Roles</option>
+      <option value="Lead">Group Leads</option>
+      <option value="Ambassador">Ambassadors</option>
+      <option value="Volunteer">Volunteers</option>
+      <option value="Member">Members</option>
+    </select>
+    <div class="view-toggle">
+      <button class="vt-btn active" id="gridBtn" onclick="setView('grid')" title="Grid view">⊞</button>
+      <button class="vt-btn" id="listBtn" onclick="setView('list')" title="List view">☰</button>
+    </div>
+  </div>
+
+  <!-- GRID VIEW -->
+  <div class="members-grid" id="membersGrid"></div>
+
+  <!-- LIST VIEW -->
+  <div class="members-list" id="membersList">
+    <div class="list-header"><div>Member</div><div>Neighbourhood</div><div>Role</div><div>Member Since</div><div>Groups</div></div>
+    <div id="listRows"></div>
+  </div>
+
+</div>
+
+<footer>
+  <a href="index.html">Squamish Future</a> — Built by the community. For the community. · Squamish, BC
+</footer>
+
+<script src="nav.js"></script>
+<script>
+const MEMBERS = [
+  { name:'Austin Neill',     ini:'AN',  col:'#0f2a4a', hood:'Downtown Squamish',    role:'Lead',       group:'Coordination', joined:'Mar 2026', topics:['Coordination','Strategy'] },
+  { name:'Kristina P.',      ini:'KP',  col:'#c98a10', hood:'Garibaldi Highlands',  role:'Lead',       group:'Operations',   joined:'Mar 2026', topics:['Operations','Admin'] },
+  { name:'Sarah M.',         ini:'SM',  col:'#6c3483', hood:'Valleycliffe',         role:'Lead',       group:'Media',        joined:'Mar 2026', topics:['Social Media','Comms'] },
+  { name:'Tom K.',           ini:'TK',  col:'#d35400', hood:'Brackendale',          role:'Volunteer',  group:'Media',        joined:'Mar 2026', topics:['Outreach'] },
+  { name:'Mark T.',          ini:'MT',  col:'#1a5276', hood:'Downtown Squamish',    role:'Lead',       group:'Research',     joined:'Mar 2026', topics:['Research','Data'] },
+  { name:'Lisa B.',          ini:'LB',  col:'#1e8449', hood:'Garibaldi Highlands',  role:'Lead',       group:'Events',       joined:'Mar 2026', topics:['Events','Community'] },
+  { name:'James H.',         ini:'JH',  col:'#7f8c8d', hood:'Dentville',            role:'Volunteer',  group:'Research',     joined:'Mar 2026', topics:['Research'] },
+  { name:'Priya K.',         ini:'PK',  col:'#8e44ad', hood:'Downtown Squamish',    role:'Member',     group:'Research',     joined:'Mar 2026', topics:['Data'] },
+  { name:'Rachel S.',        ini:'RS',  col:'#16a085', hood:'Brackendale',          role:'Volunteer',  group:'Events',       joined:'Mar 2026', topics:['Events'] },
+  { name:'Karen P.',         ini:'KaP', col:'#c98a10', hood:'Valleycliffe',         role:'Member',     group:'Coordination', joined:'Mar 2026', topics:['Admin'] },
+  { name:'Dave W.',          ini:'DW',  col:'#2c3e50', hood:'Garibaldi Highlands',  role:'Member',     group:'Media',        joined:'Mar 2026', topics:['Photography'] },
+  { name:'Mike L.',          ini:'ML',  col:'#1a8a6a', hood:'Downtown Squamish',    role:'Ambassador', group:'Community',    joined:'Mar 2026', topics:['SCORA','Rec'] },
+  { name:'Janet B.',         ini:'JB',  col:'#8b2252', hood:'Brackendale',          role:'Ambassador', group:'Community',    joined:'Mar 2026', topics:['Brackendale','Flood'] },
+  { name:'Chris A.',         ini:'CA',  col:'#1a5276', hood:'Garibaldi Highlands',  role:'Volunteer',  group:'Research',     joined:'Mar 2026', topics:['Development'] },
+  { name:'Sandra T.',        ini:'ST',  col:'#6c3483', hood:'Valleycliffe',         role:'Member',     group:'',             joined:'Mar 2026', topics:['Housing'] },
+  { name:'Ben F.',           ini:'BF',  col:'#d35400', hood:'Downtown Squamish',    role:'Volunteer',  group:'Events',       joined:'Mar 2026', topics:['Business'] },
+  { name:'Yuki N.',          ini:'YN',  col:'#16a085', hood:'Sea to Sky',           role:'Member',     group:'',             joined:'Mar 2026', topics:['Environment'] },
+  { name:'Paul M.',          ini:'PM',  col:'#0f2a4a', hood:'Brackendale',          role:'Ambassador', group:'Community',    joined:'Mar 2026', topics:['Hunters','Outdoor'] },
+  { name:'Diane W.',         ini:'DW2', col:'#8e44ad', hood:'Garibaldi Highlands',  role:'Member',     group:'',             joined:'Mar 2026', topics:['Seniors','Services'] },
+  { name:'Tyler C.',         ini:'TC',  col:'#2ecc71', hood:'Downtown Squamish',    role:'Volunteer',  group:'Media',        joined:'Mar 2026', topics:['Video','Social'] },
+  { name:'Helen R.',         ini:'HR',  col:'#e74c3c', hood:'Valleycliffe',         role:'Member',     group:'',             joined:'Mar 2026', topics:['Schools','Families'] },
+  { name:'Rob K.',           ini:'RK',  col:'#1a5276', hood:'Sea to Sky',           role:'Volunteer',  group:'Research',     joined:'Mar 2026', topics:['Infrastructure'] },
+  { name:'Nadia S.',         ini:'NS',  col:'#c98a10', hood:'Downtown Squamish',    role:'Member',     group:'',             joined:'Mar 2026', topics:['Housing','Renters'] },
+  { name:'Dale H.',          ini:'DH',  col:'#7f8c8d', hood:'Brackendale',          role:'Member',     group:'',             joined:'Mar 2026', topics:['Recreation'] },
+  { name:'Anita G.',         ini:'AG',  col:'#6c3483', hood:'Garibaldi Highlands',  role:'Ambassador', group:'Community',    joined:'Mar 2026', topics:['Squamish Moms','Families'] },
+  { name:'Kevin J.',         ini:'KJ',  col:'#1e8449', hood:'Dentville',            role:'Volunteer',  group:'Events',       joined:'Mar 2026', topics:['Events','Hockey'] },
+  { name:'Petra L.',         ini:'PL',  col:'#d35400', hood:'Downtown Squamish',    role:'Member',     group:'',             joined:'Mar 2026', topics:['Business','Downtown'] },
+  { name:'Sam T.',           ini:'SmT', col:'#16a085', hood:'Valleycliffe',         role:'Volunteer',  group:'Media',        joined:'Mar 2026', topics:['Design','Brand'] },
+];
+
+const HOODS = [
+  { name:'Downtown Squamish', icon:'🏙️', max:10 },
+  { name:'Garibaldi Highlands', icon:'🏔️', max:10 },
+  { name:'Brackendale', icon:'🌲', max:10 },
+  { name:'Valleycliffe', icon:'🏘️', max:10 },
+  { name:'Dentville', icon:'🏡', max:10 },
+  { name:'Sea to Sky', icon:'🚗', max:10 },
+];
+
+const ROLE_CLS = { Lead:'role-lead', Ambassador:'role-ambassador', Volunteer:'role-volunteer', Member:'role-member' };
+const TAG_COLORS = ['#fff8e8,#c98a10','#e8f4fb,#1a5276','#eafaf1,#1e8449','#f4ecf7,#6c3483','#fdf2e9,#d35400','#e8f8f5,#16a085'];
+
+let searchQ = ''; let hoodFilter = 'all'; let roleFilter = 'all'; let viewMode = 'grid';
+
+function filterMembers(q) { searchQ = q; render(); }
+function filterHood(v) { hoodFilter = v; render(); }
+function filterRole(v) { roleFilter = v; render(); }
+function setView(mode) {
+  viewMode = mode;
+  document.getElementById('membersGrid').style.display = mode === 'grid' ? 'grid' : 'none';
+  document.getElementById('membersList').style.display = mode === 'list' ? 'block' : 'none';
+  document.getElementById('gridBtn').classList.toggle('active', mode === 'grid');
+  document.getElementById('listBtn').classList.toggle('active', mode === 'list');
+  render();
+}
+
+function getFiltered() {
+  return MEMBERS.filter(m => {
+    const mq = !searchQ || m.name.toLowerCase().includes(searchQ.toLowerCase()) || m.hood.toLowerCase().includes(searchQ.toLowerCase()) || m.topics.some(t => t.toLowerCase().includes(searchQ.toLowerCase()));
+    const mh = hoodFilter === 'all' || m.hood === hoodFilter;
+    const mr = roleFilter === 'all' || m.role === roleFilter;
+    return mq && mh && mr;
+  });
+}
+
+function render() {
+  const list = getFiltered();
+  if (viewMode === 'grid') renderGrid(list);
+  else renderList(list);
+}
+
+function renderGrid(list) {
+  document.getElementById('membersGrid').innerHTML = list.map((m, i) => {
+    const [tagBg, tagFg] = TAG_COLORS[i % TAG_COLORS.length].split(',');
+    const tags = m.topics.slice(0, 2).map(t => `<span class="mc-tag" style="background:${tagBg};color:${tagFg};">${t}</span>`).join('');
+    return `<div class="member-card">
+      <div class="mc-avatar" style="background:${m.col}">${m.ini}</div>
+      <div class="mc-name">${m.name}</div>
+      <div class="mc-hood">📍 ${m.hood}</div>
+      <div class="mc-tags">${tags}</div>
+      <div class="mc-role ${ROLE_CLS[m.role]}">${m.role === 'Lead' ? '⭐ ' : m.role === 'Ambassador' ? '📣 ' : m.role === 'Volunteer' ? '🤝 ' : ''}${m.role}</div>
+      <div class="mc-joined">Member since ${m.joined}</div>
+    </div>`;
+  }).join('') || '<div style="grid-column:1/-1;text-align:center;padding:3rem;color:var(--grey);">No members match. <a href="index.html#join" style="color:var(--teal)">Be the first to join →</a></div>';
+}
+
+function renderList(list) {
+  document.getElementById('listRows').innerHTML = list.map(m => `
+    <div class="list-row">
+      <div class="lr-id"><div class="lr-av" style="background:${m.col}">${m.ini}</div><div><div class="lr-name">${m.name}</div><div class="lr-sub">${m.topics.slice(0,2).join(' · ')}</div></div></div>
+      <div style="font-size:0.82rem;color:var(--grey);">📍 ${m.hood}</div>
+      <div class="mc-role ${ROLE_CLS[m.role]}" style="font-size:0.78rem;">${m.role}</div>
+      <div style="font-size:0.78rem;color:var(--grey);">${m.joined}</div>
+      <div style="font-size:0.78rem;color:var(--grey);">${m.group||'—'}</div>
+    </div>`).join('');
+}
+
+function renderHoods() {
+  const counts = {};
+  MEMBERS.forEach(m => { counts[m.hood] = (counts[m.hood]||0)+1; });
+  const total = MEMBERS.length;
+  document.getElementById('hoodGrid').innerHTML = HOODS.map(h => {
+    const count = counts[h.name]||0;
+    const pct = Math.round(count/total*100);
+    return `<div class="hood-card" onclick="filterHood('${h.name}'); document.querySelector('.filter-select').value='${h.name}'">
+      <div class="hood-icon">${h.icon}</div>
+      <div style="flex:1;">
+        <div class="hood-name">${h.name}</div>
+        <div class="hood-count">${count} member${count!==1?'s':''} · ${pct}%</div>
+        <div class="hood-bar"><div class="hood-fill" style="width:${Math.max(5,pct*2)}%"></div></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+renderHoods();
+render();
+</script>
+</body>
+</html>

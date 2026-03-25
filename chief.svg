@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 72" fill="none" class="chief-svg">
+  <title>Stawamus Chief — Squamish Future</title>
+  <!-- Stylized geometric Chief silhouette -->
+  <!-- Base ground line -->
+  <rect x="4" y="66" width="52" height="3" rx="1.5" fill="currentColor" opacity="0.35"/>
+  <!-- Main cliff face — left shoulder -->
+  <path d="M8 66 L8 38 L14 28 L18 20 L22 14 L26 8 L28 5 L30 3 L30 66 Z" fill="currentColor"/>
+  <!-- Main cliff face — right shoulder / second peak -->
+  <path d="M30 3 L32 6 L35 12 L38 20 L42 28 L46 36 L48 44 L50 52 L52 66 L30 66 Z" fill="currentColor" opacity="0.75"/>
+  <!-- Highlight ridge left -->
+  <path d="M14 28 L18 20 L22 14 L26 8 L28 5" stroke="currentColor" stroke-width="1" stroke-opacity="0.2" fill="none"/>
+  <!-- Talus / base detail -->
+  <path d="M4 66 L6 60 L8 58 L10 60 L8 66 Z" fill="currentColor" opacity="0.4"/>
+  <path d="M52 66 L54 58 L56 60 L56 66 Z" fill="currentColor" opacity="0.3"/>
+  <!-- Snow/highlight on peak -->
+  <path d="M28 5 L30 3 L32 6 L30 8 Z" fill="currentColor" opacity="0.25"/>
+</svg>

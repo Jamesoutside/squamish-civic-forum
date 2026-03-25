@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Volunteer — SQUAMISH FUTURE</title>
+  <link rel="stylesheet" href="brand.css" />
+  <style>
+    .page-hero { padding: 90px 2rem 60px; text-align: center; }
+    .page-hero h1 { color: var(--white); margin-bottom: 0.4rem; }
+    .page-hero p { color: rgba(255,255,255,0.6); font-size: 1.05rem; max-width: 560px; margin: 0 auto 2rem; line-height: 1.7; }
+    .hero-stats { display: flex; gap: 3rem; justify-content: center; flex-wrap: wrap; }
+    .hstat .n { font-family: var(--font-display); font-size: 2rem; font-weight: 900; color: var(--teal); display: block; }
+    .hstat .l { font-size: 0.72rem; color: rgba(255,255,255,0.45); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    .main { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 6rem; }
+
+    .tab-nav { display: flex; gap: 0; border: 1.5px solid var(--border); border-radius: 10px; overflow: hidden; margin-bottom: 2.5rem; background: var(--white); }
+    .tab-btn { flex: 1; padding: 0.85rem 1rem; border: none; background: none; font-family: var(--font-body); font-size: 0.85rem; font-weight: 600; color: var(--grey); cursor: pointer; transition: all 0.2s; border-right: 1px solid var(--border); text-align: center; }
+    .tab-btn:last-child { border-right: none; }
+    .tab-btn.active { background: var(--navy); color: var(--white); }
+    .tab-btn:hover:not(.active) { background: var(--light); color: var(--navy); }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* ROLES */
+    .roles-controls { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2rem; align-items: center; }
+    .search-wrap { flex: 1; min-width: 200px; position: relative; }
+    .search-wrap::before { content: '🔍'; position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); font-size: 0.9rem; }
+    .search-wrap input { width: 100%; padding: 0.72rem 1rem 0.72rem 2.7rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.92rem; outline: none; transition: border-color 0.2s; }
+    .search-wrap input:focus { border-color: var(--teal); }
+    .filter-select { padding: 0.72rem 1rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.88rem; outline: none; background: var(--white); color: var(--dark); cursor: pointer; }
+
+    .roles-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+    .role-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; transition: all 0.22s; }
+    .role-card:hover { box-shadow: var(--shadow-md); border-color: rgba(0,196,179,0.3); transform: translateY(-2px); }
+    .role-header { padding: 1.5rem; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; gap: 1rem; }
+    .role-icon { width: 48px; height: 48px; border-radius: 12px; background: var(--teal-light); display: flex; align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0; }
+    .role-title-wrap { flex: 1; }
+    .role-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.3rem; }
+    .role-meta { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+    .role-tag { font-size: 0.7rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 100px; }
+    .tag-hours { background: var(--teal-light); color: var(--teal-dark); }
+    .tag-skill { background: var(--light); color: var(--navy); }
+    .tag-urgency { background: rgba(232,160,32,0.12); color: #8a6010; }
+    .tag-open { background: rgba(30,132,73,0.1); color: var(--green); }
+    .tag-full { background: var(--light); color: var(--grey); }
+
+    .role-body { padding: 1.5rem; }
+    .role-desc { font-size: 0.87rem; color: var(--grey); line-height: 1.6; margin-bottom: 1rem; }
+    .role-tasks { margin-bottom: 1.2rem; }
+    .role-tasks h5 { font-size: 0.78rem; font-weight: 700; color: var(--navy); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 0.5rem; }
+    .role-tasks ul { list-style: none; }
+    .role-tasks li { font-size: 0.83rem; color: var(--grey); padding: 0.2rem 0 0.2rem 1rem; position: relative; line-height: 1.4; }
+    .role-tasks li::before { content: '✓'; position: absolute; left: 0; color: var(--teal); font-weight: 700; }
+    .role-footer { display: flex; gap: 0.75rem; align-items: center; }
+    .btn-apply { flex: 1; background: var(--teal); color: var(--navy); border: none; padding: 0.7rem 1rem; border-radius: 8px; font-size: 0.88rem; font-weight: 700; cursor: pointer; transition: all 0.2s; }
+    .btn-apply:hover { background: var(--teal-dark); box-shadow: var(--shadow-teal); }
+    .btn-apply:disabled { background: var(--border); color: var(--grey); cursor: not-allowed; }
+    .spots-count { font-size: 0.78rem; color: var(--grey); white-space: nowrap; }
+
+    /* CALENDAR BOOKING */
+    .cal-layout { display: grid; grid-template-columns: 1fr 340px; gap: 2rem; align-items: start; }
+    .cal-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+    .cal-header { background: var(--navy); padding: 1.2rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .cal-header h3 { color: white; font-size: 1rem; font-weight: 700; }
+    .cal-nav button { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; margin-left: 0.4rem; }
+    .cal-nav button:hover { background: rgba(0,196,179,0.2); }
+    .cal-days-header { display: grid; grid-template-columns: repeat(7,1fr); background: var(--light); border-bottom: 1px solid var(--border); }
+    .cal-days-header div { padding: 0.5rem; text-align: center; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--grey); }
+    .cal-body { display: grid; grid-template-columns: repeat(7,1fr); }
+    .cal-cell { min-height: 80px; border-right: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 0.5rem; cursor: pointer; transition: background 0.15s; }
+    .cal-cell:nth-child(7n) { border-right: none; }
+    .cal-cell:hover { background: var(--teal-light); }
+    .cal-cell.today { background: rgba(0,196,179,0.05); }
+    .cal-cell.other-month { opacity: 0.4; }
+    .cal-cell.selected { background: var(--teal-light); border: 2px solid var(--teal); }
+    .cell-num { font-size: 0.8rem; font-weight: 600; color: var(--dark); display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 50%; }
+    .cal-cell.today .cell-num { background: var(--teal); color: var(--navy); font-weight: 800; }
+    .slot-dot { font-size: 0.65rem; margin-top: 0.15rem; padding: 0.1rem 0.35rem; border-radius: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .slot-open { background: rgba(30,132,73,0.12); color: var(--green); font-weight: 600; }
+    .slot-full { background: var(--light); color: var(--grey); }
+    .slot-mine { background: rgba(0,196,179,0.15); color: var(--teal-dark); font-weight: 700; }
+
+    /* TIME SLOTS SIDEBAR */
+    .slots-sidebar { }
+    .slots-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 1.2rem; }
+    .slots-card-header { background: var(--navy); padding: 1rem 1.2rem; }
+    .slots-card-header h4 { color: white; font-size: 0.9rem; font-weight: 700; }
+    .slots-card-header p { color: rgba(255,255,255,0.5); font-size: 0.78rem; margin-top: 0.15rem; }
+    .slot-list { padding: 0.75rem; display: flex; flex-direction: column; gap: 0.5rem; }
+    .slot-item { display: flex; align-items: center; justify-content: space-between; padding: 0.75rem 1rem; border-radius: 8px; border: 1.5px solid var(--border); transition: all 0.2s; cursor: pointer; }
+    .slot-item:hover { border-color: var(--teal); background: var(--teal-light); }
+    .slot-item.booked-me { border-color: var(--teal); background: var(--teal-light); }
+    .slot-item.slot-unavail { opacity: 0.5; cursor: not-allowed; }
+    .slot-item.slot-unavail:hover { border-color: var(--border); background: none; }
+    .slot-time { font-size: 0.85rem; font-weight: 700; color: var(--navy); }
+    .slot-info { font-size: 0.75rem; color: var(--grey); }
+    .slot-status { font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.6rem; border-radius: 100px; }
+    .st-open { background: rgba(30,132,73,0.1); color: var(--green); }
+    .st-full { background: var(--light); color: var(--grey); }
+    .st-mine { background: var(--teal-light); color: var(--teal-dark); }
+    .book-btn { width: 100%; background: var(--navy); color: white; border: none; padding: 0.85rem; border-radius: 8px; font-size: 0.9rem; font-weight: 700; cursor: pointer; transition: all 0.2s; margin-top: 0.5rem; }
+    .book-btn:hover { background: var(--navy-mid); }
+
+    /* REGISTER / PROFILE */
+    .reg-layout { display: grid; grid-template-columns: 1fr 320px; gap: 2rem; align-items: start; }
+    .reg-form-card { background: var(--white); border: 1px solid var(--border); border-radius: 20px; padding: 2.5rem; box-shadow: var(--shadow-md); }
+    .reg-form-card h3 { font-family: var(--font-display); font-size: 1.4rem; color: var(--navy); margin-bottom: 0.4rem; }
+    .reg-form-card > p { color: var(--grey); font-size: 0.88rem; margin-bottom: 2rem; }
+
+    .sf-field { margin-bottom: 1rem; }
+    .sf-field label { display: block; font-size: 0.83rem; font-weight: 600; color: var(--navy); margin-bottom: 0.35rem; }
+    .sf-field input, .sf-field select, .sf-field textarea { width: 100%; padding: 0.75rem 1rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.93rem; font-family: var(--font-body); color: var(--dark); background: var(--white); outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+    .sf-field input:focus, .sf-field select:focus, .sf-field textarea:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,196,179,0.1); }
+    .sf-field textarea { resize: vertical; min-height: 80px; }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .form-section-lbl { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); margin: 1.5rem 0 0.75rem; display: block; }
+
+    .skills-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.5rem; margin-bottom: 1rem; }
+    .skill-opt { display: none; }
+    .skill-lbl { padding: 0.55rem 0.5rem; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 0.78rem; font-weight: 600; color: var(--grey); text-align: center; transition: all 0.2s; background: var(--white); }
+    .skill-opt:checked + .skill-lbl { border-color: var(--teal); background: var(--teal-light); color: var(--navy); }
+
+    .avail-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 0.5rem; margin-bottom: 1rem; }
+    .avail-opt { display: none; }
+    .avail-lbl { padding: 0.55rem 0.4rem; border: 1.5px solid var(--border); border-radius: 8px; cursor: pointer; font-size: 0.75rem; font-weight: 600; color: var(--grey); text-align: center; transition: all 0.2s; line-height: 1.3; background: var(--white); }
+    .avail-opt:checked + .avail-lbl { border-color: var(--teal); background: var(--teal-light); color: var(--navy); }
+
+    .submit-btn { width: 100%; background: var(--teal); color: var(--navy); border: none; padding: 0.95rem; border-radius: 8px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.2s; letter-spacing: 0.02em; }
+    .submit-btn:hover { background: var(--teal-dark); box-shadow: var(--shadow-teal); transform: translateY(-1px); }
+
+    .reg-sidebar {}
+    .sidebar-card { background: var(--white); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.2rem; }
+    .sidebar-card h4 { font-size: 0.9rem; font-weight: 700; color: var(--navy); margin-bottom: 0.6rem; }
+    .sidebar-card p { font-size: 0.82rem; color: var(--grey); line-height: 1.55; }
+    .sidebar-card ul { list-style: none; margin-top: 0.5rem; }
+    .sidebar-card ul li { font-size: 0.82rem; color: var(--grey); padding: 0.2rem 0 0.2rem 1rem; position: relative; }
+    .sidebar-card ul li::before { content: '→'; position: absolute; left: 0; color: var(--teal); }
+
+    /* MODAL */
+    .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(15,42,74,0.75); z-index: 999; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: white; border-radius: 20px; max-width: 480px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .modal-header { background: var(--navy); padding: 1.5rem 2rem; border-radius: 20px 20px 0 0; }
+    .modal-header h3 { color: white; font-size: 1.05rem; font-weight: 700; }
+    .modal-header p { color: rgba(255,255,255,0.5); font-size: 0.82rem; margin-top: 0.2rem; }
+    .modal-body { padding: 2rem; }
+    .modal-close { float: right; background: rgba(255,255,255,0.1); border: none; color: white; width: 30px; height: 30px; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+    .confirm-btn { width: 100%; background: var(--teal); color: var(--navy); border: none; padding: 0.9rem; border-radius: 8px; font-size: 1rem; font-weight: 800; cursor: pointer; transition: all 0.2s; margin-top: 1rem; }
+    .confirm-btn:hover { background: var(--teal-dark); }
+
+    footer { background: var(--navy-dark); color: rgba(255,255,255,0.4); padding: 2rem; text-align: center; font-size: 0.82rem; border-top: 2px solid rgba(0,196,179,0.12); }
+    footer a { color: var(--teal); text-decoration: none; }
+
+    @media (max-width: 900px) { .cal-layout, .reg-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 700px) { .roles-grid { grid-template-columns: 1fr; } .skills-grid { grid-template-columns: repeat(2,1fr); } .avail-grid { grid-template-columns: repeat(2,1fr); } }
+    @media (max-width: 500px) { .tab-btn { font-size: 0.75rem; padding: 0.6rem 0.3rem; } .sf-nav-links li:not(:last-child) { display: none; } }
+  </style>
+</head>
+<body>
+
+<nav class="sf-nav" id="mainNav"></nav>
+
+<!-- HERO -->
+<div class="hero-bg page-hero">
+  <span class="section-label" style="display:block; text-align:center; margin-bottom:0.75rem;">Volunteer Hub</span>
+  <h1 class="display display-md">Give your time. Change Squamish.</h1>
+  <p>Every hour you give makes the movement stronger. Find a role that fits your skills and schedule — or just tell us when you're free and we'll find you one.</p>
+  <div class="hero-stats" style="margin-top:2rem;">
+    <div class="hstat"><span class="n">24</span><span class="l">Active Volunteers</span></div>
+    <div class="hstat"><span class="n">8</span><span class="l">Open Roles</span></div>
+    <div class="hstat"><span class="n">3</span><span class="l">Upcoming Shifts</span></div>
+  </div>
+</div>
+
+<div class="main">
+
+  <div class="tab-nav">
+    <button class="tab-btn active" id="tab-roles" onclick="switchTab('roles')">🧩 Open Roles</button>
+    <button class="tab-btn" id="tab-calendar" onclick="switchTab('calendar')">🗓️ Shift Calendar</button>
+    <button class="tab-btn" id="tab-register" onclick="switchTab('register')">✋ Sign Me Up</button>
+  </div>
+
+  <!-- ── TAB 1: OPEN ROLES ── -->
+  <div class="tab-panel active" id="panel-roles">
+    <div class="roles-controls">
+      <div class="search-wrap"><input type="text" placeholder="Search roles…" oninput="filterRoles(this.value)" /></div>
+      <select class="filter-select" onchange="filterRoleType(this.value)">
+        <option value="all">All Categories</option>
+        <option value="research">Research</option>
+        <option value="outreach">Outreach</option>
+        <option value="events">Events</option>
+        <option value="digital">Digital</option>
+        <option value="canvassing">Canvassing</option>
+        <option value="admin">Admin</option>
+      </select>
+      <select class="filter-select" onchange="filterRoleCommit(this.value)">
+        <option value="all">Any Commitment</option>
+        <option value="low">Low (1–3 hrs/wk)</option>
+        <option value="medium">Medium (3–6 hrs/wk)</option>
+        <option value="high">High (6+ hrs/wk)</option>
+      </select>
+    </div>
+    <div class="roles-grid" id="rolesGrid"></div>
+  </div>
+
+  <!-- ── TAB 2: SHIFT CALENDAR ── -->
+  <div class="tab-panel" id="panel-calendar">
+    <div class="cal-layout">
+      <div>
+        <div class="cal-card">
+          <div class="cal-header">
+            <h3 id="volCalTitle">April 2026</h3>
+            <div class="cal-nav">
+              <button onclick="changeVolMonth(-1)">‹</button>
+              <button onclick="changeVolMonth(1)">›</button>
+            </div>
+          </div>
+          <div class="cal-days-header">
+            <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
+          </div>
+          <div class="cal-body" id="volCalBody"></div>
+        </div>
+        <p style="font-size:0.8rem; color:var(--grey); margin-top:1rem;">Click a date to see available shifts. Click a shift to book your spot.</p>
+      </div>
+
+      <div class="slots-sidebar">
+        <div class="slots-card">
+          <div class="slots-card-header">
+            <h4 id="selectedDateLabel">Select a date</h4>
+            <p id="selectedDateSub">Click a date on the calendar to see available shifts</p>
+          </div>
+          <div class="slot-list" id="slotList">
+            <p style="font-size:0.83rem; color:var(--grey); padding:0.5rem; text-align:center;">No date selected</p>
+          </div>
+        </div>
+        <div class="sidebar-card">
+          <h4>📋 Your Upcoming Shifts</h4>
+          <div id="myShifts" style="font-size:0.83rem; color:var(--grey); margin-top:0.5rem;">
+            <p>No shifts booked yet. Click a date and sign up!</p>
+          </div>
+        </div>
+        <div class="sidebar-card">
+          <h4>💡 How it works</h4>
+          <p>1. Pick a date<br>2. Choose a time slot<br>3. We assign you a role based on your skills<br>4. You get a confirmation email with details</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── TAB 3: REGISTER ── -->
+  <div class="tab-panel" id="panel-register">
+    <div class="reg-layout">
+      <div class="reg-form-card">
+        <h3>Join the Volunteer Register</h3>
+        <p>Tell us who you are and what you can do. We'll match you to roles and shifts that fit your schedule — and reach out when we need you.</p>
+
+        <span class="form-section-lbl">About You</span>
+        <div class="field-row">
+          <div class="sf-field"><label>First Name</label><input type="text" placeholder="First name" /></div>
+          <div class="sf-field"><label>Last Name</label><input type="text" placeholder="Last name" /></div>
+        </div>
+        <div class="field-row">
+          <div class="sf-field"><label>Email</label><input type="email" placeholder="your@email.com" /></div>
+          <div class="sf-field"><label>Phone</label><input type="tel" placeholder="(250) 000-0000" /></div>
+        </div>
+        <div class="field-row">
+          <div class="sf-field"><label>Neighbourhood</label>
+            <select><option>Select area</option><option>Downtown Squamish</option><option>Garibaldi Highlands</option><option>Brackendale</option><option>Valleycliffe</option><option>Dentville</option><option>Other</option></select>
+          </div>
+          <div class="sf-field"><label>How long in Squamish?</label>
+            <select><option>Select</option><option>Under 1 year</option><option>1–3 years</option><option>3–10 years</option><option>10–20 years</option><option>20+ years</option></select>
+          </div>
+        </div>
+        <div class="sf-field"><label>Community groups you're part of (optional)</label>
+          <input type="text" placeholder="SCORA, hockey club, church, business group…" />
+        </div>
+
+        <span class="form-section-lbl">Your Skills</span>
+        <p style="font-size:0.82rem; color:var(--grey); margin-bottom:0.75rem;">Check everything that applies — don't undersell yourself.</p>
+        <div class="skills-grid">
+          <input type="checkbox" id="sk1" class="skill-opt"/><label class="skill-lbl" for="sk1">📊 Research</label>
+          <input type="checkbox" id="sk2" class="skill-opt"/><label class="skill-lbl" for="sk2">✍️ Writing</label>
+          <input type="checkbox" id="sk3" class="skill-opt"/><label class="skill-lbl" for="sk3">📱 Social Media</label>
+          <input type="checkbox" id="sk4" class="skill-opt"/><label class="skill-lbl" for="sk4">🎨 Design</label>
+          <input type="checkbox" id="sk5" class="skill-opt"/><label class="skill-lbl" for="sk5">📷 Photography</label>
+          <input type="checkbox" id="sk6" class="skill-opt"/><label class="skill-lbl" for="sk6">🎬 Video</label>
+          <input type="checkbox" id="sk7" class="skill-opt"/><label class="skill-lbl" for="sk7">🚗 Driving</label>
+          <input type="checkbox" id="sk8" class="skill-opt"/><label class="skill-lbl" for="sk8">🚪 Canvassing</label>
+          <input type="checkbox" id="sk9" class="skill-opt"/><label class="skill-lbl" for="sk9">📞 Phone/Text</label>
+          <input type="checkbox" id="sk10" class="skill-opt"/><label class="skill-lbl" for="sk10">🗣️ Public Speaking</label>
+          <input type="checkbox" id="sk11" class="skill-opt"/><label class="skill-lbl" for="sk11">💻 Tech/Web</label>
+          <input type="checkbox" id="sk12" class="skill-opt"/><label class="skill-lbl" for="sk12">📋 Admin/Org</label>
+          <input type="checkbox" id="sk13" class="skill-opt"/><label class="skill-lbl" for="sk13">🏛️ Legal</label>
+          <input type="checkbox" id="sk14" class="skill-opt"/><label class="skill-lbl" for="sk14">💰 Finance</label>
+          <input type="checkbox" id="sk15" class="skill-opt"/><label class="skill-lbl" for="sk15">🌐 Languages</label>
+        </div>
+
+        <span class="form-section-lbl">Availability</span>
+        <p style="font-size:0.82rem; color:var(--grey); margin-bottom:0.75rem;">When are you generally available? (Select all that apply)</p>
+        <div class="avail-grid">
+          <input type="checkbox" id="av1" class="avail-opt"/><label class="avail-lbl" for="av1">Weekday<br>Mornings</label>
+          <input type="checkbox" id="av2" class="avail-opt"/><label class="avail-lbl" for="av2">Weekday<br>Afternoons</label>
+          <input type="checkbox" id="av3" class="avail-opt"/><label class="avail-lbl" for="av3">Weekday<br>Evenings</label>
+          <input type="checkbox" id="av4" class="avail-opt"/><label class="avail-lbl" for="av4">Weekend<br>Mornings</label>
+          <input type="checkbox" id="av5" class="avail-opt"/><label class="avail-lbl" for="av5">Weekend<br>Afternoons</label>
+          <input type="checkbox" id="av6" class="avail-opt"/><label class="avail-lbl" for="av6">Weekend<br>Evenings</label>
+          <input type="checkbox" id="av7" class="avail-opt"/><label class="avail-lbl" for="av7">Flexible /<br>Whenever</label>
+          <input type="checkbox" id="av8" class="avail-opt"/><label class="avail-lbl" for="av8">Remote<br>Only</label>
+        </div>
+
+        <div class="sf-field" style="margin-top:0.5rem;">
+          <label>How many hours per week can you commit?</label>
+          <select>
+            <option>1–2 hours</option><option>3–5 hours</option>
+            <option>5–10 hours</option><option>10+ hours</option>
+            <option>One-off events only</option>
+          </select>
+        </div>
+
+        <span class="form-section-lbl">Interests & Motivation</span>
+        <div class="sf-field"><label>Which areas interest you most?</label>
+          <textarea placeholder="Research, canvassing, events, social media, candidate support, admin…"></textarea>
+        </div>
+        <div class="sf-field"><label>Why do you want to volunteer with Squamish Future?</label>
+          <textarea placeholder="What brought you here? What do you want to see change?"></textarea>
+        </div>
+        <div class="sf-field"><label>Anything else we should know?</label>
+          <input type="text" placeholder="Languages, special skills, constraints…" />
+        </div>
+
+        <button class="submit-btn" onclick="submitVolunteer()">Join the Volunteer Register →</button>
+      </div>
+
+      <div class="reg-sidebar">
+        <div class="sidebar-card">
+          <h4>🧩 What happens next</h4>
+          <ul>
+            <li>We review your registration within 48 hours</li>
+            <li>We match you to open roles that fit</li>
+            <li>You get an email with your first opportunity</li>
+            <li>You book your first shift via the calendar</li>
+            <li>We assign your role for each shift</li>
+          </ul>
+        </div>
+        <div class="sidebar-card">
+          <h4>⏱️ Time commitments</h4>
+          <p><strong style="color:var(--navy)">One-off events:</strong> Just show up when you can.<br><br><strong style="color:var(--navy)">Regular roles:</strong> 1–20 hrs/week depending on role.<br><br>We never pressure. Every hour counts.</p>
+        </div>
+        <div class="sidebar-card">
+          <h4>🏆 Most needed right now</h4>
+          <ul>
+            <li>Council research assistants</li>
+            <li>Door-to-door canvassers</li>
+            <li>Social media creators</li>
+            <li>Event day helpers</li>
+            <li>Neighbourhood ambassadors</li>
+          </ul>
+        </div>
+        <div class="sidebar-card" style="background: var(--teal-light); border-color: rgba(0,196,179,0.25);">
+          <h4 style="color:var(--teal-dark);">Already volunteering?</h4>
+          <p>Log your hours and view your assignments in the Shift Calendar tab.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- APPLY MODAL -->
+<div class="modal-overlay" id="applyModal">
+  <div class="modal">
+    <div class="modal-header">
+      <button class="modal-close" onclick="closeApplyModal()">✕</button>
+      <h3 id="applyTitle">Apply for Role</h3>
+      <p id="applySub">Express your interest</p>
+    </div>
+    <div class="modal-body">
+      <div class="sf-field"><label>Name</label><input type="text" placeholder="Your name" /></div>
+      <div class="sf-field"><label>Email</label><input type="email" placeholder="your@email.com" /></div>
+      <div class="sf-field"><label>Why are you interested in this role?</label><textarea rows="3" placeholder="Tell us a bit about yourself and why this role interests you…"></textarea></div>
+      <div class="sf-field"><label>Relevant experience (optional)</label><input type="text" placeholder="Brief background" /></div>
+      <button class="confirm-btn" onclick="confirmApply()">Submit Application →</button>
+    </div>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div class="modal-header"><h3 id="successTitle">Done!</h3><p>We'll be in touch.</p></div>
+    <div class="modal-body" style="text-align:center; padding:2.5rem;">
+      <div style="font-size:3rem; margin-bottom:1rem;" id="successIcon">✅</div>
+      <p id="successMsg" style="color:var(--grey); line-height:1.7; margin-bottom:1.5rem;"></p>
+      <button onclick="document.getElementById('successModal').classList.remove('active')" class="confirm-btn">Back to Volunteer Hub</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">SQUAMISH FUTURE</a> — Built by the community. For the community. · Squamish, BC
+</footer>
+
+<script>
+// ── ROLES DATA ────────────────────────────────────────────────
+const ROLES = [
+  { id:1, title:"Council Research Assistant", cat:"research", commit:"medium", icon:"📊", desc:"Track council meeting agendas, pull vote records, and help build our councillor scorecards. The most critical research role we have.", tasks:["Attend or watch council meeting recordings","Log vote outcomes in our tracker spreadsheet","Summarize key decisions in plain language","Flag urgent items to the coordinator"], hours:"3–5 hrs/week", spots:4, filled:2, urgent:true },
+  { id:2, title:"Neighbourhood Ambassador", cat:"outreach", commit:"low", icon:"👥", desc:"Be the Squamish Future face in your neighbourhood or community group. Share updates, invite people to events, and capture new members.", tasks:["Post Squamish Future updates in 1–2 community groups","Personally invite 5 people/month to join","Attend one event per month","Report neighbourhood sentiment back to the team"], hours:"1–3 hrs/week", spots:12, filled:5, urgent:false },
+  { id:3, title:"Social Media Creator", cat:"digital", commit:"medium", icon:"📱", desc:"Create and schedule content for our Facebook page and Instagram. Turn council votes and community issues into shareable, engaging posts.", tasks:["Draft 3–5 posts per week from research briefs","Design simple graphics (Canva templates provided)","Monitor comments and DMs","Grow engagement and page followers"], hours:"3–5 hrs/week", spots:2, filled:1, urgent:true },
+  { id:4, title:"Event Day Volunteer", cat:"events", commit:"low", icon:"🏛️", desc:"Help run events — setup, registration table, door greeters, email capture, and pack-down. No experience needed. Just show up.", tasks:["Arrive 45 min early for setup","Manage sign-in table and email collection","Help with seating and materials","Stay for 30 min of pack-down"], hours:"3–5 hrs per event (flexible)", spots:20, filled:8, urgent:false },
+  { id:5, title:"Door-to-Door Canvasser", cat:"canvassing", commit:"medium", icon:"🚪", desc:"The highest-impact volunteer role. Walk neighbourhoods, have conversations, and build our voter ID database. Training provided.", tasks:["Attend 2-hour canvassing training session","Walk assigned turf 2x per month","Log conversations in our canvassing app","Attend monthly canvasser check-in"], hours:"4–6 hrs/week", spots:15, filled:4, urgent:true },
+  { id:6, title:"Newsletter Editor", cat:"digital", commit:"medium", icon:"✍️", desc:"Help write and edit our weekly newsletter. Turn research findings and council updates into clear, readable 5-minute content.", tasks:["Draft newsletter sections from research briefs","Edit for clarity, tone, and brand voice","Review before send (Mon AM deadline)","Suggest stories and content ideas"], hours:"3–4 hrs/week", spots:2, filled:1, urgent:false },
+  { id:7, title:"Volunteer Coordinator", cat:"admin", commit:"high", icon:"📋", desc:"Help manage our growing volunteer base — matching people to roles, scheduling shifts, and making sure no one falls through the cracks.", tasks:["Respond to new volunteer signups within 48 hrs","Assign roles and shifts each week","Track volunteer hours and contributions","Coordinate with event hosts"], hours:"6–10 hrs/week", spots:1, filled:0, urgent:true },
+  { id:8, title:"Photographer / Videographer", cat:"digital", commit:"low", icon:"📷", desc:"Capture Squamish Future events, community moments, and candidate activities. Build our visual library of real Squamish people and places.", tasks:["Attend key events with camera","Edit and upload photos within 48 hrs","Help maintain our media library","Support social media with visual content"], hours:"Event-based (flexible)", spots:3, filled:1, urgent:false },
+  { id:9, title:"Issues Researcher", cat:"research", commit:"medium", icon:"🔍", desc:"Pick an issue — housing, development, recreation — and become our subject matter expert. Build the fact packages we publish.", tasks:["Research one issue area in depth","Pull all public documents and decisions","Write plain-language fact sheets","Present findings at research team meetings"], hours:"4–6 hrs/week", spots:6, filled:3, urgent:false },
+  { id:10, title:"Fundraising Assistant", cat:"admin", commit:"low", icon:"💰", desc:"Help plan and run fundraising events and outreach. Identify sponsors, manage donor relationships, and help hit our budget targets.", tasks:["Help organize fundraising events","Research and approach potential sponsors","Manage donor acknowledgement","Support crowdfunding campaigns"], hours:"2–4 hrs/week", spots:2, filled:0, urgent:false },
+];
+
+const CAT_LABELS = { research:"Research", outreach:"Outreach", events:"Events", digital:"Digital", canvassing:"Canvassing", admin:"Admin" };
+let roleTypeFilter = 'all'; let roleCommitFilter = 'all';
+let activeRoleId = null;
+
+function filterRoles(q) { renderRoles(q); }
+function filterRoleType(v) { roleTypeFilter = v; renderRoles(); }
+function filterRoleCommit(v) { roleCommitFilter = v; renderRoles(); }
+
+function renderRoles(q='') {
+  const grid = document.getElementById('rolesGrid');
+  let list = ROLES.filter(r => {
+    const matchCat = roleTypeFilter==='all' || r.cat===roleTypeFilter;
+    const matchCommit = roleCommitFilter==='all' || r.commit===roleCommitFilter;
+    const matchQ = !q || r.title.toLowerCase().includes(q.toLowerCase()) || r.desc.toLowerCase().includes(q.toLowerCase());
+    return matchCat && matchCommit && matchQ;
+  });
+  if (!list.length) { grid.innerHTML = '<div style="grid-column:1/-1; text-align:center; padding:3rem; color:var(--grey);">No roles match. Try a different filter.</div>'; return; }
+  grid.innerHTML = list.map(r => {
+    const open = r.spots - r.filled;
+    const full = open <= 0;
+    return `<div class="role-card">
+      <div class="role-header">
+        <div class="role-icon">${r.icon}</div>
+        <div class="role-title-wrap">
+          <div class="role-title">${r.title}</div>
+          <div class="role-meta">
+            <span class="role-tag tag-hours">⏱ ${r.hours}</span>
+            <span class="role-tag tag-skill">${CAT_LABELS[r.cat]}</span>
+            ${r.urgent ? '<span class="role-tag tag-urgency">🔥 Needed now</span>' : ''}
+            <span class="role-tag ${full ? 'tag-full' : 'tag-open'}">${full ? 'Full' : open + ' spots open'}</span>
+          </div>
+        </div>
+      </div>
+      <div class="role-body">
+        <div class="role-desc">${r.desc}</div>
+        <div class="role-tasks"><h5>What you'll do</h5><ul>${r.tasks.map(t => `<li>${t}</li>`).join('')}</ul></div>
+        <div class="role-footer">
+          <button class="btn-apply" ${full ? 'disabled' : ''} onclick="openApply(${r.id})">${full ? 'Join Waitlist' : 'Apply for This Role →'}</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function openApply(id) {
+  activeRoleId = id;
+  const r = ROLES.find(x => x.id === id);
+  document.getElementById('applyTitle').textContent = 'Apply: ' + r.title;
+  document.getElementById('applySub').textContent = r.hours + ' · ' + CAT_LABELS[r.cat];
+  document.getElementById('applyModal').classList.add('active');
+}
+function closeApplyModal() { document.getElementById('applyModal').classList.remove('active'); }
+function confirmApply() {
+  const r = ROLES.find(x => x.id === activeRoleId);
+  document.getElementById('applyModal').classList.remove('active');
+  document.getElementById('successTitle').textContent = 'Application received!';
+  document.getElementById('successIcon').textContent = '🎯';
+  document.getElementById('successMsg').textContent = `Thanks for applying to ${r.title}. Our volunteer coordinator will review your application and reach out within 48 hours.`;
+  document.getElementById('successModal').classList.add('active');
+}
+
+// ── VOLUNTEER CALENDAR ────────────────────────────────────────
+const MONTHS = ["","January","February","March","April","May","June","July","August","September","October","November","December"];
+let volMonth = 4; let volYear = 2026;
+let selectedDate = null; let myBookings = [];
+
+const SHIFTS = {
+  '2026-4-9':  [{ time:'5:30 PM – 9:00 PM', role:'Event Setup + Registration', event:'Founding Meeting', avail:8, booked:3 },{ time:'8:30 PM – 9:30 PM', role:'Pack-down Crew', event:'Founding Meeting', avail:4, booked:1 }],
+  '2026-4-14': [{ time:'9:30 AM – 12:00 PM', role:'Coffee Host Support', event:'Garibaldi Coffee', avail:2, booked:0 }],
+  '2026-4-18': [{ time:'9:00 AM – 12:00 PM', role:'Research Assistant', event:'Online Research Session', avail:12, booked:9 }],
+  '2026-4-22': [{ time:'5:00 PM – 8:00 PM', role:'Outreach & Sign-ups', event:'Ledge Brewing Meetup', avail:4, booked:1 }],
+  '2026-5-7':  [{ time:'5:30 PM – 10:00 PM', role:'Event Volunteer', event:'Development Forum', avail:10, booked:4 },{ time:'5:30 PM – 7:00 PM', role:'AV / Tech Setup', event:'Development Forum', avail:2, booked:2 }],
+  '2026-5-16': [{ time:'9:30 AM – 1:00 PM', role:'Canvassing Training', event:'Canvass Training Day', avail:20, booked:6 }],
+};
+
+function renderVolCalendar() {
+  document.getElementById('volCalTitle').textContent = `${MONTHS[volMonth]} ${volYear}`;
+  const first = new Date(volYear, volMonth-1, 1).getDay();
+  const total = new Date(volYear, volMonth, 0).getDate();
+  const prev = new Date(volYear, volMonth-1, 0).getDate();
+  const today = new Date(); const isCur = today.getMonth()+1===volMonth && today.getFullYear()===volYear;
+  let html = '';
+  for (let i=0; i<first; i++) html += `<div class="cal-cell other-month"><span class="cell-num">${prev-first+i+1}</span></div>`;
+  for (let d=1; d<=total; d++) {
+    const key = `${volYear}-${volMonth}-${d}`;
+    const dayShifts = SHIFTS[key] || [];
+    const isToday = isCur && d===today.getDate();
+    const isSel = selectedDate === key;
+    const isMine = myBookings.some(b => b.dateKey===key);
+    html += `<div class="cal-cell ${isToday?'today':''} ${isSel?'selected':''} ${dayShifts.length?'has-event':''}" onclick="selectDate('${key}', ${d})">
+      <span class="cell-num">${d}</span>
+      ${dayShifts.map(s => {
+        const full = s.booked >= s.avail;
+        const mine = myBookings.some(b => b.dateKey===key && b.time===s.time);
+        return `<div class="slot-dot ${mine?'slot-mine':full?'slot-full':'slot-open'}">${mine?'✓ Mine':full?'Full':s.role.split(' ')[0]}</div>`;
+      }).join('')}
+    </div>`;
+  }
+  const rem = 42-first-total;
+  for (let i=1; i<=rem; i++) html += `<div class="cal-cell other-month"><span class="cell-num">${i}</span></div>`;
+  document.getElementById('volCalBody').innerHTML = html;
+}
+
+function selectDate(key, day) {
+  selectedDate = key;
+  const shifts = SHIFTS[key] || [];
+  const parts = key.split('-');
+  document.getElementById('selectedDateLabel').textContent = `${MONTHS[parseInt(parts[1])]} ${day}, ${parts[0]}`;
+  document.getElementById('selectedDateSub').textContent = shifts.length ? `${shifts.length} shift${shifts.length>1?'s':''} available` : 'No shifts scheduled';
+  const list = document.getElementById('slotList');
+  if (!shifts.length) { list.innerHTML = '<p style="font-size:0.83rem;color:var(--grey);padding:0.5rem;text-align:center;">No shifts on this date.<br><a href="events.html" style="color:var(--teal);">View events →</a></p>'; renderVolCalendar(); return; }
+  list.innerHTML = shifts.map(s => {
+    const full = s.booked >= s.avail; const mine = myBookings.some(b => b.dateKey===key && b.time===s.time);
+    return `<div class="slot-item ${mine?'booked-me':''} ${full&&!mine?'slot-unavail':''}" onclick="${mine||full?'':''}" data-key="${key}" data-time="${s.time}">
+      <div><div class="slot-time">${s.time}</div><div class="slot-info">${s.role} · ${s.event}</div></div>
+      <span class="slot-status ${mine?'st-mine':full?'st-full':'st-open'}">${mine?'✓ Booked':full?'Full':`${s.avail-s.booked} open`}</span>
+    </div>`;
+  }).join('') + `<button class="book-btn" onclick="bookShift('${key}')">Book a Shift on This Day →</button>`;
+  list.querySelectorAll('.slot-item:not(.slot-unavail)').forEach(el => { el.addEventListener('click', () => bookSpecificShift(el.dataset.key, el.dataset.time)); });
+  renderVolCalendar();
+}
+
+function bookShift(key) {
+  const shifts = SHIFTS[key] || [];
+  const open = shifts.filter(s => s.booked < s.avail && !myBookings.some(b => b.dateKey===key && b.time===s.time));
+  if (!open.length) { alert('All shifts on this day are full or booked.'); return; }
+  bookSpecificShift(key, open[0].time);
+}
+function bookSpecificShift(key, time) {
+  const already = myBookings.some(b => b.dateKey===key && b.time===time);
+  if (already) { alert('You already have this shift booked!'); return; }
+  const s = (SHIFTS[key]||[]).find(x => x.time===time);
+  if (!s || s.booked >= s.avail) { alert('This shift is full.'); return; }
+  s.booked++;
+  myBookings.push({ dateKey:key, time, role:s.role, event:s.event });
+  updateMyShifts();
+  selectDate(key, parseInt(key.split('-')[2]));
+  document.getElementById('successTitle').textContent = 'Shift booked!';
+  document.getElementById('successIcon').textContent = '✅';
+  document.getElementById('successMsg').textContent = `You're signed up for ${s.role} on ${MONTHS[parseInt(key.split('-')[1])]} ${key.split('-')[2]} at ${time}. A confirmation email is on its way.`;
+  document.getElementById('successModal').classList.add('active');
+}
+function updateMyShifts() {
+  const el = document.getElementById('myShifts');
+  if (!myBookings.length) { el.innerHTML = '<p>No shifts booked yet.</p>'; return; }
+  el.innerHTML = myBookings.map(b => `<div style="padding:0.5rem 0; border-bottom:1px solid var(--border);">
+    <div style="font-size:0.83rem;font-weight:700;color:var(--navy);">${b.role}</div>
+    <div style="font-size:0.75rem;color:var(--grey);">${MONTHS[parseInt(b.dateKey.split('-')[1])]} ${b.dateKey.split('-')[2]} · ${b.time}</div>
+  </div>`).join('');
+}
+
+function changeVolMonth(dir) { volMonth+=dir; if(volMonth>12){volMonth=1;volYear++;} if(volMonth<1){volMonth=12;volYear--;} renderVolCalendar(); if(selectedDate) selectDate(selectedDate, parseInt(selectedDate.split('-')[2])); }
+
+// ── TABS ──────────────────────────────────────────────────────
+function switchTab(t) {
+  ['roles','calendar','register'].forEach(x => {
+    document.getElementById('tab-'+x).classList.toggle('active', x===t);
+    document.getElementById('panel-'+x).classList.toggle('active', x===t);
+  });
+  if (t==='calendar') renderVolCalendar();
+}
+function submitVolunteer() {
+  document.getElementById('successTitle').textContent = "You're on the register!";
+  document.getElementById('successIcon').textContent = '🤝';
+  document.getElementById('successMsg').textContent = "Welcome to the Squamish Future volunteer team. We'll review your profile within 48 hours and reach out with your first opportunity.";
+  document.getElementById('successModal').classList.add('active');
+}
+
+// INIT
+renderRoles();
+</script>
+<script src="nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Member Portal — SQUAMISH FUTURE</title>
+  <link rel="stylesheet" href="brand.css" />
+  <style>
+    body { background: #eef2f7; margin: 0; }
+
+    /* ── TOP BAR ─────────────────────────────────────── */
+    .topbar { background: var(--navy-dark); height: 58px; display: flex; align-items: center; justify-content: space-between; padding: 0 1.5rem; border-bottom: 2px solid rgba(0,196,179,0.2); position: sticky; top: 0; z-index: 200; }
+    .topbar-logo { font-family: var(--font-display); font-size: 1rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase; color: white; display: flex; align-items: center; gap: 0.5rem; text-decoration: none; }
+    .topbar-logo span { color: var(--teal); }
+    .topbar-badge { background: rgba(0,196,179,0.15); border: 1px solid rgba(0,196,179,0.3); color: var(--teal); font-size: 0.68rem; font-weight: 700; padding: 0.2rem 0.75rem; border-radius: 100px; letter-spacing: 0.08em; text-transform: uppercase; }
+    .topbar-right { display: flex; align-items: center; gap: 1rem; }
+    .topbar-notif { position: relative; cursor: pointer; }
+    .notif-icon { font-size: 1.1rem; opacity: 0.7; }
+    .notif-badge { position: absolute; top: -4px; right: -4px; width: 16px; height: 16px; background: #e74c3c; border-radius: 50%; font-size: 0.6rem; font-weight: 800; color: white; display: flex; align-items: center; justify-content: center; }
+    .user-pill { display: flex; align-items: center; gap: 0.6rem; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); border-radius: 100px; padding: 0.25rem 0.75rem 0.25rem 0.25rem; cursor: pointer; }
+    .user-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg, var(--teal), var(--navy-mid)); display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 800; color: white; flex-shrink: 0; }
+    .user-pill .uname { font-size: 0.82rem; color: rgba(255,255,255,0.85); font-weight: 600; }
+    .user-pill .urole { font-size: 0.65rem; color: var(--teal); }
+
+    /* ── LAYOUT ──────────────────────────────────────── */
+    .portal-wrap { display: grid; grid-template-columns: 230px 1fr; min-height: calc(100vh - 58px); }
+
+    /* ── SIDEBAR ─────────────────────────────────────── */
+    .sidebar { background: var(--navy); padding: 1.5rem 0; position: sticky; top: 58px; height: calc(100vh - 58px); overflow-y: auto; }
+    .sb-section { margin-bottom: 1.2rem; }
+    .sb-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.22); padding: 0 1.2rem; margin-bottom: 0.35rem; display: block; }
+    .ni { display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 1.2rem; color: rgba(255,255,255,0.55); font-size: 0.84rem; font-weight: 500; cursor: pointer; transition: all 0.18s; border-left: 3px solid transparent; user-select: none; }
+    .ni:hover { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.9); }
+    .ni.active { background: rgba(0,196,179,0.1); color: white; border-left-color: var(--teal); font-weight: 700; }
+    .ni .ico { font-size: 0.95rem; width: 18px; text-align: center; flex-shrink: 0; }
+    .ni .nb { margin-left: auto; font-size: 0.65rem; font-weight: 800; padding: 0.15rem 0.5rem; border-radius: 100px; min-width: 18px; text-align: center; }
+    .nb-red { background: #e74c3c; color: white; }
+    .nb-teal { background: var(--teal); color: var(--navy); }
+    .nb-amber { background: var(--amber); color: var(--navy); }
+
+    .sb-my-groups { padding: 0 0.75rem; margin-top: 0.5rem; }
+    .sb-group-chip { display: flex; align-items: center; gap: 0.5rem; padding: 0.45rem 0.6rem; border-radius: 8px; font-size: 0.78rem; color: rgba(255,255,255,0.6); cursor: pointer; transition: all 0.15s; margin-bottom: 0.25rem; }
+    .sb-group-chip:hover { background: rgba(255,255,255,0.06); color: white; }
+    .sb-group-chip.lead-chip .chip-role { color: var(--amber); font-size: 0.62rem; font-weight: 700; margin-left: auto; }
+    .sb-group-chip .chip-role { color: var(--teal); font-size: 0.62rem; font-weight: 700; margin-left: auto; }
+
+    /* ── MAIN ────────────────────────────────────────── */
+    .portal-main { padding: 1.8rem; overflow-y: auto; }
+    .panel { display: none; }
+    .panel.active { display: block; animation: fadein 0.2s ease; }
+    @keyframes fadein { from{opacity:0;transform:translateY(4px)} to{opacity:1;transform:translateY(0)} }
+
+    .page-hd { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.8rem; flex-wrap: wrap; gap: 1rem; }
+    .page-hd h1 { font-family: var(--font-display); font-size: 1.7rem; color: var(--navy); line-height: 1.15; }
+    .page-hd p { color: var(--grey); font-size: 0.88rem; margin-top: 0.3rem; }
+
+    /* ── STAT ROW ────────────────────────────────────── */
+    .stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-bottom: 1.8rem; }
+    .sc { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 1.2rem 1.4rem; }
+    .sc-lbl { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--grey); margin-bottom: 0.35rem; }
+    .sc-num { font-family: var(--font-display); font-size: 1.9rem; font-weight: 900; color: var(--navy); line-height: 1; }
+    .sc-sub { font-size: 0.72rem; color: var(--grey); margin-top: 0.3rem; }
+    .sc-teal .sc-num { color: var(--teal); }
+    .sc-amber .sc-num { color: var(--amber); }
+    .sc-green .sc-num { color: var(--green); }
+
+    /* ── MY DASHBOARD ────────────────────────────────── */
+    .my-dash-grid { display: grid; grid-template-columns: 1fr 340px; gap: 1.5rem; }
+    .my-tasks-section { }
+    .section-title-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .section-title-row h3 { font-size: 0.95rem; font-weight: 700; color: var(--navy); }
+    .section-title-row a { font-size: 0.8rem; color: var(--teal); text-decoration: none; cursor: pointer; }
+
+    .task-item { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 0.9rem 1.1rem; margin-bottom: 0.6rem; display: flex; align-items: flex-start; gap: 0.85rem; transition: all 0.18s; cursor: pointer; }
+    .task-item:hover { border-color: rgba(0,196,179,0.35); box-shadow: var(--shadow-sm); }
+    .task-item.claimed { border-left: 3px solid var(--teal); }
+    .task-item.leading { border-left: 3px solid var(--amber); }
+    .ti-pri { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+    .pri-h { background: #e74c3c; }
+    .pri-m { background: var(--amber); }
+    .pri-l { background: var(--green); }
+    .ti-body { flex: 1; }
+    .ti-title { font-size: 0.87rem; font-weight: 600; color: var(--dark); line-height: 1.35; }
+    .ti-meta { font-size: 0.72rem; color: var(--grey); margin-top: 0.25rem; display: flex; gap: 0.75rem; flex-wrap: wrap; }
+    .ti-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem; }
+    .ti-tag { font-size: 0.68rem; font-weight: 700; padding: 0.18rem 0.55rem; border-radius: 100px; white-space: nowrap; }
+    .ti-due { font-size: 0.7rem; color: var(--grey); }
+    .ti-due.soon { color: var(--amber); font-weight: 600; }
+    .ti-due.overdue { color: #e74c3c; font-weight: 700; }
+
+    .claim-btn { font-size: 0.72rem; font-weight: 700; padding: 0.2rem 0.65rem; border-radius: 6px; border: 1.5px solid var(--teal); color: var(--teal); background: none; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+    .claim-btn:hover { background: var(--teal); color: var(--navy); }
+    .claim-btn.claimed { background: var(--teal-light); color: var(--teal-dark); border-color: var(--teal-light); cursor: default; }
+
+    /* MY AREAS SIDEBAR */
+    .my-areas-sidebar { }
+    .my-area-card { background: white; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 1rem; }
+    .mac-header { padding: 1rem 1.2rem; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem; }
+    .mac-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+    .mac-title { font-size: 0.88rem; font-weight: 700; color: var(--navy); }
+    .mac-role { font-size: 0.7rem; color: var(--grey); margin-top: 0.1rem; }
+    .mac-role.is-lead { color: var(--amber); font-weight: 700; }
+    .mac-role.is-member { color: var(--teal-dark); font-weight: 600; }
+    .mac-body { padding: 0.85rem 1.2rem; }
+    .mac-stat { display: flex; justify-content: space-between; font-size: 0.78rem; padding: 0.25rem 0; border-bottom: 1px solid #f5f5f5; }
+    .mac-stat:last-child { border-bottom: none; }
+    .mac-stat .label { color: var(--grey); }
+    .mac-stat .val { font-weight: 700; color: var(--navy); }
+    .mac-footer { padding: 0.75rem 1.2rem; border-top: 1px solid var(--border); display: flex; gap: 0.5rem; }
+    .lead-btn { flex: 1; font-size: 0.78rem; font-weight: 700; padding: 0.4rem 0.5rem; border-radius: 6px; border: 1.5px solid var(--amber); color: var(--amber); background: none; cursor: pointer; transition: all 0.15s; text-align: center; }
+    .lead-btn:hover { background: var(--amber); color: var(--navy); }
+    .lead-btn.is-lead { background: rgba(232,160,32,0.1); color: #8a6010; border-color: rgba(232,160,32,0.3); cursor: default; }
+    .view-tasks-link { font-size: 0.75rem; color: var(--teal); text-decoration: none; cursor: pointer; padding: 0.4rem 0; display: flex; align-items: center; }
+
+    /* ── ALIGNMENT VIEW ──────────────────────────────── */
+    .alignment-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 1.2rem; }
+    .align-card { background: white; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .align-header { padding: 1rem 1.2rem; display: flex; align-items: center; gap: 0.75rem; }
+    .align-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0; }
+    .align-title { font-size: 0.9rem; font-weight: 700; color: var(--navy); }
+    .align-lead { font-size: 0.72rem; color: var(--grey); margin-top: 0.1rem; }
+    .align-progress { padding: 0 1.2rem 0.6rem; }
+    .ap-row { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--grey); margin-bottom: 0.3rem; }
+    .ap-bar { height: 5px; background: var(--light); border-radius: 100px; overflow: hidden; }
+    .ap-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal-dark)); border-radius: 100px; }
+    .align-tasks { border-top: 1px solid var(--border); padding: 0.75rem 1.2rem; }
+    .align-tasks-title { font-size: 0.67rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--grey); margin-bottom: 0.5rem; }
+    .align-task-row { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.3rem 0; border-bottom: 1px solid #f8f8f8; }
+    .align-task-row:last-child { border-bottom: none; }
+    .at-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+    .at-text { font-size: 0.78rem; color: var(--dark); line-height: 1.3; flex: 1; }
+    .at-who { font-size: 0.68rem; color: var(--grey); white-space: nowrap; }
+    .align-blocker { background: rgba(231,76,60,0.06); border-top: 1px solid rgba(231,76,60,0.15); padding: 0.6rem 1.2rem; font-size: 0.78rem; color: #c0392b; display: flex; align-items: center; gap: 0.4rem; }
+    .align-footer { padding: 0.75rem 1.2rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .align-member-stack { display: flex; gap: -4px; }
+    .sm-avatar { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.58rem; font-weight: 800; color: white; border: 2px solid white; margin-right: -4px; }
+    .align-needs { font-size: 0.72rem; color: var(--teal); cursor: pointer; font-weight: 600; }
+
+    /* ── KANBAN ──────────────────────────────────────── */
+    .board-top { display: flex; gap: 0.6rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .bf { padding: 0.45rem 0.9rem; border: 1.5px solid var(--border); border-radius: 100px; background: white; font-size: 0.8rem; font-weight: 600; color: var(--grey); cursor: pointer; transition: all 0.15s; }
+    .bf.active { background: var(--navy); color: white; border-color: var(--navy); }
+    .add-btn { margin-left: auto; background: var(--teal); color: var(--navy); border: none; padding: 0.5rem 1.1rem; border-radius: 8px; font-size: 0.82rem; font-weight: 700; cursor: pointer; }
+    .add-btn:hover { background: var(--teal-dark); }
+
+    .kanban { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; align-items: start; }
+    .k-col { background: #e4eaf2; border-radius: 14px; padding: 1rem; }
+    .k-col-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.85rem; }
+    .k-col-title { font-size: 0.75rem; font-weight: 700; color: var(--navy); letter-spacing: 0.06em; text-transform: uppercase; display: flex; align-items: center; gap: 0.4rem; }
+    .k-count { background: white; border: 1px solid var(--border); color: var(--grey); font-size: 0.65rem; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 100px; }
+    .k-add { background: none; border: 1.5px dashed #c8d4e0; color: #a0aec0; width: 24px; height: 24px; border-radius: 6px; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+    .k-add:hover { border-color: var(--teal); color: var(--teal); }
+    .k-card { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 0.95rem 1rem; margin-bottom: 0.65rem; cursor: grab; transition: all 0.18s; position: relative; }
+    .k-card:hover { box-shadow: 0 4px 16px rgba(15,42,74,0.1); border-color: rgba(0,196,179,0.3); transform: translateY(-1px); }
+    .k-card.is-mine { border-left: 3px solid var(--teal); }
+    .k-card.is-lead { border-left: 3px solid var(--amber); }
+    .k-tag { font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.55rem; border-radius: 100px; display: inline-block; margin-bottom: 0.4rem; }
+    .k-title { font-size: 0.85rem; font-weight: 600; color: var(--dark); line-height: 1.35; margin-bottom: 0.5rem; }
+    .k-footer { display: flex; align-items: center; justify-content: space-between; }
+    .k-who { display: flex; align-items: center; gap: 0.35rem; }
+    .k-avatar { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.58rem; font-weight: 800; color: white; }
+    .k-who span { font-size: 0.7rem; color: var(--grey); }
+    .k-due { font-size: 0.68rem; color: var(--grey); }
+    .k-due.soon { color: var(--amber); font-weight: 600; }
+    .k-pri { position: absolute; top: 0.7rem; right: 0.7rem; width: 8px; height: 8px; border-radius: 50%; }
+    .k-own-btn { font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 5px; border: 1px solid var(--teal); color: var(--teal); background: none; cursor: pointer; display: block; margin-top: 0.4rem; transition: all 0.15s; width: 100%; text-align: center; }
+    .k-own-btn:hover { background: var(--teal); color: var(--navy); }
+    .k-own-btn.owned { background: var(--teal-light); color: var(--teal-dark); border-color: var(--teal-light); cursor: default; }
+
+    /* ── GROUPS / OBJECTIVES / DIRECTORY — shared ────── */
+    .tag-media { background: rgba(108,52,131,0.1); color: #6c3483; }
+    .tag-ops { background: rgba(211,84,0,0.1); color: #d35400; }
+    .tag-research { background: rgba(46,134,193,0.1); color: #1a5276; }
+    .tag-events { background: rgba(30,132,73,0.1); color: var(--green); }
+    .tag-coord { background: rgba(0,196,179,0.12); color: var(--teal-dark); }
+    .tag-candidate { background: rgba(232,160,32,0.15); color: #8a6010; }
+
+    /* ── PHASE ───────────────────────────────────────── */
+    .phase-card { background: white; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 1.5rem; }
+    .phase-card-hd { background: var(--navy); padding: 1.1rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .phase-card-hd h3 { color: white; font-size: 1rem; font-weight: 700; }
+    .phase-card-hd .edate { color: var(--teal); font-size: 0.82rem; }
+    .phases { display: grid; grid-template-columns: repeat(6,1fr); padding: 1.8rem 1.5rem 1rem; gap: 0; position: relative; }
+    .phases::before { content:''; position:absolute; top: 42px; left: 10%; right: 10%; height: 3px; background: var(--border); z-index: 0; }
+    .ph { display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; z-index: 1; }
+    .ph-dot { width: 44px; height: 44px; border-radius: 50%; border: 3px solid var(--border); background: white; display: flex; align-items: center; justify-content: center; font-size: 1rem; margin-bottom: 0.55rem; transition: all 0.3s; }
+    .ph.done .ph-dot { background: var(--green); border-color: var(--green); }
+    .ph.current .ph-dot { background: var(--teal); border-color: var(--teal); box-shadow: 0 0 0 7px rgba(0,196,179,0.14); animation: pdot 2s infinite; }
+    @keyframes pdot { 0%,100%{box-shadow:0 0 0 5px rgba(0,196,179,0.12)} 50%{box-shadow:0 0 0 12px rgba(0,196,179,0.06)} }
+    .ph-name { font-size: 0.7rem; font-weight: 700; color: var(--navy); line-height: 1.3; }
+    .ph.upcoming .ph-name { color: var(--grey); }
+    .ph-date { font-size: 0.62rem; color: var(--grey); margin-top: 0.2rem; }
+    .ph.current .ph-date { color: var(--teal); font-weight: 600; }
+    .pbar-wrap { margin: 0.5rem 1.5rem 0; }
+    .pbar-labels { display: flex; justify-content: space-between; font-size: 0.72rem; color: var(--grey); margin-bottom: 0.3rem; }
+    .pbar { height: 7px; background: var(--light); border-radius: 100px; overflow: hidden; }
+    .pbar-fill { height: 100%; background: linear-gradient(90deg, var(--teal), var(--teal-dark)); border-radius: 100px; }
+    .countdown-strip { display: flex; gap: 0; border-top: 1px solid rgba(0,196,179,0.15); }
+    .cd-item { flex: 1; text-align: center; padding: 0.85rem 0.5rem; border-right: 1px solid rgba(0,196,179,0.1); }
+    .cd-item:last-child { border-right: none; }
+    .cd-n { font-family: var(--font-display); font-size: 1.5rem; font-weight: 900; color: var(--navy); display: block; }
+    .cd-l { font-size: 0.62rem; font-weight: 700; color: var(--grey); letter-spacing: 0.08em; text-transform: uppercase; }
+
+    /* ── OBJECTIVES ──────────────────────────────────── */
+    .obj-card { background: white; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 0.85rem; }
+    .obj-row { display: flex; align-items: center; gap: 1rem; padding: 1.1rem 1.4rem; cursor: pointer; }
+    .obj-ring { width: 48px; height: 48px; position: relative; flex-shrink: 0; }
+    .obj-ring svg { transform: rotate(-90deg); }
+    .obj-ring .pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.68rem; font-weight: 800; color: var(--navy); }
+    .obj-info { flex: 1; }
+    .obj-title { font-size: 0.92rem; font-weight: 700; color: var(--navy); margin-bottom: 0.2rem; }
+    .obj-sub { font-size: 0.78rem; color: var(--grey); }
+    .obj-right { display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem; }
+    .obj-tasks-body { border-top: 1px solid var(--border); padding: 0 1.4rem 0.85rem; display: none; }
+    .obj-tasks-body.open { display: block; }
+    .ot-item { display: flex; align-items: center; gap: 0.7rem; padding: 0.55rem 0; border-bottom: 1px solid #f5f5f5; }
+    .ot-item:last-child { border-bottom: none; }
+    input[type="checkbox"].otcb { width: 16px; height: 16px; accent-color: var(--teal); cursor: pointer; flex-shrink: 0; }
+    .ot-text { font-size: 0.84rem; color: var(--dark); flex: 1; }
+    input.otcb:checked + .ot-text { text-decoration: line-through; color: var(--grey); }
+    .ot-assign { font-size: 0.7rem; color: var(--grey); background: var(--light); padding: 0.15rem 0.55rem; border-radius: 100px; white-space: nowrap; }
+    .ot-claim { font-size: 0.68rem; font-weight: 700; padding: 0.15rem 0.55rem; border-radius: 6px; border: 1px solid var(--teal); color: var(--teal); background: none; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+    .ot-claim:hover { background: var(--teal); color: var(--navy); }
+
+    /* ── DIRECTORY ───────────────────────────────────── */
+    .members-table { background: white; border: 1px solid var(--border); border-radius: 14px; overflow: hidden; }
+    .mt-head { display: grid; grid-template-columns: 2.2fr 1.4fr 1fr 1fr 90px; gap: 1rem; padding: 0.7rem 1.2rem; background: var(--navy); font-size: 0.68rem; font-weight: 700; color: rgba(255,255,255,0.55); letter-spacing: 0.08em; text-transform: uppercase; }
+    .mt-row { display: grid; grid-template-columns: 2.2fr 1.4fr 1fr 1fr 90px; gap: 1rem; padding: 0.85rem 1.2rem; border-bottom: 1px solid var(--border); align-items: center; transition: background 0.12s; }
+    .mt-row:last-child { border-bottom: none; }
+    .mt-row:hover { background: var(--light); }
+    .m-id { display: flex; align-items: center; gap: 0.7rem; }
+    .m-av { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 800; color: white; flex-shrink: 0; }
+    .m-name { font-size: 0.86rem; font-weight: 600; color: var(--navy); }
+    .m-hood { font-size: 0.72rem; color: var(--grey); }
+    .m-gpill { display: inline-block; padding: 0.18rem 0.6rem; border-radius: 100px; font-size: 0.68rem; font-weight: 700; }
+    .m-role-badge { font-size: 0.7rem; font-weight: 700; }
+    .role-lead { color: var(--amber); }
+    .role-member { color: var(--teal-dark); }
+    .st-dot { width: 9px; height: 9px; border-radius: 50%; display: inline-block; margin-right: 0.3rem; }
+
+    /* ── MODAL ───────────────────────────────────────── */
+    .modal-ov { display: none; position: fixed; inset: 0; background: rgba(8,15,26,0.7); z-index: 999; align-items: center; justify-content: center; padding: 1rem; }
+    .modal-ov.open { display: flex; }
+    .modal { background: white; border-radius: 18px; max-width: 500px; width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 24px 70px rgba(0,0,0,0.35); }
+    .m-hd { background: var(--navy); padding: 1.4rem 1.8rem; border-radius: 18px 18px 0 0; display: flex; justify-content: space-between; align-items: flex-start; }
+    .m-hd h3 { color: white; font-size: 1rem; font-weight: 700; }
+    .m-hd p { color: rgba(255,255,255,0.5); font-size: 0.8rem; margin-top: 0.2rem; }
+    .m-close { background: rgba(255,255,255,0.1); border: none; color: white; width: 28px; height: 28px; border-radius: 6px; cursor: pointer; font-size: 0.95rem; }
+    .m-body { padding: 1.8rem; }
+    .sf-field { margin-bottom: 0.9rem; }
+    .sf-field label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--navy); margin-bottom: 0.3rem; }
+    .sf-field input, .sf-field select, .sf-field textarea { width: 100%; padding: 0.72rem 0.95rem; border: 1.5px solid var(--border); border-radius: 8px; font-size: 0.92rem; font-family: var(--font-body); color: var(--dark); outline: none; transition: border-color 0.2s; }
+    .sf-field input:focus, .sf-field select:focus { border-color: var(--teal); }
+    .frow { display: grid; grid-template-columns: 1fr 1fr; gap: 0.85rem; }
+    .m-btn { width: 100%; background: var(--teal); color: var(--navy); border: none; padding: 0.85rem; border-radius: 8px; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: all 0.2s; margin-top: 0.4rem; }
+    .m-btn:hover { background: var(--teal-dark); }
+
+    /* ── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 1100px) { .stat-row { grid-template-columns: repeat(2,1fr); } .kanban { grid-template-columns: repeat(2,1fr); } .alignment-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 900px) { .portal-wrap { grid-template-columns: 1fr; } .sidebar { display: none; } .my-dash-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) { .kanban { grid-template-columns: 1fr; } .alignment-grid { grid-template-columns: 1fr; } .phases { grid-template-columns: repeat(3,1fr); } .mt-head, .mt-row { grid-template-columns: 2fr 1fr 80px; } }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<nav class="sf-nav" id="mainNav"></nav>
+<div class="portal-wrap">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sb-section">
+      <span class="sb-label">Me</span>
+      <div class="ni active" onclick="show('mydash')"><span class="ico">🏠</span> My Dashboard</div>
+      <div class="ni" onclick="show('phase')"><span class="ico">🗺️</span> Election Phase</div>
+    </div>
+    <div class="sb-section">
+      <span class="sb-label">Team</span>
+      <div class="ni" onclick="show('alignment')"><span class="ico">🔄</span> Group Alignment <span class="nb nb-red">2</span></div>
+      <div class="ni" onclick="show('tasks')"><span class="ico">✅</span> Task Board <span class="nb nb-amber">7</span></div>
+      <div class="ni" onclick="show('objectives')"><span class="ico">🎯</span> Objectives</div>
+    </div>
+    <div class="sb-section">
+      <span class="sb-label">People</span>
+      <div class="ni" onclick="show('groups')"><span class="ico">👥</span> Working Groups</div>
+      <div class="ni" onclick="show('directory')"><span class="ico">📋</span> Directory</div>
+    </div>
+    <div class="sb-section">
+      <span class="sb-label">My Groups</span>
+      <div class="sb-my-groups" id="sbMyGroups"></div>
+    </div>
+    <div class="sb-section">
+      <span class="sb-label">Links</span>
+      <div class="ni" onclick="open('events.html')"><span class="ico">📅</span> Events</div>
+      <div class="ni" onclick="open('volunteer.html')"><span class="ico">🤝</span> Volunteers</div>
+      <div class="ni" onclick="open('tracker.html')"><span class="ico">📊</span> Issues Tracker</div>
+      <div class="ni" onclick="open('index.html')"><span class="ico">🌐</span> Public Site</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="portal-main">
+
+    <!-- ══ MY DASHBOARD ══════════════════════════════ -->
+    <div class="panel active" id="panel-mydash">
+      <div class="page-hd">
+        <div><h1>Good morning, Austin 👋</h1><p>Here's everything on your plate — and what your teams are moving on today.</p></div>
+        <button class="add-btn" onclick="openModal('addTask')">+ New Task</button>
+      </div>
+
+      <div class="stat-row">
+        <div class="sc sc-teal"><div class="sc-lbl">My Open Tasks</div><div class="sc-num" id="myTaskCount">—</div><div class="sc-sub">Across my groups</div></div>
+        <div class="sc sc-amber"><div class="sc-lbl">Tasks I Lead</div><div class="sc-num" id="myLeadCount">—</div><div class="sc-sub">Responsibility owner</div></div>
+        <div class="sc"><div class="sc-lbl">My Groups</div><div class="sc-num" id="myGroupCount">—</div><div class="sc-sub">Joined + leading</div></div>
+        <div class="sc sc-amber"><div class="sc-lbl">Days to Election</div><div class="sc-num">207</div><div class="sc-sub">Oct 18, 2026 est.</div></div>
+      </div>
+
+      <div class="my-dash-grid">
+        <div class="my-tasks-section">
+          <div class="section-title-row">
+            <h3>📌 My Tasks</h3>
+            <a onclick="show('tasks')">View full board →</a>
+          </div>
+          <div id="myTasksFeed"></div>
+
+          <div class="section-title-row" style="margin-top:1.5rem;">
+            <h3>🔓 Available to Claim</h3>
+            <a onclick="show('tasks')">See all →</a>
+          </div>
+          <p style="font-size:0.8rem;color:var(--grey);margin-bottom:0.75rem;">Unassigned tasks in your groups — take ownership with one click.</p>
+          <div id="claimableFeed"></div>
+        </div>
+
+        <div class="my-areas-sidebar">
+          <div class="section-title-row">
+            <h3>🧩 My Areas</h3>
+            <a onclick="show('groups')">Browse all →</a>
+          </div>
+          <div id="myAreaCards"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══ ELECTION PHASE ════════════════════════════ -->
+    <div class="panel" id="panel-phase">
+      <div class="page-hd"><div><h1>Election Phase Tracker</h1><p>Where we are, what's needed, and how far we have to go.</p></div></div>
+      <div class="phase-card">
+        <div class="phase-card-hd"><h3>2026 Municipal Election — <span style="color:var(--teal)">Phase 1: Foundation</span></h3><span class="edate">🗳️ Oct 18, 2026</span></div>
+        <div class="phases">
+          <div class="ph done"><div class="ph-dot">✓</div><div class="ph-name">Phase 0<br>Launch</div><div class="ph-date">Mar 2026</div></div>
+          <div class="ph current"><div class="ph-dot">🏗️</div><div class="ph-name">Phase 1<br>Foundation</div><div class="ph-date">Now → Jun</div></div>
+          <div class="ph upcoming"><div class="ph-dot">👥</div><div class="ph-name">Phase 2<br>Base Build</div><div class="ph-date">May–Aug</div></div>
+          <div class="ph upcoming"><div class="ph-dot">🎯</div><div class="ph-name">Phase 3<br>Candidates</div><div class="ph-date">Jun–Sep</div></div>
+          <div class="ph upcoming"><div class="ph-dot">📣</div><div class="ph-name">Phase 4<br>Campaign</div><div class="ph-date">Sep–Oct</div></div>
+          <div class="ph upcoming"><div class="ph-dot">🗳️</div><div class="ph-name">Phase 5<br>GOTV</div><div class="ph-date">Oct 2026</div></div>
+        </div>
+        <div class="pbar-wrap" style="margin-bottom:0;">
+          <div class="pbar-labels"><span>Overall campaign progress</span><strong>Phase 2 of 6 — 18%</strong></div>
+          <div class="pbar"><div class="pbar-fill" style="width:18%"></div></div>
+        </div>
+        <div class="countdown-strip">
+          <div class="cd-item"><span class="cd-n">207</span><span class="cd-l">Days</span></div>
+          <div class="cd-item"><span class="cd-n">Apr 9</span><span class="cd-l">Next Event</span></div>
+          <div class="cd-item"><span class="cd-n">47</span><span class="cd-l">Members</span></div>
+          <div class="cd-item"><span class="cd-n">0</span><span class="cd-l">Endorsed</span></div>
+          <div class="cd-item"><span class="cd-n">$0</span><span class="cd-l">Raised</span></div>
+        </div>
+      </div>
+      <div id="phaseCards"></div>
+    </div>
+
+    <!-- ══ ALIGNMENT VIEW ════════════════════════════ -->
+    <div class="panel" id="panel-alignment">
+      <div class="page-hd">
+        <div><h1>Group Alignment</h1><p>What every working group is focused on right now — blockers, progress, and where they need help.</p></div>
+        <button class="add-btn" onclick="openModal('addTask')">+ Assign Task</button>
+      </div>
+      <div class="alignment-grid" id="alignmentGrid"></div>
+    </div>
+
+    <!-- ══ TASK BOARD ═════════════════════════════════ -->
+    <div class="panel" id="panel-tasks">
+      <div class="page-hd"><div><h1>Task Board</h1><p>All tasks across every group. Claim, assign, and move.</p></div><button class="add-btn" onclick="openModal('addTask')">+ Add Task</button></div>
+      <div class="board-top">
+        <button class="bf active" onclick="filterBoard('all',this)">All</button>
+        <button class="bf" onclick="filterBoard('media',this)">📣 Media</button>
+        <button class="bf" onclick="filterBoard('ops',this)">⚙️ Ops</button>
+        <button class="bf" onclick="filterBoard('research',this)">🔬 Research</button>
+        <button class="bf" onclick="filterBoard('events',this)">🎪 Events</button>
+        <button class="bf" onclick="filterBoard('coord',this)">🔗 Coord</button>
+        <button class="bf" onclick="filterBoard('candidate',this)">🗳️ Candidate</button>
+      </div>
+      <div class="kanban" id="kanbanBoard"></div>
+    </div>
+
+    <!-- ══ OBJECTIVES ════════════════════════════════ -->
+    <div class="panel" id="panel-objectives">
+      <div class="page-hd"><div><h1>Objectives</h1><p>High-level goals — claim tasks, track progress, own deliverables.</p></div><span style="background:var(--teal-light);border:1px solid rgba(0,196,179,0.25);color:var(--teal-dark);font-size:0.78rem;font-weight:700;padding:0.4rem 1rem;border-radius:100px;">📍 Phase 1 — Foundation</span></div>
+      <div id="objectivesList"></div>
+    </div>
+
+    <!-- ══ WORKING GROUPS ═════════════════════════════ -->
+    <div class="panel" id="panel-groups">
+      <div class="page-hd"><div><h1>Working Groups</h1><p>Join a group, become a leader, see what's happening inside each team.</p></div></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1.2rem;" id="groupsGrid"></div>
+    </div>
+
+    <!-- ══ DIRECTORY ══════════════════════════════════ -->
+    <div class="panel" id="panel-directory">
+      <div class="page-hd"><div><h1>Member Directory</h1><p>All active members, their groups, roles, and task counts.</p></div></div>
+      <div style="display:flex;gap:0.75rem;margin-bottom:1.2rem;flex-wrap:wrap;">
+        <div style="flex:1;min-width:180px;position:relative;">
+          <span style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);font-size:0.85rem;">🔍</span>
+          <input type="text" style="width:100%;padding:0.65rem 1rem 0.65rem 2.4rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.9rem;outline:none;" placeholder="Search members…" oninput="filterDir(this.value)" />
+        </div>
+        <select style="padding:0.65rem 1rem;border:1.5px solid var(--border);border-radius:8px;font-size:0.86rem;outline:none;" onchange="filterDirGroup(this.value)">
+          <option value="all">All Groups</option><option value="media">Media</option><option value="ops">Ops</option><option value="research">Research</option><option value="events">Events</option><option value="coord">Coordination</option>
+        </select>
+      </div>
+      <div class="members-table">
+        <div class="mt-head"><div>Member</div><div>Group / Role</div><div>Neighbourhood</div><div>Tasks</div><div>Status</div></div>
+        <div id="dirRows"></div>
+      </div>
+    </div>
+
+  </div><!-- /portal-main -->
+</div>
+
+<!-- ADD TASK MODAL -->
+<div class="modal-ov" id="modal-addTask">
+  <div class="modal">
+    <div class="m-hd"><div><h3>Add Task</h3><p>Assign to a group and member</p></div><button class="m-close" onclick="closeModal('addTask')">✕</button></div>
+    <div class="m-body">
+      <div class="sf-field"><label>Task Title</label><input type="text" id="nt-title" placeholder="What needs to get done?" /></div>
+      <div class="frow">
+        <div class="sf-field"><label>Group</label><select id="nt-group"><option value="media">📣 Media</option><option value="ops">⚙️ Ops</option><option value="research">🔬 Research</option><option value="events">🎪 Events</option><option value="coord">🔗 Coord</option><option value="candidate">🗳️ Candidate</option></select></div>
+        <div class="sf-field"><label>Priority</label><select id="nt-pri"><option value="h">🔴 High</option><option value="m">🟡 Medium</option><option value="l">🟢 Low</option></select></div>
+      </div>
+      <div class="frow">
+        <div class="sf-field"><label>Assign To</label><select id="nt-assign"><option>Austin N.</option><option>Kristina P.</option><option>Sarah M.</option><option>Tom K.</option><option>Mark T.</option><option>Lisa B.</option><option>Unassigned</option></select></div>
+        <div class="sf-field"><label>Due</label><input type="date" id="nt-due" /></div>
+      </div>
+      <div class="sf-field"><label>Notes (optional)</label><textarea rows="2" id="nt-notes" placeholder="Any context…"></textarea></div>
+      <button class="m-btn" onclick="addTask()">Add Task →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════
+const ME = 'Austin N.';
+
+const GROUPS = [
+  { id:'media',     icon:'📣', label:'Media & Comms',    cls:'tag-media',     bg:'rgba(108,52,131,0.1)',  lead:'Sarah M.',  members:['Sarah M.','Tom K.','Lisa B.'],             openTasks:5, totalTasks:12, blocker:null,
+    focus:'Launch Facebook page, build content calendar, write newsletter #1',
+    inprogress:['Facebook page setup','Newsletter issue #1 draft','Content calendar Apr–May'] },
+  { id:'ops',       icon:'⚙️', label:'Operations',       cls:'tag-ops',       bg:'rgba(211,84,0,0.1)',    lead:'Austin N.', members:['Austin N.','Kristina P.'],                  openTasks:4, totalTasks:9,  blocker:'Need bank account before we can pay coordinator',
+    focus:'Society filing, coordinator hire, Airtable setup, domain',
+    inprogress:['BC Society incorporation','Coordinator hire','MailerLite setup'] },
+  { id:'research',  icon:'🔬', label:'Data & Research',  cls:'tag-research',  bg:'rgba(46,134,193,0.1)',  lead:'Mark T.',   members:['Mark T.','James H.','Priya K.'],            openTasks:7, totalTasks:14, blocker:'Waiting on Elections BC for voter file',
+    focus:'2025 council votes, Brendan Park facts, attendance tracker',
+    inprogress:['2025 AI votes pull','Brendan Park fact package','Council attendance 2024-25'] },
+  { id:'events',    icon:'🎪', label:'Events',            cls:'tag-events',    bg:'rgba(30,132,73,0.1)',   lead:'Lisa B.',   members:['Lisa B.','Rachel S.'],                       openTasks:3, totalTasks:8,  blocker:null,
+    focus:'April 9 founding meeting, May coffee series, forum planning',
+    inprogress:['Apr 9 invite list','Apr 9 agenda','May coffee venues'] },
+  { id:'coord',     icon:'🔗', label:'Coordination',     cls:'tag-coord',     bg:'rgba(0,196,179,0.12)',  lead:'Austin N.', members:['Austin N.','Karen P.'],                      openTasks:4, totalTasks:11, blocker:null,
+    focus:'Coalition mapping, fundraising launch, candidate outreach',
+    inprogress:['Founding email draft','Coalition group list','Donate page live'] },
+  { id:'candidate', icon:'🗳️', label:'Candidate Pipeline',cls:'tag-candidate', bg:'rgba(232,160,32,0.12)', lead:'Austin N.', members:['Austin N.'],                                openTasks:2, totalTasks:6,  blocker:null,
+    focus:'Identify 5 potential candidates before June, open vetting pipeline',
+    inprogress:['Initial candidate longlist','Questionnaire final draft'] },
+];
+
+const MEMBERS = [
+  { name:'Austin Neill',   ini:'AN',  col:'#0f2a4a', hood:'Downtown',           group:'coord',    role:'lead',   tasks:8,  status:'active' },
+  { name:'Kristina P.',    ini:'KP',  col:'#00c4b3', hood:'Garibaldi Highlands', group:'ops',      role:'member', tasks:5,  status:'active' },
+  { name:'Sarah M.',       ini:'SM',  col:'#6c3483', hood:'Valleycliffe',        group:'media',    role:'lead',   tasks:4,  status:'active' },
+  { name:'Tom K.',         ini:'TK',  col:'#d35400', hood:'Brackendale',         group:'media',    role:'member', tasks:3,  status:'active' },
+  { name:'Mark T.',        ini:'MT',  col:'#1a5276', hood:'Downtown',            group:'research', role:'lead',   tasks:6,  status:'active' },
+  { name:'Lisa B.',        ini:'LB',  col:'#1e8449', hood:'Garibaldi Highlands', group:'events',   role:'lead',   tasks:3,  status:'active' },
+  { name:'James H.',       ini:'JH',  col:'#7f8c8d', hood:'Dentville',           group:'research', role:'member', tasks:2,  status:'active' },
+  { name:'Priya K.',       ini:'PK',  col:'#8e44ad', hood:'Downtown',            group:'research', role:'member', tasks:1,  status:'new'    },
+  { name:'Rachel S.',      ini:'RS',  col:'#16a085', hood:'Brackendale',         group:'events',   role:'member', tasks:2,  status:'active' },
+  { name:'Karen P.',       ini:'KaP', col:'#e8a020', hood:'Valleycliffe',        group:'coord',    role:'member', tasks:1,  status:'new'    },
+];
+
+let TASKS = [
+  { id:1,  title:'Pull all 2025 council AI votes',           group:'research',  status:'todo',       pri:'h', assign:'Mark T.',    due:'Apr 7',  me:false, owned:false },
+  { id:2,  title:'Build Brendan Park full fact package',     group:'research',  status:'inprogress', pri:'h', assign:'Mark T.',    due:'Apr 7',  me:false, owned:false },
+  { id:3,  title:'Set up MailerLite + signup form',          group:'ops',       status:'todo',       pri:'h', assign:ME,           due:'Apr 1',  me:true,  owned:true  },
+  { id:4,  title:'Create Facebook page and profile',         group:'media',     status:'inprogress', pri:'h', assign:'Sarah M.',   due:'Apr 1',  me:false, owned:false },
+  { id:5,  title:'Register squamishfuture.ca domain',        group:'ops',       status:'todo',       pri:'h', assign:ME,           due:'Apr 1',  me:true,  owned:true  },
+  { id:6,  title:'Draft founding email from core 5',         group:'coord',     status:'inprogress', pri:'h', assign:ME,           due:'Mar 28', me:true,  owned:true  },
+  { id:7,  title:'Identify largest Squamish Facebook groups',group:'media',     status:'todo',       pri:'m', assign:'Tom K.',     due:'Apr 7',  me:false, owned:false },
+  { id:8,  title:'Write launch newsletter issue #1',         group:'media',     status:'todo',       pri:'m', assign:'Sarah M.',   due:'Apr 8',  me:false, owned:false },
+  { id:9,  title:'Pull council attendance records 2024-25',  group:'research',  status:'todo',       pri:'m', assign:'James H.',   due:'Apr 7',  me:false, owned:false },
+  { id:10, title:'File BC Society incorporation',            group:'ops',       status:'todo',       pri:'h', assign:ME,           due:'Apr 15', me:true,  owned:true  },
+  { id:11, title:'April 9 event — venue confirmation',       group:'events',    status:'done',       pri:'h', assign:'Lisa B.',    due:'Mar 25', me:false, owned:false },
+  { id:12, title:'April 9 event — invite all contacts',      group:'events',    status:'inprogress', pri:'h', assign:'Lisa B.',    due:'Mar 28', me:false, owned:false },
+  { id:13, title:'Watch Meet Squamish YouTube channel',      group:'research',  status:'done',       pri:'l', assign:ME,           due:'Mar 26', me:true,  owned:true  },
+  { id:14, title:'Set up Airtable for issue submissions',    group:'ops',       status:'todo',       pri:'m', assign:'Kristina P.',due:'Apr 10', me:false, owned:false },
+  { id:15, title:'First social media content calendar',      group:'media',     status:'todo',       pri:'m', assign:'Unassigned', due:'Apr 5',  me:false, owned:false },
+  { id:16, title:'Identify candidate outreach targets',      group:'candidate', status:'todo',       pri:'m', assign:ME,           due:'May 1',  me:true,  owned:true  },
+  { id:17, title:'SCORA ambassador — identify + contact',    group:'coord',     status:'todo',       pri:'m', assign:'Unassigned', due:'Apr 10', me:false, owned:false },
+  { id:18, title:'Squamish Moms ambassador outreach',        group:'coord',     status:'todo',       pri:'m', assign:'Unassigned', due:'Apr 10', me:false, owned:false },
+  { id:19, title:'Set up Google Workspace for team',         group:'ops',       status:'done',       pri:'l', assign:'Kristina P.',due:'Mar 30', me:false, owned:false },
+  { id:20, title:'Candidate questionnaire final draft',      group:'candidate', status:'todo',       pri:'m', assign:ME,           due:'Apr 20', me:true,  owned:true  },
+];
+
+const OBJECTIVES = [
+  { title:'Launch Squamish Future publicly', phase:1, deadline:'Apr 9', urgent:true, pct:65, tasks:[
+    {text:'Register squamishfuture.ca domain', done:false, assign:ME},
+    {text:'Launch Facebook page', done:false, assign:'Sarah M.'},
+    {text:'Set up email signup (MailerLite)', done:false, assign:'Kristina P.'},
+    {text:'Deploy website live on Netlify', done:false, assign:ME},
+    {text:'April 9 founding meeting confirmed', done:true, assign:'Lisa B.'},
+    {text:'Send founding email to all networks', done:false, assign:ME},
+  ]},
+  { title:'File BC Society incorporation', phase:1, deadline:'Apr 15', urgent:false, pct:30, tasks:[
+    {text:'Confirm 3 founding directors', done:false, assign:ME},
+    {text:'Hold founding meeting (adopt bylaws)', done:false, assign:ME},
+    {text:'File online at bcregistry.gov.bc.ca', done:false, assign:ME},
+    {text:'Open society bank account', done:false, assign:ME},
+  ]},
+  { title:'Council watch system running', phase:1, deadline:'Apr 7', urgent:true, pct:15, tasks:[
+    {text:'Pull all 2025 AI council votes', done:false, assign:'Mark T.'},
+    {text:'Council attendance records 2024-25', done:false, assign:'James H.'},
+    {text:'Full Brendan Park fact package', done:false, assign:'Mark T.'},
+    {text:'Monthly tracking spreadsheet set up', done:false, assign:'Unassigned'},
+    {text:'Subscribe to My Sea to Sky alerts', done:false, assign:'Unassigned'},
+  ]},
+  { title:'Grow base to 100 members by May 1', phase:2, deadline:'May 1', urgent:false, pct:47, tasks:[
+    {text:'Personal emails from all 5 founders', done:false, assign:ME},
+    {text:'Post in 3 major Squamish Facebook groups', done:false, assign:'Sarah M.'},
+    {text:'SCORA ambassador briefed', done:false, assign:'Tom K.'},
+    {text:'April 9 email captures set up', done:false, assign:'Lisa B.'},
+    {text:'Newsletter issue #1 sent', done:false, assign:'Sarah M.'},
+  ]},
+  { title:'Hire and onboard coordinator (Kristina)', phase:1, deadline:'Apr 15', urgent:false, pct:40, tasks:[
+    {text:'Finalize job description', done:true, assign:ME},
+    {text:'Share role in community groups', done:false, assign:'Sarah M.'},
+    {text:'Confirm hours + rate with Kristina', done:false, assign:ME},
+    {text:'Onboard + brief on all systems', done:false, assign:ME},
+  ]},
+];
+
+const PHASES = [
+  { label:'Phase 0 — Launch & Brand', status:'done', dates:'March 2026', icon:'✅', desc:'Name, brand, website, structure, incorporation package.', deliverables:['Brand system built','Full 8-page website','BC Society package','Master plan','Core team assembled'] },
+  { label:'Phase 1 — Foundation', status:'current', dates:'March–June 2026', icon:'🏗️', desc:'Get live, file the society, hire coordinator, first 100 members.', deliverables:['Website live on squamishfuture.ca','Facebook page launched','Email list started','BC Society incorporated','Coordinator onboarded','Council watch running','April 9 founding meeting','Newsletter #1 sent'] },
+  { label:'Phase 2 — Base Build', status:'upcoming', dates:'May–August 2026', icon:'👥', desc:'Grow to 1,000+ members via events, ambassadors, groups.', deliverables:['1,000 email subscribers','Ambassador in every major group','Monthly events running','Council scorecards published','$5,000 raised'] },
+  { label:'Phase 3 — Candidate Pipeline', status:'upcoming', dates:'June–September 2026', icon:'🎯', desc:'Identify, vet, and begin supporting endorsed candidates.', deliverables:['5+ candidates identified','3 candidates vetted + endorsed','Public questionnaire launched','September forum planned'] },
+  { label:'Phase 4 — Campaign', status:'upcoming', dates:'September–October 2026', icon:'📣', desc:'Full public campaign — endorsements, forums, voter education.', deliverables:['September candidate forum','Endorsed slate announced','Door-knocking launched','Voter ID database built','$15,000 raised'] },
+  { label:'Phase 5 — GOTV', status:'upcoming', dates:'October 2026', icon:'🗳️', desc:'Get our people to the polls. Maximum voter contact final 2 weeks.', deliverables:['Voter contact plan executed','Advance voting reminders','Election day coordination','Ride-to-polls volunteers'] },
+];
+
+const GRP_TAG = {media:'tag-media',ops:'tag-ops',research:'tag-research',events:'tag-events',coord:'tag-coord',candidate:'tag-candidate'};
+const GRP_LBL = {media:'📣 Media',ops:'⚙️ Ops',research:'🔬 Research',events:'🎪 Events',coord:'🔗 Coord',candidate:'🗳️ Candidate'};
+
+// My joined groups + leadership
+let myGroups = { coord:'lead', ops:'member' };
+
+// ═══════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════
+function show(name) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  document.querySelectorAll('.ni').forEach(n => { if(n.getAttribute('onclick')?.includes("'"+name+"'")) n.classList.add('active'); });
+  const renders = { mydash:renderMyDash, alignment:renderAlignment, tasks:renderKanban, objectives:renderObjectives, groups:renderGroups, directory:renderDirectory, phase:renderPhase };
+  if(renders[name]) renders[name]();
+  renderSidebar();
+}
+
+// ═══════════════════════════════════════════════════
+// SIDEBAR
+// ═══════════════════════════════════════════════════
+function renderSidebar() {
+  document.getElementById('sbMyGroups').innerHTML = Object.entries(myGroups).map(([id,role]) => {
+    const g = GROUPS.find(x=>x.id===id);
+    return `<div class="sb-group-chip ${role==='lead'?'lead-chip':''}" onclick="boardFilter='${id}'; show('tasks')">
+      <span>${g.icon}</span><span style="flex:1;">${g.label.split(' ')[0]}</span>
+      <span class="chip-role">${role==='lead'?'★ Lead':'Member'}</span>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// MY DASHBOARD
+// ═══════════════════════════════════════════════════
+function renderMyDash() {
+  const myTasks = TASKS.filter(t => t.me && t.status!=='done');
+  const claimable = TASKS.filter(t => (t.assign==='Unassigned'||(!t.me&&!t.owned)) && t.status!=='done' && Object.keys(myGroups).includes(t.group)).slice(0,5);
+
+  document.getElementById('myTaskCount').textContent = myTasks.length;
+  document.getElementById('myLeadCount').textContent = myTasks.filter(t=>t.owned).length;
+  document.getElementById('myGroupCount').textContent = Object.keys(myGroups).length;
+
+  document.getElementById('myTasksFeed').innerHTML = myTasks.slice(0,7).map(t => taskRow(t, true)).join('') || '<p style="color:var(--grey);font-size:0.85rem;">No tasks yet. Claim some below!</p>';
+  document.getElementById('claimableFeed').innerHTML = claimable.map(t => taskRow(t, false)).join('') || '<p style="color:var(--grey);font-size:0.85rem;">Nothing available right now in your groups.</p>';
+
+  document.getElementById('myAreaCards').innerHTML = Object.entries(myGroups).map(([id,role]) => {
+    const g = GROUPS.find(x=>x.id===id);
+    const myT = TASKS.filter(t=>t.group===id&&t.me&&t.status!=='done').length;
+    const open = TASKS.filter(t=>t.group===id&&t.status!=='done').length;
+    return `<div class="my-area-card">
+      <div class="mac-header">
+        <div class="mac-icon" style="background:${g.bg}">${g.icon}</div>
+        <div>
+          <div class="mac-title">${g.label}</div>
+          <div class="mac-role ${role==='lead'?'is-lead':'is-member'}">${role==='lead'?'★ Group Lead':'Member'}</div>
+        </div>
+      </div>
+      <div class="mac-body">
+        <div class="mac-stat"><span class="label">My tasks</span><span class="val">${myT}</span></div>
+        <div class="mac-stat"><span class="label">Total open</span><span class="val">${open}</span></div>
+        <div class="mac-stat"><span class="label">Members</span><span class="val">${g.members.length}</span></div>
+        ${g.blocker?`<div class="mac-stat"><span class="label" style="color:#e74c3c">🚫 Blocker</span><span class="val" style="color:#e74c3c;font-size:0.68rem;">${g.blocker.substring(0,28)}…</span></div>`:''}
+      </div>
+      <div class="mac-footer">
+        <button class="lead-btn ${role==='lead'?'is-lead':''}" onclick="claimLead('${id}', this)">${role==='lead'?'★ You Lead':'Become Lead'}</button>
+        <a class="view-tasks-link" onclick="boardFilter='${id}'; show('tasks')">Tasks →</a>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function taskRow(t, showOwn) {
+  const priCls = {h:'pri-h',m:'pri-m',l:'pri-l'}[t.pri]||'pri-m';
+  const tagCls = GRP_TAG[t.group]||'tag-coord';
+  const due = t.due;
+  const dueCls = due==='Mar 28'||due==='Apr 1'?'soon':'';
+  return `<div class="task-item ${t.owned?'claimed':''}" onclick="show('tasks')">
+    <div class="ti-pri ${priCls}"></div>
+    <div class="ti-body">
+      <div class="ti-title">${t.title}</div>
+      <div class="ti-meta">
+        <span>${GRP_LBL[t.group]}</span>
+        <span>${t.assign}</span>
+        <span class="ti-due ${dueCls}">📅 ${due}</span>
+      </div>
+    </div>
+    <div class="ti-right">
+      <span class="ti-tag ${tagCls}">${t.status==='inprogress'?'In Progress':t.status==='done'?'Done':'To Do'}</span>
+      ${!showOwn && !t.owned ? `<button class="claim-btn" onclick="claimTask(${t.id},event)">Claim</button>` : ''}
+      ${t.owned ? `<span class="claim-btn claimed">✓ Owned</span>` : ''}
+    </div>
+  </div>`;
+}
+
+function claimTask(id, e) {
+  e.stopPropagation();
+  const t = TASKS.find(x=>x.id===id);
+  if(!t) return;
+  t.assign = ME; t.me = true; t.owned = true;
+  renderMyDash();
+  renderKanban();
+  showToast('✅ Task claimed! It\'s yours now.');
+}
+
+function claimLead(groupId, btn) {
+  myGroups[groupId] = 'lead';
+  const g = GROUPS.find(x=>x.id===groupId);
+  if(g) g.lead = ME;
+  renderMyDash();
+  renderSidebar();
+  showToast(`⭐ You're now the Lead of ${g.label}`);
+}
+
+// ═══════════════════════════════════════════════════
+// ALIGNMENT VIEW
+// ═══════════════════════════════════════════════════
+function renderAlignment() {
+  document.getElementById('alignmentGrid').innerHTML = GROUPS.map(g => {
+    const activeTasks = TASKS.filter(t=>t.group===g.id&&t.status==='inprogress').slice(0,3);
+    const done = TASKS.filter(t=>t.group===g.id&&t.status==='done').length;
+    const total = TASKS.filter(t=>t.group===g.id).length;
+    const pct = total ? Math.round((done/total)*100) : 0;
+    const mems = MEMBERS.filter(m=>m.group===g.id);
+    const inMy = !!myGroups[g.id];
+    return `<div class="align-card" style="${inMy?'border:2px solid rgba(0,196,179,0.4);':''}" >
+      <div class="align-header">
+        <div class="align-icon" style="background:${g.bg}">${g.icon}</div>
+        <div>
+          <div class="align-title">${g.label} ${inMy?'<span style="font-size:0.65rem;color:var(--teal);font-weight:700;">● MY GROUP</span>':''}</div>
+          <div class="align-lead">Lead: ${g.lead} · ${mems.length} members</div>
+        </div>
+      </div>
+      <div class="align-progress">
+        <div class="ap-row"><span>Progress</span><strong>${pct}%</strong></div>
+        <div class="ap-bar"><div class="ap-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="align-tasks">
+        <div class="align-tasks-title">🔄 In Progress</div>
+        ${activeTasks.length ? activeTasks.map(t => `
+          <div class="align-task-row">
+            <div class="at-dot" style="background:${t.pri==='h'?'#e74c3c':t.pri==='m'?'var(--amber)':'var(--green)'}"></div>
+            <div class="at-text">${t.title}</div>
+            <div class="at-who">${t.assign.split(' ')[0]}</div>
+          </div>`).join('') : '<div style="font-size:0.78rem;color:var(--grey);padding:0.3rem 0;">Nothing in progress yet</div>'}
+        <div class="align-tasks-title" style="margin-top:0.75rem;">🎯 Focus</div>
+        <div style="font-size:0.78rem;color:var(--grey);line-height:1.5;">${g.focus}</div>
+      </div>
+      ${g.blocker?`<div class="align-blocker">🚫 Blocker: ${g.blocker}</div>`:''}
+      <div class="align-footer">
+        <div class="align-member-stack">
+          ${mems.map(m=>`<div class="sm-avatar" style="background:${m.col}">${m.ini}</div>`).join('')}
+        </div>
+        ${!inMy?`<span class="align-needs" onclick="joinGroup('${g.id}')">+ Join group →</span>`:`<span style="font-size:0.72rem;color:var(--teal);font-weight:600;">✓ You're in this group</span>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// KANBAN
+// ═══════════════════════════════════════════════════
+let boardFilter = 'all';
+function renderKanban() {
+  const cols = [{id:'todo',label:'📋 To Do',bg:'#e4eaf2'},{id:'inprogress',label:'⚡ In Progress',bg:'#deedf7'},{id:'done',label:'✅ Done',bg:'#e2f4eb'},{id:'blocked',label:'🚫 Blocked',bg:'#fceaea'}];
+  let tasks = boardFilter==='all' ? TASKS : TASKS.filter(t=>t.group===boardFilter);
+  document.getElementById('kanbanBoard').innerHTML = cols.map(col => {
+    const ct = tasks.filter(t=>t.status===col.id);
+    return `<div class="k-col" style="background:${col.bg}">
+      <div class="k-col-hd">
+        <span class="k-col-title">${col.label} <span class="k-count">${ct.length}</span></span>
+        <button class="k-add" onclick="openModal('addTask')">+</button>
+      </div>
+      ${ct.map(t => kCard(t)).join('')}
+    </div>`;
+  }).join('');
+}
+function kCard(t) {
+  const tag = GRP_TAG[t.group]||'tag-coord';
+  const ini = t.assign==='Unassigned'?'?':t.assign.split(' ').map(x=>x[0]).join('');
+  const mem = MEMBERS.find(m=>m.name===t.assign);
+  const col = mem?mem.col:'#9ca3af';
+  const dueCls = (t.due==='Mar 28'||t.due==='Apr 1')&&t.status!=='done'?'soon':'';
+  const priCol = {h:'#e74c3c',m:'var(--amber)',l:'var(--green)'}[t.pri];
+  return `<div class="k-card ${t.me?'is-mine':''} ${t.owned&&!t.me?'is-lead':''}">
+    <div class="k-pri" style="background:${priCol}"></div>
+    <span class="k-tag ${tag}">${GRP_LBL[t.group]}</span>
+    <div class="k-title">${t.title}</div>
+    <div class="k-footer">
+      <div class="k-who"><div class="k-avatar" style="background:${col}">${ini}</div><span>${t.assign}</span></div>
+      <span class="k-due ${dueCls}">📅 ${t.due}</span>
+    </div>
+    ${!t.me&&!t.owned&&t.status!=='done'?`<button class="k-own-btn" onclick="claimTask(${t.id},event)">Claim ownership</button>`:''}
+    ${t.owned?`<button class="k-own-btn owned">✓ You own this</button>`:''}
+  </div>`;
+}
+function filterBoard(g, btn) {
+  boardFilter = g;
+  document.querySelectorAll('.bf').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderKanban();
+}
+
+// ═══════════════════════════════════════════════════
+// OBJECTIVES
+// ═══════════════════════════════════════════════════
+function renderObjectives() {
+  const r=22, circ=2*Math.PI*r;
+  document.getElementById('objectivesList').innerHTML = OBJECTIVES.map((obj,i) => {
+    const done = obj.tasks.filter(t=>t.done).length;
+    const dash = circ*(1-obj.pct/100);
+    return `<div class="obj-card">
+      <div class="obj-row" onclick="toggleObj(${i})">
+        <div class="obj-ring">
+          <svg width="48" height="48" viewBox="0 0 48 48">
+            <circle cx="24" cy="24" r="${r}" fill="none" stroke="var(--border)" stroke-width="4"/>
+            <circle cx="24" cy="24" r="${r}" fill="none" stroke="var(--teal)" stroke-width="4" stroke-dasharray="${circ.toFixed(1)}" stroke-dashoffset="${dash.toFixed(1)}" stroke-linecap="round"/>
+          </svg>
+          <div class="pct">${obj.pct}%</div>
+        </div>
+        <div class="obj-info">
+          <div class="obj-title">${obj.title}</div>
+          <div class="obj-sub">Phase ${obj.phase} · ${done}/${obj.tasks.length} complete</div>
+        </div>
+        <div class="obj-right">
+          <span style="font-size:0.7rem;font-weight:700;padding:0.2rem 0.7rem;border-radius:100px;background:${obj.urgent?'rgba(232,160,32,0.12)':'var(--teal-light)'};color:${obj.urgent?'#8a6010':'var(--teal-dark)'};">Phase ${obj.phase}</span>
+          <span style="font-size:0.72rem;font-weight:600;color:${obj.urgent?'#e74c3c':'var(--green)'};">Due ${obj.deadline}</span>
+        </div>
+      </div>
+      <div class="obj-tasks-body" id="ot-${i}">
+        <div style="padding-top:0.75rem;">
+        ${obj.tasks.map((t,j) => `<div class="ot-item">
+          <input type="checkbox" class="otcb" id="ot-${i}-${j}" ${t.done?'checked':''} onchange="toggleObjTask(${i},${j})">
+          <label class="ot-text" for="ot-${i}-${j}">${t.text}</label>
+          <span class="ot-assign">${t.assign}</span>
+          ${t.assign==='Unassigned'?`<button class="ot-claim" onclick="claimObjTask(${i},${j})">Claim</button>`:''}
+        </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function toggleObj(i) { const el=document.getElementById('ot-'+i); el.classList.toggle('open'); }
+function toggleObjTask(i,j) {
+  OBJECTIVES[i].tasks[j].done = !OBJECTIVES[i].tasks[j].done;
+  const done = OBJECTIVES[i].tasks.filter(t=>t.done).length;
+  OBJECTIVES[i].pct = Math.round(done/OBJECTIVES[i].tasks.length*100);
+  const wasOpen = document.getElementById('ot-'+i)?.classList.contains('open');
+  renderObjectives();
+  if(wasOpen) setTimeout(()=>document.getElementById('ot-'+i)?.classList.add('open'),10);
+}
+function claimObjTask(i,j) {
+  OBJECTIVES[i].tasks[j].assign = ME;
+  renderObjectives();
+  setTimeout(()=>document.getElementById('ot-'+i)?.classList.add('open'),10);
+  showToast('✅ Task claimed!');
+}
+
+// ═══════════════════════════════════════════════════
+// GROUPS
+// ═══════════════════════════════════════════════════
+function renderGroups() {
+  document.getElementById('groupsGrid').innerHTML = GROUPS.map(g => {
+    const inMy = !!myGroups[g.id];
+    const isLead = myGroups[g.id]==='lead';
+    const open = TASKS.filter(t=>t.group===g.id&&t.status!=='done').length;
+    return `<div style="background:white;border:${inMy?'2px solid rgba(0,196,179,0.4)':'1px solid var(--border)'};border-radius:16px;overflow:hidden;transition:all 0.2s;" onmouseenter="this.style.boxShadow='0 4px 20px rgba(15,42,74,0.1)'" onmouseleave="this.style.boxShadow='none'">
+      <div style="padding:1.3rem;display:flex;align-items:flex-start;gap:0.9rem;">
+        <div style="width:48px;height:48px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.4rem;background:${g.bg};flex-shrink:0;">${g.icon}</div>
+        <div>
+          <div style="font-size:0.95rem;font-weight:700;color:var(--navy);margin-bottom:0.2rem;">${g.label} ${inMy?'<span style="font-size:0.65rem;color:var(--teal);">● IN</span>':''}</div>
+          <div style="font-size:0.78rem;color:var(--grey);line-height:1.4;">${g.desc}</div>
+        </div>
+      </div>
+      <div style="padding:0 1.3rem;display:flex;gap:1.2rem;margin-bottom:0.75rem;">
+        <span style="font-size:0.78rem;color:var(--grey);"><strong style="color:var(--navy);">${g.members.length}</strong> members</span>
+        <span style="font-size:0.78rem;color:var(--grey);"><strong style="color:var(--navy);">${open}</strong> open tasks</span>
+        <span style="font-size:0.78rem;color:var(--grey);">Lead: <strong style="color:var(--navy);">${g.lead}</strong></span>
+      </div>
+      <div style="padding:0 1.3rem;margin-bottom:1rem;">
+        <div style="font-size:0.72rem;font-weight:700;color:var(--teal);letter-spacing:0.08em;text-transform:uppercase;margin-bottom:0.4rem;">This Week</div>
+        <div style="font-size:0.8rem;color:var(--grey);">${g.focus}</div>
+      </div>
+      ${g.blocker?`<div style="margin:0 1.3rem 0.75rem;padding:0.5rem 0.75rem;background:rgba(231,76,60,0.06);border-radius:8px;font-size:0.75rem;color:#c0392b;">🚫 ${g.blocker}</div>`:''}
+      <div style="padding:0.9rem 1.3rem;border-top:1px solid var(--border);display:flex;gap:0.6rem;">
+        <button style="flex:1;background:${inMy?'var(--teal-light)':'var(--teal)'};color:${inMy?'var(--teal-dark)':'var(--navy)'};border:none;padding:0.55rem;border-radius:8px;font-size:0.82rem;font-weight:700;cursor:${inMy?'default':'pointer'};" onclick="${inMy?'':'joinGroup(\''+g.id+'\')'}">${inMy?'✓ Member':'Join Group'}</button>
+        <button style="background:none;border:1.5px solid ${isLead?'rgba(232,160,32,0.4)':'var(--border)'};color:${isLead?'#8a6010':'var(--grey)'};padding:0.55rem 0.75rem;border-radius:8px;font-size:0.82rem;font-weight:600;cursor:pointer;" onclick="claimLead('${g.id}',this)">${isLead?'★ You Lead':'Become Lead'}</button>
+        <button style="background:none;border:1.5px solid var(--border);color:var(--grey);padding:0.55rem 0.75rem;border-radius:8px;font-size:0.82rem;cursor:pointer;" onclick="boardFilter='${g.id}'; show('tasks')">Tasks</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function joinGroup(id) {
+  myGroups[id] = 'member';
+  renderGroups(); renderMyDash(); renderSidebar();
+  showToast('👥 You joined the group!');
+}
+
+// ═══════════════════════════════════════════════════
+// PHASE
+// ═══════════════════════════════════════════════════
+function renderPhase() {
+  const stStyle = {done:'background:var(--green);color:white',current:'background:var(--teal);color:var(--navy)',upcoming:'background:var(--light);color:var(--grey)'};
+  document.getElementById('phaseCards').innerHTML = PHASES.map((p,i) => `
+    <div style="background:white;border:1px solid ${p.status==='current'?'rgba(0,196,179,0.4)':'var(--border)'};border-radius:14px;margin-bottom:0.85rem;overflow:hidden;">
+      <div style="padding:1.1rem 1.4rem;display:flex;align-items:flex-start;gap:1rem;cursor:pointer;" onclick="this.nextElementSibling.style.display=this.nextElementSibling.style.display==='none'?'block':'none'">
+        <div style="width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;background:var(--light);flex-shrink:0;">${p.icon}</div>
+        <div style="flex:1;"><div style="font-size:0.92rem;font-weight:700;color:var(--navy);">${p.label}</div><div style="font-size:0.8rem;color:var(--grey);margin-top:0.2rem;">${p.dates} · ${p.desc}</div></div>
+        <span style="padding:0.25rem 0.8rem;border-radius:100px;font-size:0.68rem;font-weight:700;${stStyle[p.status]}">${p.status.toUpperCase()}</span>
+      </div>
+      <div style="display:none;border-top:1px solid var(--border);padding:1rem 1.4rem;">
+        <div style="font-size:0.68rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--teal);margin-bottom:0.6rem;">KEY DELIVERABLES</div>
+        ${p.deliverables.map(d=>`<div style="display:flex;align-items:center;gap:0.6rem;padding:0.3rem 0;font-size:0.84rem;color:var(--dark);border-bottom:1px solid #f5f5f5;"><span style="color:var(--teal);font-weight:700;">→</span>${d}</div>`).join('')}
+      </div>
+    </div>`).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// DIRECTORY
+// ═══════════════════════════════════════════════════
+let dirQ='', dirGrp='all';
+function filterDir(q){dirQ=q; renderDirectory();}
+function filterDirGroup(v){dirGrp=v; renderDirectory();}
+function renderDirectory(){
+  let list = MEMBERS.filter(m=>{
+    const mq=!dirQ||m.name.toLowerCase().includes(dirQ.toLowerCase())||m.hood.toLowerCase().includes(dirQ.toLowerCase());
+    const mg=dirGrp==='all'||m.group===dirGrp;
+    return mq&&mg;
+  });
+  const stDot={active:'#1e8449',new:'#e8a020',inactive:'#d1d5db'};
+  const g=GROUPS;
+  document.getElementById('dirRows').innerHTML=list.map(m=>{
+    const grp=g.find(x=>x.id===m.group);
+    return `<div class="mt-row">
+      <div class="m-id"><div class="m-av" style="background:${m.col}">${m.ini}</div><div><div class="m-name">${m.name}</div><div class="m-hood">📍 ${m.hood}</div></div></div>
+      <div><span class="m-gpill ${grp?.cls||''}">${grp?.icon} ${grp?.label.split(' ')[0]}</span><br><span class="m-role-badge ${m.role==='lead'?'role-lead':'role-member'}">${m.role==='lead'?'★ Lead':'Member'}</span></div>
+      <div class="m-hood" style="font-size:0.8rem;">${m.hood}</div>
+      <div style="font-size:0.82rem;color:var(--grey);">${m.tasks} tasks</div>
+      <div><span class="st-dot" style="background:${stDot[m.status]}"></span><span style="font-size:0.72rem;color:var(--grey);text-transform:capitalize;">${m.status}</span></div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════
+// TASK MODAL
+// ═══════════════════════════════════════════════════
+function openModal(id){ document.getElementById('modal-'+id).classList.add('open'); }
+function closeModal(id){ document.getElementById('modal-'+id).classList.remove('open'); }
+function addTask(){
+  const title=document.getElementById('nt-title').value.trim();
+  if(!title){alert('Enter a title');return;}
+  TASKS.push({id:TASKS.length+1,title,group:document.getElementById('nt-group').value,status:'todo',pri:document.getElementById('nt-pri').value,assign:document.getElementById('nt-assign').value,due:document.getElementById('nt-due').value||'TBD',me:document.getElementById('nt-assign').value===ME,owned:document.getElementById('nt-assign').value===ME});
+  closeModal('addTask');
+  document.getElementById('nt-title').value='';
+  renderKanban(); renderMyDash();
+  showToast('✅ Task added!');
+}
+
+// ═══════════════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════════════
+function showToast(msg){
+  let t=document.getElementById('toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.style.cssText='position:fixed;bottom:1.5rem;right:1.5rem;background:var(--navy);color:white;padding:0.8rem 1.4rem;border-radius:10px;font-size:0.88rem;font-weight:600;z-index:9999;box-shadow:0 8px 30px rgba(0,0,0,0.25);border-left:3px solid var(--teal);transition:opacity 0.3s;';document.body.appendChild(t);}
+  t.textContent=msg;t.style.opacity='1';
+  clearTimeout(t._t);t._t=setTimeout(()=>t.style.opacity='0',2500);
+}
+
+// INIT
+renderSidebar();
+renderMyDash();
+</script>
+<script src="nav.js"></script>
+</body>
+</html>

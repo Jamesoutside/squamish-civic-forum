@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Support Squamish Future — Fund the Movement</title>
+  <meta name="description" content="Help fund Squamish Future — non-partisan civic research, candidate vetting, and community engagement for Squamish, BC." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0f2a4a; --blue: #1a5276; --sky: #2e86c1; --gold: #e8a020;
+      --green: #1e8449; --light: #f0f6ff; --white: #ffffff;
+      --grey: #6b7280; --dark: #111827; --border: #dce8f5;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--dark); background: var(--light); line-height: 1.6; }
+
+    nav {
+      background: rgba(15,42,74,0.97); padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between; height: 64px;
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--white); text-decoration: none; }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
+    .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta { background: #e8a020; color: #0f2a4a !important; padding: 0.45rem 1.1rem; border-radius: 6px; font-weight: 700 !important; }
+
+    .page-header {
+      background: linear-gradient(135deg, var(--navy) 0%, #1a3a5c 60%, #1a5276 100%);
+      padding: 80px 2rem 60px; text-align: center; position: relative; overflow: hidden;
+    }
+    .page-header::after {
+      content: ''; position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/svg%3E");
+    }
+    .page-header .label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; display: block; position: relative; z-index: 1; }
+    .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3.2rem); color: white; margin-bottom: 1rem; position: relative; z-index: 1; }
+    .page-header p { color: rgba(255,255,255,0.65); font-size: 1.05rem; max-width: 580px; margin: 0 auto 2.5rem; line-height: 1.7; position: relative; z-index: 1; }
+
+    /* PROGRESS BAR */
+    .fund-progress {
+      max-width: 560px; margin: 0 auto; position: relative; z-index: 1;
+    }
+    .progress-label { display: flex; justify-content: space-between; margin-bottom: 0.6rem; }
+    .progress-label .raised { font-size: 1.4rem; font-weight: 800; color: var(--gold); font-family: 'Playfair Display', serif; }
+    .progress-label .goal { font-size: 0.9rem; color: rgba(255,255,255,0.5); align-self: flex-end; padding-bottom: 0.15rem; }
+    .progress-bar { height: 10px; background: rgba(255,255,255,0.1); border-radius: 100px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), #f0c040); border-radius: 100px; width: 23%; transition: width 1s ease; }
+    .progress-sub { display: flex; gap: 2rem; margin-top: 0.8rem; }
+    .progress-sub span { font-size: 0.8rem; color: rgba(255,255,255,0.45); }
+    .progress-sub strong { color: rgba(255,255,255,0.8); }
+
+    /* MAIN LAYOUT */
+    .main-wrap { max-width: 1100px; margin: 0 auto; padding: 3rem 2rem 5rem; display: grid; grid-template-columns: 1fr 380px; gap: 3rem; align-items: start; }
+
+    /* TIERS */
+    .tiers-section h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--navy); margin-bottom: 0.4rem; }
+    .tiers-section > p { color: var(--grey); font-size: 0.95rem; margin-bottom: 2rem; }
+
+    .tier-grid { display: flex; flex-direction: column; gap: 1rem; margin-bottom: 2.5rem; }
+    .tier {
+      background: var(--white); border: 2px solid var(--border); border-radius: 14px;
+      padding: 1.5rem; cursor: pointer; transition: all 0.2s; position: relative;
+    }
+    .tier:hover { border-color: var(--sky); box-shadow: 0 4px 20px rgba(15,42,74,0.08); }
+    .tier.selected { border-color: var(--gold); box-shadow: 0 4px 24px rgba(232,160,32,0.2); }
+    .tier.featured { border-color: var(--sky); }
+    .featured-badge {
+      position: absolute; top: -1px; right: 1.2rem;
+      background: var(--sky); color: white;
+      font-size: 0.7rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+      padding: 0.25rem 0.8rem; border-radius: 0 0 8px 8px;
+    }
+    .tier-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.6rem; }
+    .tier-amount { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--navy); }
+    .tier-name { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--grey); }
+    .tier-check {
+      width: 24px; height: 24px; border-radius: 50%;
+      border: 2px solid var(--border); background: var(--white);
+      display: flex; align-items: center; justify-content: center; font-size: 0.8rem;
+      transition: all 0.2s; flex-shrink: 0;
+    }
+    .tier.selected .tier-check { background: var(--gold); border-color: var(--gold); color: white; }
+    .tier-desc { font-size: 0.88rem; color: var(--grey); line-height: 1.5; margin-bottom: 0.8rem; }
+    .tier-perks { display: flex; flex-direction: column; gap: 0.3rem; }
+    .tier-perk { font-size: 0.82rem; color: var(--dark); display: flex; gap: 0.5rem; align-items: flex-start; }
+    .tier-perk::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+
+    /* CUSTOM AMOUNT */
+    .custom-amount {
+      background: var(--white); border: 2px solid var(--border); border-radius: 14px;
+      padding: 1.5rem; margin-bottom: 2.5rem;
+    }
+    .custom-amount h3 { font-size: 0.95rem; font-weight: 700; color: var(--navy); margin-bottom: 1rem; }
+    .custom-input-wrap { display: flex; align-items: center; gap: 0; }
+    .dollar-sign {
+      background: var(--light); border: 1.5px solid var(--border); border-right: none;
+      padding: 0.75rem 1rem; border-radius: 8px 0 0 8px;
+      font-size: 1.1rem; font-weight: 700; color: var(--navy);
+    }
+    .custom-input-wrap input {
+      flex: 1; padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border); border-radius: 0 8px 8px 0;
+      font-size: 1.1rem; font-weight: 700; color: var(--navy);
+      outline: none; transition: border-color 0.2s;
+    }
+    .custom-input-wrap input:focus { border-color: var(--sky); }
+
+    /* WHAT YOUR MONEY DOES */
+    .impact-section { margin-bottom: 2.5rem; }
+    .impact-section h3 { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 1rem; }
+    .impact-rows { display: flex; flex-direction: column; gap: 0.6rem; }
+    .impact-row { display: flex; align-items: center; gap: 1rem; padding: 0.8rem 1rem; background: var(--white); border-radius: 8px; border: 1px solid var(--border); }
+    .impact-row .amount { font-weight: 800; color: var(--navy); font-size: 0.95rem; min-width: 52px; }
+    .impact-row .what { font-size: 0.85rem; color: var(--grey); }
+
+    /* SIDEBAR FORM */
+    .donate-form-card {
+      background: var(--white); border: 1px solid var(--border); border-radius: 20px;
+      box-shadow: 0 8px 40px rgba(15,42,74,0.1); overflow: hidden;
+      position: sticky; top: 80px;
+    }
+    .form-header { background: var(--navy); padding: 1.5rem; text-align: center; }
+    .form-header h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white; margin-bottom: 0.2rem; }
+    .form-header p { color: rgba(255,255,255,0.55); font-size: 0.82rem; }
+    .selected-amount { font-size: 2rem; font-weight: 800; color: var(--gold); margin: 0.5rem 0 0; font-family: 'Playfair Display', serif; }
+
+    .form-inner { padding: 1.8rem; }
+    .field { margin-bottom: 1rem; }
+    .field label { display: block; font-size: 0.82rem; font-weight: 600; color: var(--navy); margin-bottom: 0.35rem; }
+    .field input, .field select {
+      width: 100%; padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 0.95rem; font-family: 'Inter', sans-serif;
+      color: var(--dark); outline: none; transition: border-color 0.2s;
+    }
+    .field input:focus, .field select:focus { border-color: var(--sky); }
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+
+    .freq-tabs { display: flex; gap: 0; margin-bottom: 1rem; border: 1.5px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .freq-tab {
+      flex: 1; padding: 0.6rem; text-align: center;
+      font-size: 0.82rem; font-weight: 600; color: var(--grey);
+      cursor: pointer; transition: all 0.2s; background: var(--white);
+      border: none; border-right: 1px solid var(--border);
+    }
+    .freq-tab:last-child { border-right: none; }
+    .freq-tab.active { background: var(--navy); color: white; }
+
+    .donate-btn {
+      width: 100%; background: var(--gold); color: var(--navy);
+      border: none; padding: 1rem; border-radius: 8px;
+      font-size: 1.05rem; font-weight: 800; cursor: pointer;
+      transition: all 0.2s; margin-top: 0.5rem;
+      letter-spacing: 0.02em;
+    }
+    .donate-btn:hover { background: #f0b030; transform: translateY(-1px); box-shadow: 0 4px 20px rgba(232,160,32,0.4); }
+
+    .secure-note { display: flex; align-items: center; gap: 0.5rem; justify-content: center; margin-top: 0.75rem; }
+    .secure-note span { font-size: 0.75rem; color: #9ca3af; }
+
+    .bc-note {
+      margin-top: 1rem; padding: 0.8rem; background: rgba(46,134,193,0.06);
+      border-radius: 8px; border: 1px solid rgba(46,134,193,0.15);
+      font-size: 0.78rem; color: var(--grey); line-height: 1.5;
+    }
+    .bc-note strong { color: var(--navy); }
+
+    /* DONORS */
+    .donors-section { margin-top: 2.5rem; }
+    .donors-section h3 { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 1rem; }
+    .donor-list { display: flex; flex-direction: column; gap: 0.6rem; }
+    .donor-row { display: flex; align-items: center; gap: 0.75rem; padding: 0.7rem 1rem; background: var(--white); border-radius: 8px; border: 1px solid var(--border); }
+    .donor-avatar { width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, var(--sky), var(--navy)); display: flex; align-items: center; justify-content: center; color: white; font-size: 0.78rem; font-weight: 700; flex-shrink: 0; }
+    .donor-name { font-size: 0.88rem; font-weight: 600; color: var(--navy); }
+    .donor-amount { font-size: 0.8rem; color: var(--green); font-weight: 700; margin-left: auto; }
+    .donor-when { font-size: 0.75rem; color: #9ca3af; }
+
+    /* SUCCESS */
+    .success-overlay { display: none; position: fixed; inset: 0; background: rgba(15,42,74,0.85); z-index: 999; align-items: center; justify-content: center; }
+    .success-overlay.active { display: flex; }
+    .success-modal { background: white; border-radius: 20px; padding: 3rem; text-align: center; max-width: 440px; margin: 1rem; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+    .success-modal .icon { font-size: 4rem; display: block; margin-bottom: 1rem; }
+    .success-modal h2 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--navy); margin-bottom: 0.75rem; }
+    .success-modal p { color: var(--grey); line-height: 1.7; margin-bottom: 1.5rem; font-size: 0.95rem; }
+    .success-modal a { background: var(--gold); color: var(--navy); text-decoration: none; padding: 0.8rem 2rem; border-radius: 8px; font-weight: 700; display: inline-block; }
+
+    footer { background: #080f1a; color: rgba(255,255,255,0.4); padding: 2rem; text-align: center; font-size: 0.82rem; }
+    footer a { color: var(--gold); text-decoration: none; }
+
+    @media (max-width: 900px) {
+      .main-wrap { grid-template-columns: 1fr; }
+      .donate-form-card { position: static; }
+    }
+    @media (max-width: 600px) { .nav-links li:not(:last-child) { display: none; } }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Squamish <span>Future</span></a>
+  <ul class="nav-links">
+    <li><a href="tracker.html">Issues Tracker</a></li>
+    <li><a href="submit.html">Submit Issue</a></li>
+    <li><a href="index.html#events">Events</a></li>
+    <li><a href="index.html#join" class="nav-cta">Join Us</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <span class="label">Fund the Movement</span>
+  <h1>Invest in Squamish's Future</h1>
+  <p>Every dollar goes directly to research, events, and getting the right people elected. No salaries. No waste. Just community.</p>
+  <div class="fund-progress">
+    <div class="progress-label">
+      <span class="raised">$2,300 raised</span>
+      <span class="goal">Goal: $10,000</span>
+    </div>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="progress-sub">
+      <span><strong>23</strong> supporters</span>
+      <span><strong>April 9</strong> launch event goal</span>
+      <span><strong>$7,700</strong> to go</span>
+    </div>
+  </div>
+</div>
+
+<div class="main-wrap">
+
+  <!-- LEFT COLUMN -->
+  <div>
+    <div class="tiers-section">
+      <h2>Choose your level of support</h2>
+      <p>Every amount matters. Pick what works for you — or set your own.</p>
+
+      <div class="tier-grid">
+
+        <div class="tier" onclick="selectTier(this, 25)">
+          <div class="tier-header">
+            <div>
+              <div class="tier-amount">$25</div>
+              <div class="tier-name">Supporter</div>
+            </div>
+            <div class="tier-check">✓</div>
+          </div>
+          <div class="tier-desc">Get in on the ground floor. Every founding supporter shapes what we become.</div>
+          <div class="tier-perks">
+            <div class="tier-perk">Weekly newsletter</div>
+            <div class="tier-perk">Founding supporter recognition</div>
+          </div>
+        </div>
+
+        <div class="tier featured selected" onclick="selectTier(this, 75)">
+          <div class="featured-badge">Most Popular</div>
+          <div class="tier-header">
+            <div>
+              <div class="tier-amount">$75</div>
+              <div class="tier-name">Community Builder</div>
+            </div>
+            <div class="tier-check">✓</div>
+          </div>
+          <div class="tier-desc">Covers one month of newsletter tools + helps fund our first community event.</div>
+          <div class="tier-perks">
+            <div class="tier-perk">Everything in Supporter</div>
+            <div class="tier-perk">Early access to Council Report Card</div>
+            <div class="tier-perk">Invitation to private research briefings</div>
+          </div>
+        </div>
+
+        <div class="tier" onclick="selectTier(this, 250)">
+          <div class="tier-header">
+            <div>
+              <div class="tier-amount">$250</div>
+              <div class="tier-name">Civic Champion</div>
+            </div>
+            <div class="tier-check">✓</div>
+          </div>
+          <div class="tier-desc">Funds a full community event or one month of research. Real impact.</div>
+          <div class="tier-perks">
+            <div class="tier-perk">Everything above</div>
+            <div class="tier-perk">Named in annual report</div>
+            <div class="tier-perk">Invitation to strategy sessions</div>
+            <div class="tier-perk">Direct line to research team</div>
+          </div>
+        </div>
+
+        <div class="tier" onclick="selectTier(this, 500)">
+          <div class="tier-header">
+            <div>
+              <div class="tier-amount">$500</div>
+              <div class="tier-name">Founding Patron</div>
+            </div>
+            <div class="tier-check">✓</div>
+          </div>
+          <div class="tier-desc">You're a founding patron of Squamish Future. This is the level that makes the organization run.</div>
+          <div class="tier-perks">
+            <div class="tier-perk">Everything above</div>
+            <div class="tier-perk">Founding patron plaque (website + events)</div>
+            <div class="tier-perk">Seat at annual strategy table</div>
+            <div class="tier-perk">Private candidate briefings</div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="custom-amount">
+        <h3>Or enter a custom amount</h3>
+        <div class="custom-input-wrap">
+          <span class="dollar-sign">$</span>
+          <input type="number" id="customAmount" placeholder="Enter amount" min="5" oninput="setCustomAmount(this.value)" />
+        </div>
+      </div>
+
+      <div class="impact-section">
+        <h3>What your contribution does</h3>
+        <div class="impact-rows">
+          <div class="impact-row"><span class="amount">$25</span><span class="what">Covers email platform for 500 subscribers for one month</span></div>
+          <div class="impact-row"><span class="amount">$75</span><span class="what">Funds a community coffee event — venue, materials, outreach</span></div>
+          <div class="impact-row"><span class="amount">$150</span><span class="what">One full day of coordinator research time</span></div>
+          <div class="impact-row"><span class="amount">$250</span><span class="what">Full Brendan Park fact-package research and publication</span></div>
+          <div class="impact-row"><span class="amount">$500</span><span class="what">One month of coordinator hours (10 hrs/week × $40/hr)</span></div>
+          <div class="impact-row"><span class="amount">$1,000</span><span class="what">Full community issues forum — venue, AV, promotion, materials</span></div>
+          <div class="impact-row"><span class="amount">$2,500</span><span class="what">One month of full platform operations — all in</span></div>
+        </div>
+      </div>
+
+      <div class="donors-section">
+        <h3>🙌 Recent supporters</h3>
+        <div class="donor-list">
+          <div class="donor-row">
+            <div class="donor-avatar">JM</div>
+            <div><div class="donor-name">James M.</div><div class="donor-when">2 days ago</div></div>
+            <span class="donor-amount">$250</span>
+          </div>
+          <div class="donor-row">
+            <div class="donor-avatar">SR</div>
+            <div><div class="donor-name">Sarah R.</div><div class="donor-when">3 days ago</div></div>
+            <span class="donor-amount">$75</span>
+          </div>
+          <div class="donor-row">
+            <div class="donor-avatar">TC</div>
+            <div><div class="donor-name">Tom C.</div><div class="donor-when">5 days ago</div></div>
+            <span class="donor-amount">$500</span>
+          </div>
+          <div class="donor-row">
+            <div class="donor-avatar">AL</div>
+            <div><div class="donor-name">Anonymous</div><div class="donor-when">1 week ago</div></div>
+            <span class="donor-amount">$25</span>
+          </div>
+          <div class="donor-row">
+            <div class="donor-avatar">KP</div>
+            <div><div class="donor-name">Karen P.</div><div class="donor-when">1 week ago</div></div>
+            <span class="donor-amount">$75</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SIDEBAR FORM -->
+  <div>
+    <div class="donate-form-card">
+      <div class="form-header">
+        <h3>Complete your contribution</h3>
+        <p>Secure · Takes 60 seconds</p>
+        <div class="selected-amount" id="selectedAmountDisplay">$75</div>
+      </div>
+      <div class="form-inner">
+        <div class="freq-tabs">
+          <button class="freq-tab active" onclick="setFreq(this, 'once')">One-time</button>
+          <button class="freq-tab" onclick="setFreq(this, 'monthly')">Monthly</button>
+          <button class="freq-tab" onclick="setFreq(this, 'annual')">Annual</button>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>First Name</label>
+            <input type="text" placeholder="First" />
+          </div>
+          <div class="field">
+            <label>Last Name</label>
+            <input type="text" placeholder="Last" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Email Address</label>
+          <input type="email" placeholder="your@email.com" />
+        </div>
+        <div class="field">
+          <label>Card Number</label>
+          <input type="text" placeholder="•••• •••• •••• ••••" maxlength="19" />
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label>Expiry</label>
+            <input type="text" placeholder="MM / YY" maxlength="7" />
+          </div>
+          <div class="field">
+            <label>CVV</label>
+            <input type="text" placeholder="•••" maxlength="4" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Neighbourhood (optional)</label>
+          <select>
+            <option value="">Select your area</option>
+            <option>Downtown Squamish</option>
+            <option>Garibaldi Highlands</option>
+            <option>Brackendale</option>
+            <option>Valleycliffe</option>
+            <option>Other / Sea to Sky</option>
+          </select>
+        </div>
+        <button class="donate-btn" onclick="completeDonation()">
+          Contribute <span id="btnAmount">$75</span> →
+        </button>
+        <div class="secure-note">
+          <span>🔒 Encrypted · Secure · No recurring unless selected</span>
+        </div>
+        <div class="bc-note">
+          <strong>BC Contribution Limits:</strong> Under BC's election finance rules, individual contributions to Third Party Advertisers are limited during election periods. Squamish Future is a non-partisan society — contributions fund research and operations, not candidate campaigns. <a href="index.html#about" style="color:var(--sky)">Learn more →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-modal">
+    <span class="icon">🎉</span>
+    <h2>Thank you for investing in Squamish's future.</h2>
+    <p>Your contribution goes directly to research, events, and making sure Squamish residents have the information they need to make the right choices.</p>
+    <a href="index.html">Back to Squamish Future →</a>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html">Squamish Future</a> — Built by the community. For the community. · Squamish, BC · Non-partisan Society
+</footer>
+
+<script>
+  let selectedAmount = 75;
+
+  function selectTier(el, amount) {
+    document.querySelectorAll('.tier').forEach(t => t.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedAmount = amount;
+    document.getElementById('customAmount').value = '';
+    updateDisplay();
+  }
+
+  function setCustomAmount(val) {
+    if (val && parseFloat(val) > 0) {
+      document.querySelectorAll('.tier').forEach(t => t.classList.remove('selected'));
+      selectedAmount = parseFloat(val);
+      updateDisplay();
+    }
+  }
+
+  function setFreq(el, freq) {
+    document.querySelectorAll('.freq-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+
+  function updateDisplay() {
+    const fmt = '$' + selectedAmount.toLocaleString('en-CA', { minimumFractionDigits: 0 });
+    document.getElementById('selectedAmountDisplay').textContent = fmt;
+    document.getElementById('btnAmount').textContent = fmt;
+  }
+
+  function completeDonation() {
+    // TODO: Connect to Zeffy, Stripe, or payment processor
+    document.getElementById('successOverlay').classList.add('active');
+  }
+
+  updateDisplay();
+</script>
+<script src="nav.js"></script>
+</body>
+</html>

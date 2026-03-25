@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Issues Tracker — Squamish Future</title>
+  <meta name="description" content="Live tracker of community issues raised by Squamish residents. Research status, vote counts, and campaign updates." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --navy: #0f2a4a; --blue: #1a5276; --sky: #2e86c1; --gold: #e8a020;
+      --green: #1e8449; --light: #f0f6ff; --white: #ffffff;
+      --grey: #6b7280; --dark: #111827; --border: #dce8f5;
+      --orange: #d35400; --purple: #6c3483;
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; color: var(--dark); background: var(--light); }
+
+    nav {
+      background: rgba(15,42,74,0.97); padding: 0 2rem;
+      display: flex; align-items: center; justify-content: space-between; height: 64px;
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .nav-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--white); text-decoration: none; }
+    .nav-logo span { color: var(--gold); }
+    .nav-links { display: flex; gap: 1.5rem; list-style: none; align-items: center; }
+    .nav-links a { color: rgba(255,255,255,0.7); text-decoration: none; font-size: 0.88rem; font-weight: 500; transition: color 0.2s; }
+    .nav-links a:hover { color: var(--gold); }
+    .nav-cta { background: #e8a020; color: #0f2a4a !important; padding: 0.45rem 1.1rem; border-radius: 6px; font-weight: 700 !important; }
+
+    .page-header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+      padding: 70px 2rem 50px; text-align: center;
+    }
+    .page-header .label { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.75rem; display: block; }
+    .page-header h1 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3rem); color: white; margin-bottom: 1rem; }
+    .page-header p { color: rgba(255,255,255,0.65); font-size: 1rem; max-width: 600px; margin: 0 auto 2rem; line-height: 1.7; }
+    .header-stats { display: flex; gap: 2.5rem; justify-content: center; flex-wrap: wrap; }
+    .hstat { text-align: center; }
+    .hstat .n { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; color: var(--gold); display: block; }
+    .hstat .l { font-size: 0.75rem; color: rgba(255,255,255,0.5); letter-spacing: 0.06em; text-transform: uppercase; }
+
+    .tracker-wrap { max-width: 1100px; margin: 0 auto; padding: 2.5rem 2rem 5rem; }
+
+    /* CONTROLS */
+    .controls {
+      display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .search-wrap { flex: 1; min-width: 220px; position: relative; }
+    .search-wrap input {
+      width: 100%; padding: 0.75rem 1rem 0.75rem 2.8rem;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 0.95rem; background: var(--white); outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-wrap input:focus { border-color: var(--sky); }
+    .search-wrap::before { content: '🔍'; position: absolute; left: 0.85rem; top: 50%; transform: translateY(-50%); font-size: 0.9rem; }
+    .filter-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .filter-tab {
+      padding: 0.55rem 1rem; border-radius: 100px;
+      border: 1.5px solid var(--border); background: var(--white);
+      font-size: 0.82rem; font-weight: 600; color: var(--grey);
+      cursor: pointer; transition: all 0.2s;
+    }
+    .filter-tab:hover { border-color: var(--sky); color: var(--navy); }
+    .filter-tab.active { background: var(--navy); color: white; border-color: var(--navy); }
+    .sort-select {
+      padding: 0.65rem 1rem; border: 1.5px solid var(--border); border-radius: 8px;
+      font-size: 0.88rem; background: var(--white); color: var(--dark);
+      outline: none; cursor: pointer;
+    }
+    .submit-btn {
+      background: var(--gold); color: var(--navy); text-decoration: none;
+      padding: 0.7rem 1.5rem; border-radius: 8px; font-size: 0.88rem; font-weight: 700;
+      white-space: nowrap; transition: all 0.2s; display: inline-block;
+    }
+    .submit-btn:hover { background: #f0b030; }
+
+    /* ISSUES GRID */
+    .issues-list { display: flex; flex-direction: column; gap: 1rem; }
+
+    .issue-row {
+      background: var(--white); border: 1px solid var(--border); border-radius: 14px;
+      padding: 1.5rem; transition: all 0.2s; cursor: pointer;
+      display: grid; grid-template-columns: auto 1fr auto; gap: 1.2rem; align-items: start;
+    }
+    .issue-row:hover { box-shadow: 0 4px 20px rgba(15,42,74,0.1); border-color: var(--sky); transform: translateY(-1px); }
+
+    .vote-col { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; min-width: 52px; }
+    .vote-btn {
+      width: 38px; height: 38px; border-radius: 8px;
+      border: 2px solid var(--border); background: var(--white);
+      font-size: 1.1rem; cursor: pointer; transition: all 0.2s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .vote-btn:hover { border-color: var(--sky); background: rgba(46,134,193,0.08); }
+    .vote-btn.voted { border-color: var(--sky); background: rgba(46,134,193,0.12); }
+    .vote-count { font-size: 1rem; font-weight: 800; color: var(--navy); }
+    .vote-label { font-size: 0.68rem; color: var(--grey); text-transform: uppercase; letter-spacing: 0.06em; }
+
+    .issue-main {}
+    .issue-meta { display: flex; gap: 0.6rem; align-items: center; flex-wrap: wrap; margin-bottom: 0.5rem; }
+    .cat-pill {
+      padding: 0.2rem 0.7rem; border-radius: 100px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .cat-development { background: rgba(211,84,0,0.1); color: var(--orange); }
+    .cat-recreation { background: rgba(46,134,193,0.1); color: var(--sky); }
+    .cat-economy { background: rgba(30,132,73,0.1); color: var(--green); }
+    .cat-environment { background: rgba(30,132,73,0.12); color: #148a45; }
+    .cat-infrastructure { background: rgba(108,52,131,0.1); color: var(--purple); }
+    .cat-community { background: rgba(15,42,74,0.08); color: var(--navy); }
+    .cat-housing { background: rgba(232,160,32,0.12); color: #a07010; }
+    .cat-governance { background: rgba(15,42,74,0.1); color: var(--blue); }
+
+    .urgency-dot {
+      width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+    }
+    .urg-low { background: #27ae60; }
+    .urg-medium { background: #f39c12; }
+    .urg-high { background: #e74c3c; }
+    .urg-now { background: #c0392b; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+    .issue-title { font-size: 1rem; font-weight: 700; color: var(--navy); margin-bottom: 0.4rem; line-height: 1.4; }
+    .issue-desc { font-size: 0.87rem; color: var(--grey); line-height: 1.6; margin-bottom: 0.75rem; }
+    .issue-footer { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+    .issue-neighbourhood { font-size: 0.78rem; color: var(--grey); }
+    .issue-date { font-size: 0.75rem; color: #9ca3af; }
+
+    .status-col { display: flex; flex-direction: column; gap: 0.5rem; align-items: flex-end; }
+    .status-badge {
+      padding: 0.3rem 0.8rem; border-radius: 100px;
+      font-size: 0.72rem; font-weight: 700; letter-spacing: 0.04em; white-space: nowrap;
+    }
+    .status-new { background: rgba(232,160,32,0.12); color: #a07010; border: 1px solid rgba(232,160,32,0.3); }
+    .status-research { background: rgba(46,134,193,0.1); color: var(--sky); border: 1px solid rgba(46,134,193,0.25); }
+    .status-active { background: rgba(30,132,73,0.1); color: var(--green); border: 1px solid rgba(30,132,73,0.25); }
+    .status-campaign { background: rgba(108,52,131,0.1); color: var(--purple); border: 1px solid rgba(108,52,131,0.25); }
+    .status-resolved { background: rgba(15,42,74,0.06); color: var(--grey); border: 1px solid var(--border); }
+    .comment-count { font-size: 0.75rem; color: var(--grey); }
+
+    /* EMPTY STATE */
+    .empty-state { text-align: center; padding: 4rem 2rem; color: var(--grey); }
+    .empty-state .icon { font-size: 3rem; margin-bottom: 1rem; display: block; }
+
+    /* LOAD MORE */
+    .load-more { text-align: center; margin-top: 2rem; }
+    .btn-load { background: var(--white); border: 1.5px solid var(--border); color: var(--grey); padding: 0.75rem 2rem; border-radius: 8px; font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-load:hover { border-color: var(--navy); color: var(--navy); }
+
+    /* CALL TO ACTION STRIP */
+    .cta-strip {
+      background: var(--navy); border-radius: 16px; padding: 2rem 2.5rem;
+      display: flex; align-items: center; justify-content: space-between; gap: 2rem;
+      flex-wrap: wrap; margin-bottom: 2rem;
+    }
+    .cta-strip h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: white; margin-bottom: 0.3rem; }
+    .cta-strip p { color: rgba(255,255,255,0.6); font-size: 0.88rem; }
+    .cta-strip a { background: var(--gold); color: var(--navy); text-decoration: none; padding: 0.75rem 1.8rem; border-radius: 8px; font-weight: 700; font-size: 0.95rem; white-space: nowrap; transition: all 0.2s; }
+    .cta-strip a:hover { background: #f0b030; }
+
+    footer { background: #080f1a; color: rgba(255,255,255,0.4); padding: 2rem; text-align: center; font-size: 0.82rem; }
+    footer a { color: var(--gold); text-decoration: none; }
+
+    @media (max-width: 768px) {
+      .issue-row { grid-template-columns: auto 1fr; }
+      .status-col { display: none; }
+      .nav-links li:not(:last-child) { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">Squamish <span>Future</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html#mission">Mission</a></li>
+    <li><a href="index.html#council">Council Watch</a></li>
+    <li><a href="index.html#events">Events</a></li>
+    <li><a href="submit.html" class="nav-cta">+ Submit Issue</a></li>
+  </ul>
+</nav>
+
+<div class="page-header">
+  <span class="label">Community Issues Tracker</span>
+  <h1>What Squamish is talking about</h1>
+  <p>Every issue submitted by community members — tracked, researched, and reported on. This is your community's voice in real time.</p>
+  <div class="header-stats">
+    <div class="hstat"><span class="n" id="totalCount">12</span><span class="l">Issues Tracked</span></div>
+    <div class="hstat"><span class="n" id="activeCount">4</span><span class="l">In Research</span></div>
+    <div class="hstat"><span class="n" id="voteCount">247</span><span class="l">Community Votes</span></div>
+    <div class="hstat"><span class="n">8</span><span class="l">Categories</span></div>
+  </div>
+</div>
+
+<div class="tracker-wrap">
+
+  <div class="cta-strip">
+    <div>
+      <h3>Don't see your issue?</h3>
+      <p>Submit it in 2 minutes — our research team reads every single one.</p>
+    </div>
+    <a href="submit.html">+ Submit an Issue →</a>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="Search issues…" oninput="filterIssues()" />
+    </div>
+    <div class="filter-tabs">
+      <button class="filter-tab active" onclick="setFilter('all', this)">All</button>
+      <button class="filter-tab" onclick="setFilter('development', this)">🏗️ Development</button>
+      <button class="filter-tab" onclick="setFilter('recreation', this)">🏒 Recreation</button>
+      <button class="filter-tab" onclick="setFilter('housing', this)">🏠 Housing</button>
+      <button class="filter-tab" onclick="setFilter('environment', this)">🌲 Environment</button>
+      <button class="filter-tab" onclick="setFilter('governance', this)">🏛️ Council</button>
+    </div>
+    <select class="sort-select" id="sortSelect" onchange="filterIssues()">
+      <option value="votes">Most Supported</option>
+      <option value="recent">Most Recent</option>
+      <option value="urgent">Most Urgent</option>
+      <option value="status">By Status</option>
+    </select>
+  </div>
+
+  <!-- ISSUES LIST -->
+  <div class="issues-list" id="issuesList"></div>
+
+  <div class="load-more">
+    <button class="btn-load" onclick="alert('All issues loaded. Submit yours above!')">Load More Issues</button>
+  </div>
+
+</div>
+
+<footer>
+  <a href="index.html">Squamish Future</a> — Built by the community. For the community. · Squamish, BC · Non-partisan
+</footer>
+
+<script>
+// ─── ISSUE DATA ───────────────────────────────────────────────────────────────
+// In production: replace with Airtable API fetch or backend endpoint
+const ISSUES = [
+  {
+    id: 1,
+    title: "Brendan Park development proposals lack community consultation",
+    desc: "Several development proposals for Brendan Park have advanced without meaningful input from residents who use the space daily. We need a full public review before any approvals.",
+    category: "development",
+    urgency: "high",
+    status: "research",
+    votes: 84,
+    neighbourhood: "Valleycliffe / Downtown",
+    date: "2026-03-20",
+    comments: 12
+  },
+  {
+    id: 2,
+    title: "Squamish arena is overbooked — local families losing ice time",
+    desc: "Hockey families report losing accessible ice time as demand grows but capacity hasn't kept pace. We need a second sheet of ice or a long-term arena strategy.",
+    category: "recreation",
+    urgency: "medium",
+    status: "active",
+    votes: 71,
+    neighbourhood: "Garibaldi Highlands",
+    date: "2026-03-18",
+    comments: 8
+  },
+  {
+    id: 3,
+    title: "Rental housing is disappearing — vacancy rate near zero",
+    desc: "Long-term renters are being displaced as investors convert rental stock to short-term or ownership units. The District needs a rental protection strategy now.",
+    category: "housing",
+    urgency: "now",
+    status: "campaign",
+    votes: 112,
+    neighbourhood: "Downtown Squamish",
+    date: "2026-03-15",
+    comments: 21
+  },
+  {
+    id: 4,
+    title: "Squamish Spit access under threat from private development",
+    desc: "Proposed development near the Spit could restrict public access to one of Squamish's most loved outdoor areas. Public consultation has been minimal.",
+    category: "environment",
+    urgency: "high",
+    status: "research",
+    votes: 67,
+    neighbourhood: "Multiple areas",
+    date: "2026-03-22",
+    comments: 5
+  },
+  {
+    id: 5,
+    title: "Council voted to increase development fees without public notice",
+    desc: "A fee schedule change affecting local contractors and homebuilders was passed without the typical public notice period. Residents weren't informed until after the vote.",
+    category: "governance",
+    urgency: "medium",
+    status: "research",
+    votes: 43,
+    neighbourhood: "City-wide",
+    date: "2026-03-10",
+    comments: 7
+  },
+  {
+    id: 6,
+    title: "Trail maintenance in Garibaldi Highlands has been neglected",
+    desc: "Several popular trails haven't been maintained in over a year. Drainage issues and fallen trees are making them dangerous for hikers and mountain bikers.",
+    category: "recreation",
+    urgency: "medium",
+    status: "new",
+    votes: 38,
+    neighbourhood: "Garibaldi Highlands",
+    date: "2026-03-24",
+    comments: 3
+  },
+  {
+    id: 7,
+    title: "No affordable childcare options for working families",
+    desc: "Childcare waitlists stretch 2+ years in Squamish. With housing costs already pushing families out, lack of childcare is the second biggest reason people leave.",
+    category: "community",
+    urgency: "high",
+    status: "active",
+    votes: 59,
+    neighbourhood: "City-wide",
+    date: "2026-03-08",
+    comments: 14
+  },
+  {
+    id: 8,
+    title: "Highway 99 corridor improvements keep getting delayed",
+    desc: "Promised infrastructure upgrades on Hwy 99 between Squamish and Whistler have been delayed again. Safety concerns continue to grow, especially in winter.",
+    category: "infrastructure",
+    urgency: "high",
+    status: "active",
+    votes: 52,
+    neighbourhood: "Sea to Sky",
+    date: "2026-03-05",
+    comments: 9
+  },
+  {
+    id: 9,
+    title: "Old Squamish businesses being priced out by rising commercial rents",
+    desc: "Long-standing local businesses on Cleveland Ave are shutting down as commercial rents double. The character of downtown is changing and not for the better.",
+    category: "economy",
+    urgency: "medium",
+    status: "new",
+    votes: 29,
+    neighbourhood: "Downtown Squamish",
+    date: "2026-03-23",
+    comments: 2
+  },
+  {
+    id: 10,
+    title: "No public process for District AI policy adoption",
+    desc: "The District of Squamish has been exploring AI tools in administration without a public policy framework or resident consultation. What data is being used?",
+    category: "governance",
+    urgency: "medium",
+    status: "research",
+    votes: 34,
+    neighbourhood: "City-wide",
+    date: "2026-03-12",
+    comments: 6
+  },
+  {
+    id: 11,
+    title: "Brackendale flood risk — outdated infrastructure not being addressed",
+    desc: "Flood risk maps haven't been updated in 15 years. Brackendale residents are concerned the District isn't taking long-term flood mitigation seriously.",
+    category: "environment",
+    urgency: "high",
+    status: "active",
+    votes: 46,
+    neighbourhood: "Brackendale",
+    date: "2026-02-28",
+    comments: 11
+  },
+  {
+    id: 12,
+    title: "Youth recreation programs need more funding and space",
+    desc: "After-school programs are at capacity and turning kids away. The rec centre needs expanded programming and possibly a dedicated youth facility.",
+    category: "recreation",
+    urgency: "low",
+    status: "new",
+    votes: 22,
+    neighbourhood: "City-wide",
+    date: "2026-03-24",
+    comments: 1
+  }
+];
+
+let activeFilter = 'all';
+let votedIssues = new Set();
+
+const CAT_LABELS = {
+  development: { label: '🏗️ Development', cls: 'cat-development' },
+  recreation: { label: '🏒 Recreation', cls: 'cat-recreation' },
+  economy: { label: '💼 Economy', cls: 'cat-economy' },
+  environment: { label: '🌲 Environment', cls: 'cat-environment' },
+  infrastructure: { label: '🚧 Infrastructure', cls: 'cat-infrastructure' },
+  community: { label: '🤝 Community', cls: 'cat-community' },
+  housing: { label: '🏠 Housing', cls: 'cat-housing' },
+  governance: { label: '🏛️ Council', cls: 'cat-governance' },
+};
+const URG_DOT = { low: 'urg-low', medium: 'urg-medium', high: 'urg-high', now: 'urg-now' };
+const URG_LABEL = { low: 'Long-term', medium: 'This year', high: 'Urgent', now: '🚨 Right now' };
+const STATUS_INFO = {
+  new: { label: '🆕 New', cls: 'status-new' },
+  research: { label: '🔍 In Research', cls: 'status-research' },
+  active: { label: '⚡ Active', cls: 'status-active' },
+  campaign: { label: '📣 Campaign', cls: 'status-campaign' },
+  resolved: { label: '✅ Resolved', cls: 'status-resolved' },
+};
+
+function setFilter(cat, el) {
+  activeFilter = cat;
+  document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  filterIssues();
+}
+
+function filterIssues() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const sort = document.getElementById('sortSelect').value;
+
+  let filtered = ISSUES.filter(i => {
+    const matchCat = activeFilter === 'all' || i.category === activeFilter;
+    const matchSearch = !q || i.title.toLowerCase().includes(q) || i.desc.toLowerCase().includes(q) || i.neighbourhood.toLowerCase().includes(q);
+    return matchCat && matchSearch;
+  });
+
+  if (sort === 'votes') filtered.sort((a,b) => b.votes - a.votes);
+  else if (sort === 'recent') filtered.sort((a,b) => new Date(b.date) - new Date(a.date));
+  else if (sort === 'urgent') {
+    const urgOrder = { now:0, high:1, medium:2, low:3 };
+    filtered.sort((a,b) => urgOrder[a.urgency] - urgOrder[b.urgency]);
+  } else if (sort === 'status') {
+    const sOrder = { campaign:0, active:1, research:2, new:3, resolved:4 };
+    filtered.sort((a,b) => sOrder[a.status] - sOrder[b.status]);
+  }
+
+  renderIssues(filtered);
+}
+
+function renderIssues(list) {
+  const el = document.getElementById('issuesList');
+  if (!list.length) {
+    el.innerHTML = '<div class="empty-state"><span class="icon">🔍</span><p>No issues match your search. <a href="submit.html" style="color:var(--sky)">Submit one →</a></p></div>';
+    return;
+  }
+  el.innerHTML = list.map(issue => {
+    const cat = CAT_LABELS[issue.category] || { label: issue.category, cls: '' };
+    const urg = URG_DOT[issue.urgency] || 'urg-low';
+    const st = STATUS_INFO[issue.status] || STATUS_INFO.new;
+    const voted = votedIssues.has(issue.id);
+    const dateStr = new Date(issue.date).toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' });
+    return `
+      <div class="issue-row" id="issue-${issue.id}">
+        <div class="vote-col">
+          <button class="vote-btn ${voted ? 'voted' : ''}" onclick="vote(${issue.id}, event)" title="Support this issue">▲</button>
+          <span class="vote-count" id="votes-${issue.id}">${issue.votes}</span>
+          <span class="vote-label">support</span>
+        </div>
+        <div class="issue-main">
+          <div class="issue-meta">
+            <span class="cat-pill ${cat.cls}">${cat.label}</span>
+            <span class="urgency-dot ${urg}" title="${URG_LABEL[issue.urgency]}"></span>
+            <span style="font-size:0.75rem; color:var(--grey);">${URG_LABEL[issue.urgency]}</span>
+          </div>
+          <div class="issue-title">${issue.title}</div>
+          <div class="issue-desc">${issue.desc}</div>
+          <div class="issue-footer">
+            <span class="issue-neighbourhood">📍 ${issue.neighbourhood}</span>
+            <span class="issue-date">${dateStr}</span>
+            <span class="comment-count">💬 ${issue.comments} comments</span>
+          </div>
+        </div>
+        <div class="status-col">
+          <span class="status-badge ${st.cls}">${st.label}</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function vote(id, e) {
+  e.stopPropagation();
+  const issue = ISSUES.find(i => i.id === id);
+  if (!issue) return;
+  if (votedIssues.has(id)) {
+    votedIssues.delete(id);
+    issue.votes--;
+    document.querySelector(`#issue-${id} .vote-btn`).classList.remove('voted');
+  } else {
+    votedIssues.add(id);
+    issue.votes++;
+    document.querySelector(`#issue-${id} .vote-btn`).classList.add('voted');
+  }
+  document.getElementById(`votes-${id}`).textContent = issue.votes;
+  // TODO: persist vote to backend
+}
+
+// Init
+filterIssues();
+</script>
+<script src="nav.js"></script>
+</body>
+</html>

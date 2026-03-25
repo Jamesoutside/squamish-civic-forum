@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Squamish Future — Built by the community. For the community.</title>
+  <meta name="description" content="Squamish Future is a non-partisan civic organization for Squamish, BC. Real data. Real issues. Built by the community, for the community." />
+  <link rel="stylesheet" href="brand.css" />
+  <style>
+    /* ── PAGE-SPECIFIC STYLES ─────────────────────────── */
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 2rem 90px;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      background: rgba(232,160,32,0.12);
+      border: 1px solid rgba(232,160,32,0.3);
+      color: var(--teal);
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      padding: 0.4rem 1.1rem; border-radius: 100px;
+      margin-bottom: 2rem; position: relative; z-index: 1;
+    }
+    .hero-chief { display: none; }
+    #hero h1 {
+      font-family: var(--font-display);
+      font-size: clamp(3.2rem, 8vw, 7rem);
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      text-transform: none;
+      color: var(--white);
+      line-height: 1.0;
+      margin-bottom: 0.4rem;
+      position: relative; z-index: 1;
+    }
+    #hero h1 .teal { color: var(--teal); }
+    .hero-tagline {
+      font-size: clamp(0.95rem, 2vw, 1.2rem);
+      color: rgba(255,255,255,0.55);
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      margin-bottom: 2rem;
+      position: relative; z-index: 1;
+    }
+    .hero-sub {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.6);
+      max-width: 520px;
+      margin: 0 auto 2.8rem;
+      line-height: 1.75;
+      position: relative; z-index: 1;
+    }
+    .hero-form {
+      display: flex; gap: 0.75rem;
+      max-width: 460px; width: 100%;
+      margin: 0 auto 1rem;
+      position: relative; z-index: 1;
+    }
+    .hero-form input {
+      flex: 1; padding: 0.9rem 1.2rem;
+      border: none; border-radius: var(--radius-sm);
+      font-size: 1rem; background: rgba(255,255,255,0.95);
+      color: var(--dark); outline: none;
+    }
+    .hero-form input::placeholder { color: #9ca3af; }
+    .hero-note {
+      color: rgba(255,255,255,0.3);
+      font-size: 0.78rem;
+      position: relative; z-index: 1;
+    }
+    .hero-stats {
+      display: flex; gap: 3.5rem; justify-content: center;
+      margin-top: 5rem; flex-wrap: wrap;
+      position: relative; z-index: 1;
+    }
+    .hero-stat .num {
+      font-family: var(--font-display);
+      font-size: 2.4rem; font-weight: 900;
+      color: var(--teal); display: block; line-height: 1;
+    }
+    .hero-stat .lbl {
+      color: rgba(255,255,255,0.4);
+      font-size: 0.72rem; letter-spacing: 0.1em;
+      text-transform: uppercase; margin-top: 0.3rem; display: block;
+    }
+    .teal-line {
+      width: 1px; height: 50px;
+      background: linear-gradient(to bottom, transparent, var(--teal), transparent);
+      position: absolute; bottom: 2rem; left: 50%; opacity: 0.5;
+      animation: pulse-line 2s ease-in-out infinite;
+    }
+    @keyframes pulse-line { 0%,100%{opacity:0.3} 50%{opacity:0.7} }
+
+    /* MISSION */
+    #mission { background: var(--white); }
+    .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .mission-quote {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: 1.45rem;
+      color: var(--navy);
+      line-height: 1.5;
+      padding-left: 1.5rem;
+      border-left: 3px solid var(--teal);
+      margin: 1.8rem 0;
+    }
+    .pillars { display: flex; flex-direction: column; gap: 1rem; }
+    .pillar {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: 1.2rem 1.5rem;
+      background: var(--light); border-radius: var(--radius-md);
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .pillar:hover { border-color: var(--teal); box-shadow: var(--shadow-sm); }
+    .pillar-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .pillar h4 { font-size: 0.92rem; font-weight: 700; color: var(--navy); margin-bottom: 0.2rem; }
+    .pillar p { font-size: 0.85rem; color: var(--grey); line-height: 1.55; }
+
+    /* ISSUES */
+    #issues { background: var(--light); }
+    .issues-header { margin-bottom: 3rem; }
+    .issues-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+    .issue-card {
+      background: var(--white); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 1.8rem 1.5rem;
+      transition: all 0.22s;
+    }
+    .issue-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md); border-color: rgba(232,160,32,0.3); }
+    .issue-icon { font-size: 2rem; margin-bottom: 1rem; display: block; }
+    .issue-card h3 { font-size: 0.95rem; font-weight: 700; color: var(--navy); margin-bottom: 0.5rem; }
+    .issue-card p { font-size: 0.85rem; color: var(--grey); line-height: 1.6; }
+
+    /* COUNCIL */
+    #council { background: var(--navy); }
+    #council .section-label { color: var(--teal); }
+    #council .display { color: var(--white); }
+    #council .section-sub { color: rgba(255,255,255,0.55); max-width: 560px; margin-bottom: 3rem; }
+    .council-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; }
+    .council-card {
+      background: rgba(232,160,32,0.06);
+      border: 1px solid rgba(232,160,32,0.18);
+      border-radius: var(--radius-lg); padding: 1.8rem;
+      transition: all 0.2s;
+    }
+    .council-card:hover { background: rgba(232,160,32,0.1); border-color: rgba(232,160,32,0.35); }
+    .council-card h3 { color: var(--teal); font-size: 1rem; font-weight: 700; margin-bottom: 0.5rem; }
+    .council-card p { color: rgba(255,255,255,0.6); font-size: 0.88rem; line-height: 1.6; }
+    .council-cta { margin-top: 3rem; }
+
+    /* JOIN */
+    #join { background: var(--white); }
+    .join-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: start; }
+    .join-form-card {
+      background: var(--light); border: 1px solid var(--border);
+      border-radius: var(--radius-xl); padding: 2.5rem;
+      box-shadow: var(--shadow-md);
+    }
+    .join-form-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.4rem; color: var(--navy); margin-bottom: 0.4rem;
+    }
+    .join-form-card > p { color: var(--grey); font-size: 0.88rem; margin-bottom: 1.8rem; }
+    .form-submit-btn {
+      width: 100%; background: var(--teal); color: var(--navy);
+      border: none; padding: 0.95rem; border-radius: var(--radius-sm);
+      font-size: 1rem; font-weight: 800; cursor: pointer;
+      transition: all 0.2s; margin-top: 0.5rem; letter-spacing: 0.02em;
+    }
+    .form-submit-btn:hover { background: var(--teal-dark); box-shadow: var(--shadow-teal); transform: translateY(-1px); }
+    .ways-list { display: flex; flex-direction: column; gap: 1rem; }
+    .way-item {
+      display: flex; align-items: flex-start; gap: 1rem;
+      padding: 1rem 1.2rem; background: var(--light);
+      border-radius: var(--radius-md); border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .way-item:hover { border-color: var(--teal); }
+    .way-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .way-item h4 { font-size: 0.88rem; font-weight: 700; color: var(--navy); margin-bottom: 0.15rem; }
+    .way-item p { font-size: 0.82rem; color: var(--grey); line-height: 1.4; }
+
+    /* EVENTS */
+    #events { background: var(--light); }
+    .events-top { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem; flex-wrap: wrap; gap: 1rem; }
+    .events-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+    .event-card {
+      display: flex; gap: 1.5rem; align-items: flex-start;
+      padding: 1.5rem; background: var(--white);
+      border: 1px solid var(--border); border-radius: var(--radius-lg);
+      transition: all 0.2s;
+    }
+    .event-card:hover { box-shadow: var(--shadow-md); border-color: rgba(232,160,32,0.3); }
+    .event-date {
+      flex-shrink: 0; width: 56px; height: 60px;
+      background: var(--navy); border-radius: var(--radius-md);
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      color: white;
+    }
+    .event-date .month { font-size: 0.62rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--teal); }
+    .event-date .day { font-size: 1.6rem; font-weight: 900; line-height: 1; font-family: var(--font-display); }
+    .event-info h4 { font-size: 0.95rem; font-weight: 700; color: var(--navy); margin-bottom: 0.3rem; }
+    .event-info p { font-size: 0.84rem; color: var(--grey); line-height: 1.5; }
+
+    /* ABOUT */
+    #about { background: var(--navy); }
+    #about .section-label { color: var(--teal); }
+    #about .display { color: var(--white); }
+    #about .section-sub { color: rgba(255,255,255,0.55); }
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+    .about-values { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 2rem; }
+    .value-item {
+      padding: 1.2rem; background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08); border-radius: var(--radius-md);
+    }
+    .value-icon { font-size: 1.4rem; margin-bottom: 0.5rem; display: block; }
+    .value-item h4 { font-size: 0.85rem; font-weight: 700; color: var(--white); margin-bottom: 0.2rem; }
+    .value-item p { font-size: 0.78rem; color: rgba(255,255,255,0.45); line-height: 1.4; }
+    .stream-card {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(232,160,32,0.18);
+      border-radius: var(--radius-lg); overflow: hidden;
+    }
+    .stream-header { background: rgba(232,160,32,0.1); padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(232,160,32,0.15); }
+    .stream-header h3 { color: var(--teal); font-size: 0.95rem; font-weight: 700; }
+    .stream-body { padding: 1.2rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .stream-body:last-child { border-bottom: none; }
+    .stream-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--teal); margin-bottom: 0.6rem; display: block; }
+    .stream-body ul { list-style: none; }
+    .stream-body li { font-size: 0.84rem; color: rgba(255,255,255,0.5); padding: 0.2rem 0 0.2rem 1rem; position: relative; }
+    .stream-body li::before { content: '→'; position: absolute; left: 0; color: var(--teal); opacity: 0.6; }
+
+    /* NEWSLETTER */
+    #newsletter {
+      background: linear-gradient(135deg, #001f3a 0%, var(--navy) 100%);
+      text-align: center;
+    }
+    #newsletter .display { color: var(--white); }
+    #newsletter .section-sub { color: rgba(255,255,255,0.5); margin: 0 auto 2.5rem; max-width: 500px; }
+    .newsletter-form { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; max-width: 480px; margin: 0 auto; }
+    .newsletter-form input { flex: 1; min-width: 200px; padding: 0.9rem 1.2rem; border: none; border-radius: var(--radius-sm); font-size: 1rem; outline: none; }
+    .newsletter-note { color: rgba(255,255,255,0.25); font-size: 0.78rem; margin-top: 1rem; }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .mission-grid, .join-grid, .about-grid { grid-template-columns: 1fr; gap: 2.5rem; }
+      .council-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 700px) {
+      .issues-grid { grid-template-columns: 1fr 1fr; }
+      .events-grid { grid-template-columns: 1fr; }
+      .about-values { grid-template-columns: 1fr 1fr; }
+      .hero-stats { gap: 2rem; }
+      .hero-form { flex-direction: column; }
+    }
+    @media (max-width: 480px) {
+      .issues-grid, .about-values { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="sf-nav" id="mainNav"></nav>
+
+<!-- HERO -->
+<section id="hero" class="hero-bg">
+  <div class="hero-badge">🏔️ &nbsp; Squamish, British Columbia</div>
+
+  <h1 class="display display-lg">Squamish<br><span class="teal">Future</span></h1>
+  <p class="hero-tagline">Built by the community. For the community.</p>
+  <p class="hero-sub">A non-partisan civic organization giving Squamish residents the research, tools, and voice they need to shape where this community is headed.</p>
+
+  <form class="hero-form" onsubmit="return false;">
+    <input type="email" placeholder="Your email address" />
+    <button class="btn btn-teal" type="submit">Join the Movement</button>
+  </form>
+  <p class="hero-note">Free to join · No spam · Real information about your community</p>
+
+  <div class="hero-stats">
+    <div class="hero-stat"><span class="num">4,000+</span><span class="lbl">Community Goal</span></div>
+    <div class="hero-stat"><span class="num">100%</span><span class="lbl">Non-Partisan</span></div>
+    <div class="hero-stat"><span class="num">2026</span><span class="lbl">Election Ready</span></div>
+  </div>
+
+  <div class="teal-line"></div>
+</section>
+
+<!-- MISSION -->
+<section id="mission" class="sf-section">
+  <div class="container">
+    <div class="mission-grid">
+      <div>
+        <span class="section-label">Why We Exist</span>
+        <h2 class="display display-sm" style="color:var(--navy)">Squamish deserves informed, engaged citizens</h2>
+        <div class="teal-rule"></div>
+        <blockquote class="mission-quote">"For busy people who care — we do the research so you don't have to."</blockquote>
+        <p style="color:var(--grey); font-size:1rem; line-height:1.75;">Real data. Real issues. Considered recommendations. Five minutes to stay informed on what matters most in our community.</p>
+      </div>
+      <div class="pillars">
+        <div class="pillar"><span class="pillar-icon">🔍</span><div><h4>Research-Driven</h4><p>We track council votes, attend meetings, and dig into the facts so you have real information — not spin.</p></div></div>
+        <div class="pillar"><span class="pillar-icon">⚖️</span><div><h4>Non-Partisan</h4><p>No party lines. No ideology. Just Squamish residents who care about getting things right.</p></div></div>
+        <div class="pillar"><span class="pillar-icon">📣</span><div><h4>Community-First</h4><p>We listen before we speak. Your issues shape our platform — not the other way around.</p></div></div>
+        <div class="pillar"><span class="pillar-icon">🗳️</span><div><h4>Candidate-Ready</h4><p>When election time comes, we vet candidates, publish questionnaires, and help you make the best choice.</p></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ISSUES -->
+<section id="issues" class="sf-section-light">
+  <div class="container">
+    <div class="issues-header">
+      <span class="section-label">Platform Issues</span>
+      <h2 class="display display-sm" style="color:var(--navy)">What matters to Squamish</h2>
+      <div class="teal-rule"></div>
+      <p style="color:var(--grey); font-size:1rem; max-width:580px; line-height:1.7;">These are the issues our community told us matter most. Every decision, vote, and development — tracked so you don't have to.</p>
+    </div>
+    <div class="issues-grid">
+      <div class="issue-card"><span class="issue-icon">🏗️</span><h3>Development &amp; Land Use</h3><p>Brendan Park, Squamish Spit, public lands, affordable housing — who decides and how your land is used.</p><div class="mt-2"><span class="badge badge-teal">Active</span></div></div>
+      <div class="issue-card"><span class="issue-icon">🏒</span><h3>Recreation &amp; Sports</h3><p>Hockey arena access, sports facilities, trails, bike parks — keeping Squamish active and accessible.</p><div class="mt-2"><span class="badge badge-teal">Active</span></div></div>
+      <div class="issue-card"><span class="issue-icon">💼</span><h3>Jobs &amp; Local Economy</h3><p>Local hiring, business support, tourism balance — building a strong economy that works for residents.</p><div class="mt-2"><span class="badge badge-teal">Active</span></div></div>
+      <div class="issue-card"><span class="issue-icon">🌲</span><h3>Environment &amp; Infrastructure</h3><p>Roads, transit, environmental protection — getting the balance right between growth and preservation.</p><div class="mt-2"><span class="badge badge-teal">Active</span></div></div>
+      <div class="issue-card"><span class="issue-icon">🤝</span><h3>Community &amp; Services</h3><p>Social services, seniors, families — making sure Squamish takes care of its own.</p><div class="mt-2"><span class="badge badge-teal">Active</span></div></div>
+      <div class="issue-card" style="border-style:dashed; cursor:pointer;" onclick="window.location='submit.html'">
+        <span class="issue-icon">💡</span>
+        <h3>Your Issue Here</h3>
+        <p>We're listening. Tell us what matters to you and we'll research it, track it, and make sure it's heard.</p>
+        <div class="mt-2"><span class="badge badge-amber">Submit Yours →</span></div>
+      </div>
+    </div>
+    <div class="mt-4 text-center">
+      <a href="tracker.html" class="btn btn-navy">View Full Issues Tracker →</a>
+    </div>
+  </div>
+</section>
+
+<!-- COUNCIL WATCH -->
+<section id="council" class="sf-section-dark">
+  <div class="container">
+    <span class="section-label">Council Watch</span>
+    <h2 class="display display-sm">Know how your councillors vote</h2>
+    <div class="teal-rule"></div>
+    <p class="section-sub">We track every vote, every meeting, every decision — and publish plain-language summaries so you can hold elected officials accountable.</p>
+    <div class="council-grid">
+      <div class="council-card"><h3>🗳️ 2025 Voting Records</h3><p>Full breakdown of how each councillor voted on key issues — AI policy, development approvals, budget decisions, and more.</p><div class="mt-2"><span class="badge badge-teal">Coming April 2026</span></div></div>
+      <div class="council-card"><h3>📊 Attendance Tracker</h3><p>Who shows up? Who skips? We track council attendance at every public meeting so the record speaks for itself.</p><div class="mt-2"><span class="badge badge-teal">Coming April 2026</span></div></div>
+      <div class="council-card"><h3>📋 Brendan Park — Full Facts</h3><p>Complete history, current proposals, community sentiment, and what's actually at stake. The unbiased fact package.</p><div class="mt-2"><span class="badge badge-grey">In Research</span></div></div>
+      <div class="council-card"><h3>📡 My Sea to Sky Monitor</h3><p>Weekly digest of what's happening at the District of Squamish — delivered straight to your inbox every Monday.</p><div class="mt-2"><span class="badge badge-green">Subscribe Below</span></div></div>
+    </div>
+    <div class="council-cta">
+      <a href="#join" class="btn btn-outline-teal">Get the Council Report Card →</a>
+    </div>
+  </div>
+</section>
+
+<!-- EVENTS -->
+<section id="events" class="sf-section-light">
+  <div class="container">
+    <div class="events-top">
+      <div>
+        <span class="section-label">Events</span>
+        <h2 class="display display-sm" style="color:var(--navy)">Join us in person</h2>
+        <div class="teal-rule"></div>
+      </div>
+      <a href="#join" class="btn btn-teal">Get Notified</a>
+    </div>
+    <div class="events-grid">
+      <div class="event-card">
+        <div class="event-date"><span class="month">Apr</span><span class="day">9</span></div>
+        <div class="event-info">
+          <h4>Community Founding Meeting</h4>
+          <p>Our first open community gathering. Share your issues, help shape what Squamish Future stands for.</p>
+          <div class="mt-2"><span class="badge badge-green">🟢 Open to All</span></div>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-date" style="background:var(--navy-mid)"><span class="month">May</span><span class="day" style="font-size:1.1rem;font-weight:800;padding-top:4px">TBD</span></div>
+        <div class="event-info">
+          <h4>Coffee with Civic</h4>
+          <p>Monthly informal meetup. No agenda, no speeches — just Squamish residents talking about what matters.</p>
+          <div class="mt-2"><span class="badge badge-teal">Casual</span></div>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-date" style="background:#3d2a6e"><span class="month">Jun</span><span class="day" style="font-size:1.1rem;font-weight:800;padding-top:4px">TBD</span></div>
+        <div class="event-info">
+          <h4>Issues Forum — Development &amp; Land</h4>
+          <p>Deep dive into Brendan Park, the Spit, and upcoming development decisions. Experts, residents, Q&amp;A.</p>
+          <div class="mt-2"><span class="badge badge-grey">🎙️ Panel Event</span></div>
+        </div>
+      </div>
+      <div class="event-card">
+        <div class="event-date" style="background:#7a5200"><span class="month">2026</span><span class="day" style="font-size:1rem;font-weight:800;padding-top:4px">Oct</span></div>
+        <div class="event-info">
+          <h4>Candidate Forum</h4>
+          <p>Pre-election forum where candidates face real questions from real residents. Powered by community research.</p>
+          <div class="mt-2"><span class="badge badge-amber">⭐ Major Event</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JOIN -->
+<section id="join" class="sf-section">
+  <div class="container">
+    <div class="join-grid">
+      <div class="join-form-card">
+        <h3>Join Squamish Future</h3>
+        <p>60 seconds. Free forever. Get the information that matters.</p>
+        <div class="sf-field"><label>First Name</label><input type="text" placeholder="Your first name" /></div>
+        <div class="sf-field"><label>Email Address</label><input type="email" placeholder="your@email.com" /></div>
+        <div class="sf-field">
+          <label>Neighbourhood</label>
+          <select>
+            <option value="">Select your area</option>
+            <option>Downtown Squamish</option>
+            <option>Garibaldi Highlands</option>
+            <option>Brackendale</option>
+            <option>Valleycliffe</option>
+            <option>Britannia Beach</option>
+            <option>Other / Sea to Sky</option>
+          </select>
+        </div>
+        <div class="sf-field"><label>What issue matters most to you? (optional)</label><textarea placeholder="Development, housing, recreation, environment…" rows="3"></textarea></div>
+        <button class="form-submit-btn">Join the Community →</button>
+      </div>
+      <div>
+        <span class="section-label">Get Involved</span>
+        <h2 class="display display-sm" style="color:var(--navy); margin-bottom:0.5rem;">More than a newsletter</h2>
+        <div class="teal-rule"></div>
+        <p style="color:var(--grey); margin-bottom:1.8rem; line-height:1.7;">There are lots of ways to be part of Squamish Future — from reading the weekly digest to running for council with our support.</p>
+        <div class="ways-list">
+          <div class="way-item"><span class="way-icon">📬</span><div><h4>Subscribe to the Newsletter</h4><p>5-minute weekly digest of what's happening at Squamish City Hall and in your community.</p></div></div>
+          <div class="way-item"><span class="way-icon">👥</span><div><h4>Become a Community Ambassador</h4><p>Already active in a community group? Help us spread the word and represent your neighbourhood.</p></div></div>
+          <div class="way-item"><span class="way-icon">🔬</span><div><h4>Join a Research Task Group</h4><p>Got skills? Help us dig into issues, track votes, and build the fact packages our community needs.</p></div></div>
+          <div class="way-item"><span class="way-icon">🗳️</span><div><h4>Run for Council — We'll Back You</h4><p>Thinking about running? We vet, support, and amplify community-aligned candidates.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="sf-section-dark">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <span class="section-label">About Us</span>
+        <h2 class="display display-sm" style="color:var(--white); margin-bottom:0.5rem;">Who we are</h2>
+        <div class="teal-rule"></div>
+        <p style="color:rgba(255,255,255,0.6); margin-bottom:1.2rem; line-height:1.75;">Squamish Future is a registered BC Society built by locals who are tired of feeling like decisions are made without them. We're not left or right — we're Squamish.</p>
+        <p style="color:rgba(255,255,255,0.5); line-height:1.75;">We believe an informed community is a powerful community. Our job is to do the research, ask the hard questions, and give residents the tools to engage — on their own time, at their own pace.</p>
+        <div class="about-values">
+          <div class="value-item"><span class="value-icon">🏔️</span><h4>Local First</h4><p>Squamish residents, for Squamish residents.</p></div>
+          <div class="value-item"><span class="value-icon">📊</span><h4>Evidence-Based</h4><p>We cite sources. We check facts. We get it right.</p></div>
+          <div class="value-item"><span class="value-icon">🤲</span><h4>Volunteer-Powered</h4><p>No corporate money. Built by people who care.</p></div>
+          <div class="value-item"><span class="value-icon">🔓</span><h4>Transparent</h4><p>Our decisions, our finances, our reasoning — open.</p></div>
+        </div>
+      </div>
+      <div>
+        <div class="stream-card">
+          <div class="stream-header"><h3>How We're Structured — Two Streams</h3></div>
+          <div class="stream-body">
+            <span class="stream-label">🌐 Public Stream</span>
+            <ul>
+              <li>Issues platform and research</li>
+              <li>Council scorecards and vote tracking</li>
+              <li>Candidate questionnaires (published)</li>
+              <li>Community events and forums</li>
+              <li>Newsletter and social media</li>
+            </ul>
+          </div>
+          <div class="stream-body">
+            <span class="stream-label">🔒 Private Working Group</span>
+            <ul>
+              <li>Candidate vetting and support</li>
+              <li>Strategy and coordination</li>
+              <li>Resource allocation decisions</li>
+              <li>Confidential candidate conversations</li>
+            </ul>
+          </div>
+        </div>
+        <div class="mt-3" style="display:flex; gap:1rem; flex-wrap:wrap;">
+          <a href="candidate.html" class="btn btn-outline-teal">Run for Council →</a>
+          <a href="donate.html" class="btn btn-teal">Support Us →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWSLETTER -->
+<section id="newsletter" class="sf-section-dark" style="text-align:center; background: linear-gradient(135deg, #001f3a 0%, var(--navy) 100%);">
+  <div class="container">
+    <span class="section-label" style="display:block; text-align:center;">Stay Informed</span>
+    <h2 class="display display-sm" style="color:var(--white);">The Squamish Future Weekly</h2>
+    <div class="teal-rule centered"></div>
+    <p class="section-sub">One email. Five minutes. Everything that matters at Squamish City Hall — every Monday morning.</p>
+    <form class="newsletter-form" onsubmit="return false;">
+      <input type="email" placeholder="Enter your email" />
+      <button class="btn btn-teal" type="submit">Subscribe Free</button>
+    </form>
+    <p class="newsletter-note">No spam. Unsubscribe anytime. Built for busy people.</p>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="sf-footer">
+  <div class="sf-footer-inner">
+    <div>
+      <div class="sf-footer-wordmark">Squamish <span>Future</span></div>
+      <p class="sf-footer-tagline">Built by the community. For the community.</p>
+      <p class="sf-footer-copy mt-2">© 2026 Squamish Future Society · Squamish, BC · Non-partisan</p>
+    </div>
+    <div class="sf-footer-links">
+      <a href="tracker.html">Issues Tracker</a>
+      <a href="submit.html">Submit Issue</a>
+      <a href="candidate.html">Run for Council</a>
+      <a href="donate.html">Donate</a>
+      <a href="#about">About</a>
+      <a href="#join">Join</a>
+    </div>
+  </div>
+</footer>
+
+<script src="nav.js"></script>
+</body>
+</html>
