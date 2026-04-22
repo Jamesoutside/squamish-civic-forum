@@ -281,6 +281,10 @@
       <div class="ni" onclick="show('objectives')"><span class="ico">🎯</span> Objectives</div>
     </div>
     <div class="sb-section">
+      <span class="sb-label">Community</span>
+      <div class="ni" onclick="show('issues')"><span class="ico">📥</span> Issues Submitted</div>
+    </div>
+    <div class="sb-section">
       <span class="sb-label">People</span>
       <div class="ni" onclick="show('groups')"><span class="ico">👥</span> Working Groups</div>
       <div class="ni" onclick="show('directory')"><span class="ico">📋</span> Directory</div>
@@ -347,7 +351,7 @@
       <div class="phase-card">
         <div class="phase-card-hd"><h3>2026 Municipal Election — <span style="color:var(--teal)">Phase 1: Foundation</span></h3><span class="edate">🗳️ Oct 18, 2026</span></div>
         <div class="phases">
-          <div class="ph done"><div class="ph-dot">✓</div><div class="ph-name">Phase 0<br>Launch</div><div class="ph-date">Mar 2026</div></div>
+          <div class="ph done"><div class="ph-dot">✓</div><div class="ph-name">Phase 0<br>Launch</div><div class="ph-date">Apr 2026</div></div>
           <div class="ph current"><div class="ph-dot">🏗️</div><div class="ph-name">Phase 1<br>Foundation</div><div class="ph-date">Now → Jun</div></div>
           <div class="ph upcoming"><div class="ph-dot">👥</div><div class="ph-name">Phase 2<br>Base Build</div><div class="ph-date">May–Aug</div></div>
           <div class="ph upcoming"><div class="ph-dot">🎯</div><div class="ph-name">Phase 3<br>Candidates</div><div class="ph-date">Jun–Sep</div></div>
@@ -406,8 +410,23 @@
     </div>
 
     <!-- ══ DIRECTORY ══════════════════════════════════ -->
+    <!-- ══ ISSUES ══════════════════════ -->
+    <div class="panel" id="panel-issues">
+      <div class="page-hd"><div><h1>Community Issues</h1><p>Issues submitted by the public and community members.</p></div><a href="../submit.html" target="_blank" class="btn btn-teal" style="font-size:0.85rem;padding:0.5rem 1.2rem;">+ Submit Issue</a></div>
+      <div style="background:white;border:1px solid var(--border);border-radius:14px;overflow:hidden;">
+        <div style="display:grid;grid-template-columns:2fr 1fr 1fr 140px;padding:0.75rem 1.2rem;background:#f8fafc;border-bottom:1px solid var(--border);font-size:0.72rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--grey);"><div>Issue</div><div>Category</div><div>Submitted</div><div>Status</div></div>
+        <div id="issueRows"></div>
+        <div style="padding:3rem;text-align:center;color:var(--grey);" id="issueEmpty">
+          <div style="font-size:2rem;margin-bottom:0.75rem;">📥</div>
+          <div style="font-weight:600;margin-bottom:0.4rem;">No issues submitted yet</div>
+          <div style="font-size:0.85rem;">When community members submit issues, they'll appear here.</div>
+          <a href="../submit.html" target="_blank" style="display:inline-block;margin-top:1rem;background:var(--teal);color:white;padding:0.5rem 1.2rem;border-radius:8px;text-decoration:none;font-weight:600;font-size:0.85rem;">Submit the first issue →</a>
+        </div>
+      </div>
+    </div>
+
     <div class="panel" id="panel-directory">
-      <div class="page-hd"><div><h1>Member Directory</h1><p>All active members, their groups, roles, and task counts.</p></div></div>
+      <div class="page-hd"><div><h1>Member Directory</h1><p>Members who have signed up and joined Squamish Future.</p></div></div>
       <div style="display:flex;gap:0.75rem;margin-bottom:1.2rem;flex-wrap:wrap;">
         <div style="flex:1;min-width:180px;position:relative;">
           <span style="position:absolute;left:0.75rem;top:50%;transform:translateY(-50%);font-size:0.85rem;">🔍</span>
@@ -463,8 +482,8 @@ const GROUPS = [
     focus:'2025 council votes, Brendan Park facts, attendance tracker',
     inprogress:['2025 AI votes pull','Brendan Park fact package','Council attendance 2024-25'] },
   { id:'events',    icon:'🎪', label:'Events',            cls:'tag-events',    bg:'rgba(30,132,73,0.1)',   lead:'Lisa B.',   members:['Lisa B.','Rachel S.'],                       openTasks:3, totalTasks:8,  blocker:null,
-    focus:'April 9 founding meeting, May coffee series, forum planning',
-    inprogress:['Apr 9 invite list','Apr 9 agenda','May coffee venues'] },
+    focus:'April 28 first open group event, incorporation, member signup launch',
+    inprogress:['Apr 28 event planning','BC Society filing','Member portal setup'] },
   { id:'coord',     icon:'🔗', label:'Coordination',     cls:'tag-coord',     bg:'rgba(0,196,179,0.12)',  lead:'Austin N.', members:['Austin N.','Karen P.'],                      openTasks:4, totalTasks:11, blocker:null,
     focus:'Coalition mapping, fundraising launch, candidate outreach',
     inprogress:['Founding email draft','Coalition group list','Donate page live'] },
@@ -474,81 +493,75 @@ const GROUPS = [
 ];
 
 const MEMBERS = [
-  { name:'Austin Neill',   ini:'AN',  col:'#0f2a4a', hood:'Downtown',           group:'coord',    role:'lead',   tasks:8,  status:'active' },
-  { name:'Kristina P.',    ini:'KP',  col:'#00c4b3', hood:'Garibaldi Highlands', group:'ops',      role:'member', tasks:5,  status:'active' },
-  { name:'Sarah M.',       ini:'SM',  col:'#6c3483', hood:'Valleycliffe',        group:'media',    role:'lead',   tasks:4,  status:'active' },
-  { name:'Tom K.',         ini:'TK',  col:'#d35400', hood:'Brackendale',         group:'media',    role:'member', tasks:3,  status:'active' },
-  { name:'Mark T.',        ini:'MT',  col:'#1a5276', hood:'Downtown',            group:'research', role:'lead',   tasks:6,  status:'active' },
-  { name:'Lisa B.',        ini:'LB',  col:'#1e8449', hood:'Garibaldi Highlands', group:'events',   role:'lead',   tasks:3,  status:'active' },
-  { name:'James H.',       ini:'JH',  col:'#7f8c8d', hood:'Dentville',           group:'research', role:'member', tasks:2,  status:'active' },
-  { name:'Priya K.',       ini:'PK',  col:'#8e44ad', hood:'Downtown',            group:'research', role:'member', tasks:1,  status:'new'    },
-  { name:'Rachel S.',      ini:'RS',  col:'#16a085', hood:'Brackendale',         group:'events',   role:'member', tasks:2,  status:'active' },
-  { name:'Karen P.',       ini:'KaP', col:'#e8a020', hood:'Valleycliffe',        group:'coord',    role:'member', tasks:1,  status:'new'    },
+  // Member directory starts empty — real members added when they sign up
+  // Admins: Austin Neill (austin@squamishfuture.ca) + Kristina (coordinator)
 ];
 
 let TASKS = [
-  { id:1,  title:'Pull all 2025 council AI votes',           group:'research',  status:'todo',       pri:'h', assign:'Mark T.',    due:'Apr 7',  me:false, owned:false },
-  { id:2,  title:'Build Brendan Park full fact package',     group:'research',  status:'inprogress', pri:'h', assign:'Mark T.',    due:'Apr 7',  me:false, owned:false },
-  { id:3,  title:'Set up MailerLite + signup form',          group:'ops',       status:'todo',       pri:'h', assign:ME,           due:'Apr 1',  me:true,  owned:true  },
-  { id:4,  title:'Create Facebook page and profile',         group:'media',     status:'inprogress', pri:'h', assign:'Sarah M.',   due:'Apr 1',  me:false, owned:false },
-  { id:5,  title:'Register squamishfuture.ca domain',        group:'ops',       status:'todo',       pri:'h', assign:ME,           due:'Apr 1',  me:true,  owned:true  },
-  { id:6,  title:'Draft founding email from core 5',         group:'coord',     status:'inprogress', pri:'h', assign:ME,           due:'Mar 28', me:true,  owned:true  },
-  { id:7,  title:'Identify largest Squamish Facebook groups',group:'media',     status:'todo',       pri:'m', assign:'Tom K.',     due:'Apr 7',  me:false, owned:false },
-  { id:8,  title:'Write launch newsletter issue #1',         group:'media',     status:'todo',       pri:'m', assign:'Sarah M.',   due:'Apr 8',  me:false, owned:false },
-  { id:9,  title:'Pull council attendance records 2024-25',  group:'research',  status:'todo',       pri:'m', assign:'James H.',   due:'Apr 7',  me:false, owned:false },
-  { id:10, title:'File BC Society incorporation',            group:'ops',       status:'todo',       pri:'h', assign:ME,           due:'Apr 15', me:true,  owned:true  },
-  { id:11, title:'April 9 event — venue confirmation',       group:'events',    status:'done',       pri:'h', assign:'Lisa B.',    due:'Mar 25', me:false, owned:false },
-  { id:12, title:'April 9 event — invite all contacts',      group:'events',    status:'inprogress', pri:'h', assign:'Lisa B.',    due:'Mar 28', me:false, owned:false },
-  { id:13, title:'Watch Meet Squamish YouTube channel',      group:'research',  status:'done',       pri:'l', assign:ME,           due:'Mar 26', me:true,  owned:true  },
-  { id:14, title:'Set up Airtable for issue submissions',    group:'ops',       status:'todo',       pri:'m', assign:'Kristina P.',due:'Apr 10', me:false, owned:false },
-  { id:15, title:'First social media content calendar',      group:'media',     status:'todo',       pri:'m', assign:'Unassigned', due:'Apr 5',  me:false, owned:false },
-  { id:16, title:'Identify candidate outreach targets',      group:'candidate', status:'todo',       pri:'m', assign:ME,           due:'May 1',  me:true,  owned:true  },
-  { id:17, title:'SCORA ambassador — identify + contact',    group:'coord',     status:'todo',       pri:'m', assign:'Unassigned', due:'Apr 10', me:false, owned:false },
-  { id:18, title:'Squamish Moms ambassador outreach',        group:'coord',     status:'todo',       pri:'m', assign:'Unassigned', due:'Apr 10', me:false, owned:false },
-  { id:19, title:'Set up Google Workspace for team',         group:'ops',       status:'done',       pri:'l', assign:'Kristina P.',due:'Mar 30', me:false, owned:false },
-  { id:20, title:'Candidate questionnaire final draft',      group:'candidate', status:'todo',       pri:'m', assign:ME,           due:'Apr 20', me:true,  owned:true  },
+  { id:1,  title:'Pull all 2025 council votes',              group:'research',  status:'todo',       pri:'h', assign:ME,           due:'May 15', me:true,  owned:true  },
+  { id:2,  title:'Build Brendan Park full fact package',     group:'research',  status:'todo',       pri:'h', assign:ME,           due:'May 15', me:true,  owned:true  },
+  { id:3,  title:'Set up email signup',                      group:'ops',       status:'todo',       pri:'h', assign:ME,           due:'May 1',  me:true,  owned:true  },
+  { id:4,  title:'Create Facebook page and profile',         group:'media',     status:'todo',       pri:'h', assign:ME,           due:'Apr 28', me:true,  owned:true  },
+  { id:5,  title:'File BC Society incorporation',            group:'ops',       status:'todo',       pri:'h', assign:ME,           due:'Apr 28', me:true,  owned:true  },
+  { id:6,  title:'Draft founding email to networks',         group:'coord',     status:'todo',       pri:'h', assign:ME,           due:'Apr 25', me:true,  owned:true  },
+  { id:7,  title:'Complete society budget',                  group:'ops',       status:'todo',       pri:'h', assign:ME,           due:'Apr 28', me:true,  owned:true  },
+  { id:8,  title:'Write launch newsletter issue #1',         group:'media',     status:'todo',       pri:'m', assign:ME,           due:'May 1',  me:true,  owned:true  },
+  { id:9,  title:'Pull council attendance records 2024-25',  group:'research',  status:'todo',       pri:'m', assign:ME,           due:'May 15', me:true,  owned:true  },
+  { id:10, title:'April 28 open group event — planning',    group:'events',    status:'inprogress', pri:'h', assign:ME,           due:'Apr 28', me:true,  owned:true  },
+  { id:11, title:'April 28 event — invite all contacts',    group:'events',    status:'inprogress', pri:'h', assign:ME,           due:'Apr 26', me:true,  owned:true  },
+  { id:12, title:'Group alignment meeting',                  group:'coord',     status:'todo',       pri:'h', assign:ME,           due:'Apr 28', me:true,  owned:true  },
+  { id:13, title:'Website live ✔ (squamishfuture.ca)',       group:'ops',       status:'done',       pri:'h', assign:ME,           due:'Apr 21', me:true,  owned:true  },
+  { id:14, title:'Member portal + signup system setup',      group:'ops',       status:'inprogress', pri:'h', assign:ME,           due:'Apr 28', me:true,  owned:true  },
+  { id:15, title:'First social media content calendar',      group:'media',     status:'todo',       pri:'m', assign:ME,           due:'May 1',  me:false, owned:false },
+  { id:16, title:'Identify candidate outreach targets',      group:'candidate', status:'todo',       pri:'m', assign:ME,           due:'Jun 1',  me:true,  owned:true  },
+  { id:17, title:'SCORA ambassador — identify + contact',    group:'coord',     status:'todo',       pri:'m', assign:ME,           due:'May 15', me:false, owned:false },
+  { id:18, title:'Squamish Moms ambassador outreach',        group:'coord',     status:'todo',       pri:'m', assign:ME,           due:'May 15', me:false, owned:false },
+  { id:19, title:'April 21 founding meeting ✔',             group:'events',    status:'done',       pri:'h', assign:ME,           due:'Apr 21', me:true,  owned:true  },
+  { id:20, title:'Candidate questionnaire draft',            group:'candidate', status:'todo',       pri:'m', assign:ME,           due:'Jun 1',  me:true,  owned:true  },
 ];
 
 const OBJECTIVES = [
-  { title:'Launch Squamish Future publicly', phase:1, deadline:'Apr 9', urgent:true, pct:65, tasks:[
-    {text:'Register squamishfuture.ca domain', done:false, assign:ME},
-    {text:'Launch Facebook page', done:false, assign:'Sarah M.'},
-    {text:'Set up email signup (MailerLite)', done:false, assign:'Kristina P.'},
-    {text:'Deploy website live on Netlify', done:false, assign:ME},
-    {text:'April 9 founding meeting confirmed', done:true, assign:'Lisa B.'},
+  { title:'Launch Squamish Future publicly', phase:1, deadline:'Apr 28', urgent:true, pct:75, tasks:[
+    {text:'Website live at squamishfuture.ca', done:true, assign:ME},
+    {text:'April 21 founding meeting held', done:true, assign:ME},
+    {text:'Launch Facebook page', done:false, assign:ME},
+    {text:'Set up email signup', done:false, assign:ME},
     {text:'Send founding email to all networks', done:false, assign:ME},
+    {text:'April 28 open group event', done:false, assign:ME},
   ]},
-  { title:'File BC Society incorporation', phase:1, deadline:'Apr 15', urgent:false, pct:30, tasks:[
+  { title:'File BC Society incorporation', phase:1, deadline:'Apr 28', urgent:true, pct:20, tasks:[
     {text:'Confirm 3 founding directors', done:false, assign:ME},
-    {text:'Hold founding meeting (adopt bylaws)', done:false, assign:ME},
+    {text:'Hold founding meeting & adopt bylaws', done:false, assign:ME},
     {text:'File online at bcregistry.gov.bc.ca', done:false, assign:ME},
+    {text:'Complete budget drafted', done:false, assign:ME},
+    {text:'Group alignment confirmed', done:false, assign:ME},
     {text:'Open society bank account', done:false, assign:ME},
   ]},
-  { title:'Council watch system running', phase:1, deadline:'Apr 7', urgent:true, pct:15, tasks:[
-    {text:'Pull all 2025 AI council votes', done:false, assign:'Mark T.'},
-    {text:'Council attendance records 2024-25', done:false, assign:'James H.'},
-    {text:'Full Brendan Park fact package', done:false, assign:'Mark T.'},
-    {text:'Monthly tracking spreadsheet set up', done:false, assign:'Unassigned'},
-    {text:'Subscribe to My Sea to Sky alerts', done:false, assign:'Unassigned'},
+  { title:'Council watch system running', phase:1, deadline:'May 15', urgent:false, pct:15, tasks:[
+    {text:'Pull all 2025 council votes', done:false, assign:ME},
+    {text:'Council attendance records 2024-25', done:false, assign:ME},
+    {text:'Full Brendan Park fact package', done:false, assign:ME},
+    {text:'Monthly tracking template set up', done:false, assign:ME},
+    {text:'Subscribe to My Sea to Sky alerts', done:false, assign:ME},
   ]},
-  { title:'Grow base to 100 members by May 1', phase:2, deadline:'May 1', urgent:false, pct:47, tasks:[
-    {text:'Personal emails from all 5 founders', done:false, assign:ME},
-    {text:'Post in 3 major Squamish Facebook groups', done:false, assign:'Sarah M.'},
-    {text:'SCORA ambassador briefed', done:false, assign:'Tom K.'},
-    {text:'April 9 email captures set up', done:false, assign:'Lisa B.'},
-    {text:'Newsletter issue #1 sent', done:false, assign:'Sarah M.'},
+  { title:'Grow base to 100 members by May 28', phase:2, deadline:'May 28', urgent:false, pct:5, tasks:[
+    {text:'Member signup + $25 fee live on site', done:false, assign:ME},
+    {text:'Post in Squamish Facebook groups', done:false, assign:ME},
+    {text:'First open event April 28', done:false, assign:ME},
+    {text:'Newsletter issue #1 sent', done:false, assign:ME},
+    {text:'50 members signed up', done:false, assign:ME},
   ]},
-  { title:'Hire and onboard coordinator (Kristina)', phase:1, deadline:'Apr 15', urgent:false, pct:40, tasks:[
-    {text:'Finalize job description', done:true, assign:ME},
-    {text:'Share role in community groups', done:false, assign:'Sarah M.'},
-    {text:'Confirm hours + rate with Kristina', done:false, assign:ME},
-    {text:'Onboard + brief on all systems', done:false, assign:ME},
+  { title:'Working groups operational', phase:1, deadline:'May 15', urgent:false, pct:10, tasks:[
+    {text:'Media working group lead confirmed', done:false, assign:ME},
+    {text:'Research working group lead confirmed', done:false, assign:ME},
+    {text:'Events working group lead confirmed', done:false, assign:ME},
+    {text:'First group meetings held', done:false, assign:ME},
   ]},
 ];
 
 const PHASES = [
-  { label:'Phase 0 — Launch & Brand', status:'done', dates:'March 2026', icon:'✅', desc:'Name, brand, website, structure, incorporation package.', deliverables:['Brand system built','Full 8-page website','BC Society package','Master plan','Core team assembled'] },
-  { label:'Phase 1 — Foundation', status:'current', dates:'March–June 2026', icon:'🏗️', desc:'Get live, file the society, hire coordinator, first 100 members.', deliverables:['Website live on squamishfuture.ca','Facebook page launched','Email list started','BC Society incorporated','Coordinator onboarded','Council watch running','April 9 founding meeting','Newsletter #1 sent'] },
+  { label:'Phase 0 — Launch & Brand', status:'done', dates:'April 2026', icon:'✅', desc:'Name, brand, website, structure, incorporation package.', deliverables:['Brand system built','Full website live','BC Society package','Master plan','April 21 founding meeting held'] },
+  { label:'Phase 1 — Foundation', status:'current', dates:'April–May 2026', icon:'🏗️', desc:'Incorporate society, open bank account, first 100 members, April 28 open event.', deliverables:['BC Society incorporated','Complete budget drafted','Group alignment confirmed','April 28 first open group event','Facebook page launched','Member signup live ($25 fee)','Council watch system running','Newsletter #1 sent'] },
   { label:'Phase 2 — Base Build', status:'upcoming', dates:'May–August 2026', icon:'👥', desc:'Grow to 1,000+ members via events, ambassadors, groups.', deliverables:['1,000 email subscribers','Ambassador in every major group','Monthly events running','Council scorecards published','$5,000 raised'] },
   { label:'Phase 3 — Candidate Pipeline', status:'upcoming', dates:'June–September 2026', icon:'🎯', desc:'Identify, vet, and begin supporting endorsed candidates.', deliverables:['5+ candidates identified','3 candidates vetted + endorsed','Public questionnaire launched','September forum planned'] },
   { label:'Phase 4 — Campaign', status:'upcoming', dates:'September–October 2026', icon:'📣', desc:'Full public campaign — endorsements, forums, voter education.', deliverables:['September candidate forum','Endorsed slate announced','Door-knocking launched','Voter ID database built','$15,000 raised'] },
@@ -569,7 +582,7 @@ function show(name) {
   document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
   document.getElementById('panel-'+name).classList.add('active');
   document.querySelectorAll('.ni').forEach(n => { if(n.getAttribute('onclick')?.includes("'"+name+"'")) n.classList.add('active'); });
-  const renders = { mydash:renderMyDash, alignment:renderAlignment, tasks:renderKanban, objectives:renderObjectives, groups:renderGroups, directory:renderDirectory, phase:renderPhase };
+  const renders = { mydash:renderMyDash, alignment:renderAlignment, tasks:renderKanban, objectives:renderObjectives, groups:renderGroups, directory:renderDirectory, phase:renderPhase, issues:renderIssues };
   if(renders[name]) renders[name]();
   renderSidebar();
 }
@@ -876,6 +889,26 @@ function renderPhase() {
 // DIRECTORY
 // ═══════════════════════════════════════════════════
 let dirQ='', dirGrp='all';
+// ISSUES
+const ISSUES = []; // populated from submissions
+function renderIssues() {
+  const rows = document.getElementById('issueRows');
+  const empty = document.getElementById('issueEmpty');
+  if (!rows) return;
+  if (!ISSUES.length) { rows.innerHTML = ''; if(empty) empty.style.display='block'; return; }
+  if(empty) empty.style.display='none';
+  rows.innerHTML = ISSUES.map(iss => `
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 140px;padding:0.9rem 1.2rem;border-bottom:1px solid var(--border);align-items:center;font-size:0.88rem;">
+      <div>
+        <div style="font-weight:600;color:var(--navy);">${iss.title}</div>
+        ${iss.name ? `<div style="font-size:0.75rem;color:var(--grey);margin-top:2px;">${iss.name}${iss.phone ? ' · ' + iss.phone : ''}</div>` : ''}
+      </div>
+      <div><span class="badge badge-teal" style="font-size:0.72rem;">${iss.category || 'General'}</span></div>
+      <div style="color:var(--grey);font-size:0.82rem;">${iss.date || '—'}</div>
+      <div><span class="badge" style="background:rgba(0,196,179,0.12);color:var(--teal);font-size:0.72rem;">New</span></div>
+    </div>`).join('');
+}
+
 function filterDir(q){dirQ=q; renderDirectory();}
 function filterDirGroup(v){dirGrp=v; renderDirectory();}
 function renderDirectory(){
@@ -886,6 +919,7 @@ function renderDirectory(){
   });
   const stDot={active:'#1e8449',new:'#e8a020',inactive:'#d1d5db'};
   const g=GROUPS;
+  if(!list.length){ document.getElementById('dirRows').innerHTML=`<div style="padding:3rem;text-align:center;color:var(--grey);"><div style="font-size:2rem;margin-bottom:0.75rem;">👤</div><div style="font-weight:600;margin-bottom:0.4rem;">No members yet</div><div style="font-size:0.85rem;">Members will appear here once they sign up at squamishfuture.ca</div></div>`; return; }
   document.getElementById('dirRows').innerHTML=list.map(m=>{
     const grp=g.find(x=>x.id===m.group);
     return `<div class="mt-row">
