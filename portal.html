@@ -265,6 +265,21 @@
 
 <!-- TOP BAR -->
 <nav class="sf-nav" id="mainNav"></nav>
+<!-- PORTAL USER BAR -->
+<div class="topbar" id="portalTopbar" style="display:none;">
+  <a href="index.html" class="topbar-logo">Squamish <span>Future</span></a>
+  <span class="topbar-badge" id="portalBadge">Member Portal</span>
+  <div class="topbar-right">
+    <div class="user-pill">
+      <div class="user-avatar" id="userAvatarEl">?</div>
+      <div>
+        <div class="uname" id="uname">Loading…</div>
+        <div class="urole" id="urole">Member</div>
+      </div>
+    </div>
+    <button id="logoutBtn" onclick="doLogout()" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);color:rgba(255,255,255,0.7);padding:0.35rem 0.9rem;border-radius:6px;font-size:0.78rem;font-weight:600;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='rgba(231,76,60,0.25)';this.style.color='#fff'" onmouseout="this.style.background='rgba(255,255,255,0.1)';this.style.color='rgba(255,255,255,0.7)'">Sign Out</button>
+  </div>
+</div>
 <div class="portal-wrap">
 
   <!-- SIDEBAR -->
@@ -467,9 +482,56 @@
 
 <script>
 // ═══════════════════════════════════════════════════
+// AUTH GATE
+// ═══════════════════════════════════════════════════
+const API = 'https://squamish-future-api.vercel.app'
+const sf_token = localStorage.getItem('sf_token')
+let sf_user = JSON.parse(localStorage.getItem('sf_user') || 'null')
+
+if (!sf_token) { window.location.href = 'members.html'; }
+
+async function verifyAuth() {
+  if (!sf_token) { window.location.href = 'members.html'; return; }
+  try {
+    const res = await fetch(API + '/api/auth/me', { headers: { Authorization: 'Bearer ' + sf_token } })
+    if (!res.ok) { localStorage.clear(); window.location.href = 'members.html'; return; }
+    const user = await res.json()
+    sf_user = user
+    localStorage.setItem('sf_user', JSON.stringify(user))
+    const nameEl = document.getElementById('uname')
+    const roleEl = document.getElementById('urole')
+    const badgeEl = document.getElementById('portalBadge')
+    const avatarEl = document.getElementById('userAvatarEl')
+    const topbar = document.getElementById('portalTopbar')
+    if (nameEl) nameEl.textContent = user.full_name || user.email
+    if (roleEl) roleEl.textContent = user.role === 'admin' ? '\u2605 Admin' : 'Member'
+    if (avatarEl) avatarEl.textContent = (user.full_name || user.email).split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase()
+    if (topbar) topbar.style.display = 'flex'
+    if (user.role === 'admin' && badgeEl) {
+      badgeEl.textContent = 'Admin'
+      badgeEl.style.background = 'rgba(232,160,32,0.2)'
+      badgeEl.style.borderColor = 'rgba(232,160,32,0.4)'
+      badgeEl.style.color = '#e8a020'
+    }
+  } catch(e) {
+    localStorage.clear(); window.location.href = 'members.html';
+  }
+}
+
+function doLogout() {
+  if (sf_token) {
+    fetch(API + '/api/auth/logout', { method: 'POST', headers: { Authorization: 'Bearer ' + sf_token } }).catch(()=>{})
+  }
+  localStorage.clear()
+  window.location.href = 'members.html'
+}
+
+verifyAuth()
+
+// ═══════════════════════════════════════════════════
 // DATA
 // ═══════════════════════════════════════════════════
-const ME = 'Austin N.';
+const ME = sf_user?.full_name || 'Austin N.';
 
 const GROUPS = [
   { id:'media',     icon:'📣', label:'Media & Comms',    cls:'tag-media',     bg:'rgba(108,52,131,0.1)',  lead:'Sarah M.',  members:['Sarah M.','Tom K.','Lisa B.'],             openTasks:5, totalTasks:12, blocker:null,
@@ -889,47 +951,68 @@ function renderPhase() {
 // DIRECTORY
 // ═══════════════════════════════════════════════════
 let dirQ='', dirGrp='all';
-// ISSUES
-const ISSUES = []; // populated from submissions
-function renderIssues() {
+// ISSUES — live from API
+async function renderIssues() {
   const rows = document.getElementById('issueRows');
   const empty = document.getElementById('issueEmpty');
   if (!rows) return;
-  if (!ISSUES.length) { rows.innerHTML = ''; if(empty) empty.style.display='block'; return; }
-  if(empty) empty.style.display='none';
-  rows.innerHTML = ISSUES.map(iss => `
-    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 140px;padding:0.9rem 1.2rem;border-bottom:1px solid var(--border);align-items:center;font-size:0.88rem;">
-      <div>
-        <div style="font-weight:600;color:var(--navy);">${iss.title}</div>
-        ${iss.name ? `<div style="font-size:0.75rem;color:var(--grey);margin-top:2px;">${iss.name}${iss.phone ? ' · ' + iss.phone : ''}</div>` : ''}
-      </div>
-      <div><span class="badge badge-teal" style="font-size:0.72rem;">${iss.category || 'General'}</span></div>
-      <div style="color:var(--grey);font-size:0.82rem;">${iss.date || '—'}</div>
-      <div><span class="badge" style="background:rgba(0,196,179,0.12);color:var(--teal);font-size:0.72rem;">New</span></div>
-    </div>`).join('');
+  rows.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--grey);">Loading…</div>';
+  try {
+    const res = await fetch(API + '/api/issues', { headers: { Authorization: 'Bearer ' + sf_token } });
+    const issues = await res.json();
+    if (!issues.length) {
+      rows.innerHTML = '';
+      if (empty) empty.style.display = 'block';
+      return;
+    }
+    if (empty) empty.style.display = 'none';
+    rows.innerHTML = issues.map(iss => `
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 140px;padding:0.9rem 1.2rem;border-bottom:1px solid var(--border);align-items:center;font-size:0.88rem;">
+        <div>
+          <div style="font-weight:600;color:var(--navy);">${iss.title}</div>
+          ${iss.submitter_name ? `<div style="font-size:0.75rem;color:var(--grey);margin-top:2px;">${iss.submitter_name}${iss.submitter_phone ? ' \u00b7 ' + iss.submitter_phone : ''}</div>` : ''}
+          ${iss.description ? `<div style="font-size:0.78rem;color:var(--grey);margin-top:4px;">${iss.description.slice(0,120)}${iss.description.length>120?'\u2026':''}</div>` : ''}
+        </div>
+        <div><span style="background:rgba(0,196,179,0.12);color:var(--teal);font-size:0.72rem;padding:3px 8px;border-radius:6px;font-weight:700;">${iss.category || 'General'}</span></div>
+        <div style="color:var(--grey);font-size:0.82rem;">${new Date(iss.created_at).toLocaleDateString('en-CA')}</div>
+        <div><span style="background:rgba(0,196,179,0.12);color:var(--teal);font-size:0.72rem;padding:3px 8px;border-radius:6px;text-transform:capitalize;">${iss.status || 'new'}</span></div>
+      </div>`).join('');
+  } catch(e) {
+    rows.innerHTML = '<div style="padding:2rem;text-align:center;color:#e74c3c;">Failed to load issues.</div>';
+  }
 }
 
 function filterDir(q){dirQ=q; renderDirectory();}
 function filterDirGroup(v){dirGrp=v; renderDirectory();}
-function renderDirectory(){
-  let list = MEMBERS.filter(m=>{
-    const mq=!dirQ||m.name.toLowerCase().includes(dirQ.toLowerCase())||m.hood.toLowerCase().includes(dirQ.toLowerCase());
-    const mg=dirGrp==='all'||m.group===dirGrp;
-    return mq&&mg;
-  });
-  const stDot={active:'#1e8449',new:'#e8a020',inactive:'#d1d5db'};
-  const g=GROUPS;
-  if(!list.length){ document.getElementById('dirRows').innerHTML=`<div style="padding:3rem;text-align:center;color:var(--grey);"><div style="font-size:2rem;margin-bottom:0.75rem;">👤</div><div style="font-weight:600;margin-bottom:0.4rem;">No members yet</div><div style="font-size:0.85rem;">Members will appear here once they sign up at squamishfuture.ca</div></div>`; return; }
-  document.getElementById('dirRows').innerHTML=list.map(m=>{
-    const grp=g.find(x=>x.id===m.group);
-    return `<div class="mt-row">
-      <div class="m-id"><div class="m-av" style="background:${m.col}">${m.ini}</div><div><div class="m-name">${m.name}</div><div class="m-hood">📍 ${m.hood}</div></div></div>
-      <div><span class="m-gpill ${grp?.cls||''}">${grp?.icon} ${grp?.label.split(' ')[0]}</span><br><span class="m-role-badge ${m.role==='lead'?'role-lead':'role-member'}">${m.role==='lead'?'★ Lead':'Member'}</span></div>
-      <div class="m-hood" style="font-size:0.8rem;">${m.hood}</div>
-      <div style="font-size:0.82rem;color:var(--grey);">${m.tasks} tasks</div>
-      <div><span class="st-dot" style="background:${stDot[m.status]}"></span><span style="font-size:0.72rem;color:var(--grey);text-transform:capitalize;">${m.status}</span></div>
-    </div>`;
-  }).join('');
+async function renderDirectory(){
+  const rows = document.getElementById('dirRows');
+  if (!rows) return;
+  if (!sf_user || sf_user.role !== 'admin') {
+    rows.innerHTML = '<div style="padding:3rem;text-align:center;color:var(--grey);">Member directory is visible to admins only.</div>';
+    return;
+  }
+  rows.innerHTML = '<div style="padding:2rem;text-align:center;color:var(--grey);">Loading…</div>';
+  try {
+    const res = await fetch(API + '/api/admin/members', { headers: { Authorization: 'Bearer ' + sf_token } });
+    const members = await res.json();
+    if (!members.length) {
+      rows.innerHTML = `<div style="padding:3rem;text-align:center;color:var(--grey);"><div style="font-size:2rem;margin-bottom:0.75rem;">👤</div><div style="font-weight:600;margin-bottom:0.4rem;">No members yet</div><div style="font-size:0.85rem;">Members will appear here once they sign up.</div></div>`;
+      return;
+    }
+    rows.innerHTML = members.map(m => `
+      <div class="mt-row">
+        <div class="m-id">
+          <div class="m-av" style="background:var(--navy)">${(m.full_name||m.email).split(' ').map(n=>n[0]).join('').slice(0,2).toUpperCase()}</div>
+          <div><div class="m-name">${m.full_name}</div><div class="m-hood">${m.email}</div></div>
+        </div>
+        <div><span style="font-size:0.8rem;color:var(--grey);">${m.phone || '—'}</span></div>
+        <div class="m-hood">${m.neighbourhood || '—'}</div>
+        <div><span style="background:${m.membership_paid?'rgba(0,196,179,0.12)':'rgba(232,160,32,0.12)'};color:${m.membership_paid?'var(--teal)':'var(--amber)'};font-size:0.72rem;padding:3px 8px;border-radius:6px;font-weight:700;">${m.membership_paid?'Paid':'Unpaid'}</span></div>
+        <div><span style="background:rgba(0,196,179,0.12);color:var(--teal);font-size:0.72rem;padding:3px 8px;border-radius:6px;text-transform:capitalize;">${m.role}</span></div>
+      </div>`)  .join('');
+  } catch(e) {
+    rows.innerHTML = '<div style="padding:2rem;text-align:center;color:#e74c3c;">Failed to load directory.</div>';
+  }
 }
 
 // ═══════════════════════════════════════════════════
