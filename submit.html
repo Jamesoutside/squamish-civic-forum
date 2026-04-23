@@ -567,38 +567,60 @@
     document.getElementById(countId).textContent = el.value.length;
   }
 
-  function submitForm() {
-    // Collect all form data
-    const data = {
-      anonymous: document.getElementById('anonCheck').checked,
-      firstName: document.getElementById('firstName').value,
-      lastName: document.getElementById('lastName').value,
-      email: document.getElementById('email').value,
-      phone: document.getElementById('phone').value,
-      neighbourhood: document.getElementById('neighbourhood').value,
-      residency: document.getElementById('residency').value,
-      groups: document.getElementById('groups').value,
-      category: document.querySelector('input[name="category"]:checked')?.value,
-      issueTitle: document.getElementById('issueTitle').value,
-      urgency: document.querySelector('input[name="urgency"]:checked')?.value,
-      issueDesc: document.getElementById('issueDesc').value,
-      whoAffected: document.getElementById('whoAffected').value,
-      goodOutcome: document.getElementById('goodOutcome').value,
-      sourceLink: document.getElementById('sourceLink').value,
-      fileNote: document.getElementById('fileNote').value,
-      referral: document.getElementById('referral').value,
-      extraNotes: document.getElementById('extraNotes').value,
-      submittedAt: new Date().toISOString(),
-    };
+  const API = 'https://squamish-future-api.vercel.app';
 
-    console.log('Submission data:', data);
-    // TODO: POST to Airtable API or backend endpoint
+  async function submitForm() {
+    const btn = document.querySelector('.btn-submit');
+    if (btn) { btn.textContent = 'Submitting…'; btn.disabled = true; }
 
-    // Show success
-    document.getElementById('section4').style.display = 'none';
-    document.querySelector('.form-progress').style.display = 'none';
-    document.getElementById('successScreen').classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const firstName = document.getElementById('firstName')?.value || '';
+    const lastName = document.getElementById('lastName')?.value || '';
+    const anon = document.getElementById('anonCheck')?.checked;
+    const full_name = anon ? '' : [firstName, lastName].filter(Boolean).join(' ');
+    const email = anon ? '' : (document.getElementById('email')?.value || '');
+    const phone = anon ? '' : (document.getElementById('phone')?.value || '');
+    const title = document.getElementById('issueTitle')?.value || '';
+    const description = document.getElementById('issueDesc')?.value || '';
+    const rawCategory = document.querySelector('input[name="category"]:checked')?.value || 'General';
+    const category = rawCategory.charAt(0).toUpperCase() + rawCategory.slice(1);
+    const whoAffected = document.getElementById('whoAffected')?.value || '';
+    const goodOutcome = document.getElementById('goodOutcome')?.value || '';
+    const fullDesc = [description, whoAffected ? 'Who is affected: ' + whoAffected : '', goodOutcome ? 'Good outcome: ' + goodOutcome : ''].filter(Boolean).join('\n\n');
+
+    if (!title) {
+      alert('Please enter an issue title before submitting.');
+      if (btn) { btn.textContent = '\u2713 Submit My Issue'; btn.disabled = false; }
+      return;
+    }
+
+    try {
+      const res = await fetch(API + '/api/issues', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title,
+          description: fullDesc,
+          category,
+          submitter_name: full_name || null,
+          submitter_email: email || null,
+          submitter_phone: phone || null,
+        })
+      });
+
+      if (res.ok) {
+        document.getElementById('section4').style.display = 'none';
+        document.querySelector('.form-progress').style.display = 'none';
+        document.getElementById('successScreen').classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else {
+        const err = await res.json().catch(()=>({}));
+        alert('Submission failed: ' + (err.error || 'Unknown error. Please try again.'));
+        if (btn) { btn.textContent = '\u2713 Submit My Issue'; btn.disabled = false; }
+      }
+    } catch (e) {
+      alert('Network error. Please check your connection and try again.');
+      if (btn) { btn.textContent = '\u2713 Submit My Issue'; btn.disabled = false; }
+    }
   }
 </script>
 <script src="nav.js"></script>
