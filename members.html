@@ -32,6 +32,12 @@
 
     .auth-btn { width: 100%; padding: 0.85rem; background: var(--teal); color: var(--navy); border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: all 0.2s; letter-spacing: 0.02em; margin-top: 0.5rem; }
     .auth-btn:hover:not(:disabled) { background: #00a898; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,196,179,0.3); }
+    .intake-section { background:#f8fafb;border:1.5px solid #dce8ee;border-radius:12px;padding:16px 16px 12px;margin-bottom:14px; }
+    .intake-section-label { font-size:0.72rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--teal);margin-bottom:12px; }
+    .form-row-2 { display:grid;grid-template-columns:1fr 1fr;gap:0 14px; }
+    @media(max-width:520px){ .form-row-2 { grid-template-columns:1fr; } }
+    .form-group select { width:100%;padding:0.7rem 0.9rem;border:1.5px solid #ddd;border-radius:8px;font-family:inherit;font-size:0.88rem;background:#fff;color:#1a2a38;outline:none;transition:border-color 0.2s; }
+    .form-group select:focus { border-color:var(--teal); }
     .issue-chip { display:flex;align-items:center;gap:7px;padding:6px 10px;background:#fff;border:1.5px solid #dce8ee;border-radius:8px;font-size:0.82rem;cursor:pointer;transition:all 0.15s;user-select:none; }
     .issue-chip:hover { border-color:#2E7B8B;background:#f0f8fa; }
     .issue-chip input[type="checkbox"],.issue-chip input[type="radio"] { width:15px;height:15px;accent-color:#2E7B8B;flex-shrink:0; }
@@ -116,33 +122,154 @@
 
         <!-- Join form -->
         <div id="join-form">
-          <div class="form-group">
-            <label>Full Name</label>
-            <input type="text" id="j-name" placeholder="Jane Smith" autocomplete="name" />
-          </div>
-          <div class="form-group">
-            <label>Email address</label>
-            <input type="email" id="j-email" placeholder="you@example.com" autocomplete="email" />
-          </div>
-          <div class="form-group">
-            <label>Phone <span class="opt-label">(optional)</span></label>
-            <input type="tel" id="j-phone" placeholder="(250) 000-0000" autocomplete="tel" />
-          </div>
-          <div class="form-group">
-            <label>Neighbourhood <span class="opt-label">(optional)</span></label>
-            <input type="text" id="j-hood" placeholder="e.g. Downtown, Brackendale, Valleycliffe" />
-          </div>
-          <div class="form-group">
-            <label>Password <span class="opt-label">(min 8 characters)</span></label>
-            <input type="password" id="j-pass" placeholder="Choose a secure password" autocomplete="new-password" />
+
+          <!-- ── SECTION: ACCOUNT ── -->
+          <div class="intake-section">
+            <div class="intake-section-label">🔐 Your Account</div>
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="j-name" placeholder="Jane Smith" autocomplete="name" />
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Email address</label>
+                <input type="email" id="j-email" placeholder="you@example.com" autocomplete="email" />
+              </div>
+              <div class="form-group">
+                <label>Phone <span class="opt-label">(optional)</span></label>
+                <input type="tel" id="j-phone" placeholder="(250) 000-0000" autocomplete="tel" />
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Password <span class="opt-label">(min 8 characters)</span></label>
+              <input type="password" id="j-pass" placeholder="Choose a secure password" autocomplete="new-password" />
+            </div>
           </div>
 
-          <div class="form-group">
-            <label>Profession / Field of Work <span class="opt-label">(optional)</span></label>
-            <input type="text" id="j-profession" placeholder="e.g. Nurse, Contractor, Teacher, Real Estate…" />
+          <!-- ── SECTION: ABOUT YOU ── -->
+          <div class="intake-section">
+            <div class="intake-section-label">🏔️ About You</div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Neighbourhood</label>
+                <select id="j-hood">
+                  <option value="">Select your area…</option>
+                  <option>Downtown Squamish</option>
+                  <option>Garibaldi Highlands</option>
+                  <option>Brackendale</option>
+                  <option>Valleycliffe</option>
+                  <option>Dentville</option>
+                  <option>Northyards</option>
+                  <option>Britannia Beach</option>
+                  <option>Furry Creek</option>
+                  <option>Cheakamus Crossing</option>
+                  <option>Brennan Park area</option>
+                  <option>Sea to Sky Corridor (other)</option>
+                  <option>Outside Squamish</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>How long in Squamish?</label>
+                <select id="j-tenure">
+                  <option value="">Select…</option>
+                  <option>Less than 1 year</option>
+                  <option>1–3 years</option>
+                  <option>3–5 years</option>
+                  <option>5–10 years</option>
+                  <option>10–20 years</option>
+                  <option>20+ years — longtime local!</option>
+                  <option>I don't live in Squamish</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Housing status <span class="opt-label">(optional)</span></label>
+                <select id="j-housing">
+                  <option value="">Select…</option>
+                  <option>Homeowner</option>
+                  <option>Renter</option>
+                  <option>Strata / condo owner</option>
+                  <option>Living with family</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Age range <span class="opt-label">(optional)</span></label>
+                <select id="j-age">
+                  <option value="">Prefer not to say</option>
+                  <option>18–24</option>
+                  <option>25–34</option>
+                  <option>35–44</option>
+                  <option>45–54</option>
+                  <option>55–64</option>
+                  <option>65+</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Profession / Field of Work <span class="opt-label">(optional)</span></label>
+              <input type="text" id="j-profession" placeholder="e.g. Nurse, Contractor, Teacher, Real Estate, Trades…" />
+            </div>
           </div>
 
-          <!-- TOP ISSUES -->
+          <!-- ── SECTION: CIVIC ENGAGEMENT ── -->
+          <div class="intake-section">
+            <div class="intake-section-label">🗳️ Civic Engagement</div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Did you vote in the last municipal election?</label>
+                <select id="j-voted">
+                  <option value="">Select…</option>
+                  <option>Yes, I voted</option>
+                  <option>No, I didn't vote</option>
+                  <option>I wasn't eligible / wasn't here yet</option>
+                  <option>I don't remember</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Do you follow council meetings?</label>
+                <select id="j-council">
+                  <option value="">Select…</option>
+                  <option>Yes — I attend or watch regularly</option>
+                  <option>Sometimes — I check in occasionally</option>
+                  <option>Not really — I rely on others to summarize</option>
+                  <option>No — this is new to me</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row-2">
+              <div class="form-group">
+                <label>Would you consider running for local office?</label>
+                <select id="j-run">
+                  <option value="">Select…</option>
+                  <option>Yes — I'm seriously considering it</option>
+                  <option>Maybe someday</option>
+                  <option>No — but I want to support good candidates</option>
+                  <option>Not at this time</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>How did you hear about us?</label>
+                <select id="j-heard">
+                  <option value="">Select…</option>
+                  <option>Friend or neighbour</option>
+                  <option>Social media (Facebook)</option>
+                  <option>Social media (Instagram)</option>
+                  <option>Social media (LinkedIn)</option>
+                  <option>Community event</option>
+                  <option>Local news</option>
+                  <option>Email or newsletter</option>
+                  <option>Search (Google, etc.)</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── SECTION: YOUR ISSUES ── -->
+          <div class="intake-section">
+            <div class="intake-section-label">📋 Your Issues</div>
           <div class="form-group">
             <label>What are your top issues in Squamish? <span class="opt-label">(pick up to 10)</span></label>
             <div id="j-issues-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:8px;">
@@ -168,8 +295,16 @@
             <label>What issues are we missing? <span class="opt-label">(optional)</span></label>
             <textarea id="j-missing" rows="2" placeholder="Anything important not listed above…" style="width:100%;padding:0.7rem 0.9rem;border:1.5px solid #ddd;border-radius:8px;font-family:inherit;font-size:0.88rem;resize:vertical;"></textarea>
           </div>
+          <div class="form-group">
+            <label>In your own words — what would a better Squamish look like? <span class="opt-label">(optional)</span></label>
+            <textarea id="j-vision" rows="3" placeholder="What matters most to you for the future of this community…" style="width:100%;padding:0.7rem 0.9rem;border:1.5px solid #ddd;border-radius:8px;font-family:inherit;font-size:0.88rem;resize:vertical;"></textarea>
+          </div>
+          </div><!-- /issues section -->
 
-          <!-- VOLUNTEER -->
+          <!-- ── SECTION: VOLUNTEER ── -->
+          <div class="intake-section">
+          <div class="form-group" style="background:transparent;padding:0;border:none;">
+            <div class="intake-section-label" style="margin-bottom:12px;">🤝 Get Involved</div>
           <div class="form-group" style="background:var(--teal-light);border:1.5px solid rgba(46,123,139,0.2);border-radius:10px;padding:14px 16px;">
             <label style="font-weight:700;color:var(--navy);">Would you like to volunteer? <span class="opt-label">(optional)</span></label>
             <div style="display:flex;gap:12px;margin-top:8px;">
@@ -207,6 +342,9 @@
               </div>
             </div>
           </div>
+
+          </div><!-- /volunteer group -->
+          </div><!-- /volunteer section -->
 
           <button class="auth-btn" id="j-btn" onclick="doJoin()">Join Squamish Civic Forum →</button>
           <div class="auth-error" id="join-error"></div>
@@ -353,8 +491,18 @@ async function doJoin() {
       password,
       email_confirm: true,
       user_metadata: {
-        full_name, phone: phone || null, neighbourhood: neighbourhood || null, role: 'member',
-        profession, top_issues: topIssues.length ? topIssues : null,
+        full_name, phone: phone || null, role: 'member',
+        neighbourhood: document.getElementById('j-hood')?.value || null,
+        tenure: document.getElementById('j-tenure')?.value || null,
+        housing: document.getElementById('j-housing')?.value || null,
+        age_range: document.getElementById('j-age')?.value || null,
+        profession,
+        voted: document.getElementById('j-voted')?.value || null,
+        council_engagement: document.getElementById('j-council')?.value || null,
+        run_for_office: document.getElementById('j-run')?.value || null,
+        heard_via: document.getElementById('j-heard')?.value || null,
+        vision: document.getElementById('j-vision')?.value?.trim() || null,
+        top_issues: topIssues.length ? topIssues : null,
         missing_issues: missingIssues, volunteer: volunteerYes,
         working_groups: workingGroups.length ? workingGroups : null,
         availability: availability.length ? availability : null, strengths

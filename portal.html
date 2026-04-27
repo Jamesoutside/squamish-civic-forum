@@ -471,6 +471,7 @@
         <div class="sc sc-amber"><div class="sc-lbl">Issues Submitted</div><div class="sc-num" id="statIssues">—</div><div class="sc-sub">Community submissions</div></div>
         <div class="sc"><div class="sc-lbl">New This Week</div><div class="sc-num" id="statNewMembers">—</div><div class="sc-sub">Members joined</div></div>
         <div class="sc"><div class="sc-lbl">Open Issues</div><div class="sc-num" id="statOpenIssues">—</div><div class="sc-sub">Awaiting review</div></div>
+        <div class="sc sc-teal"><div class="sc-lbl">Volunteers</div><div class="sc-num" id="statVolunteers">—</div><div class="sc-sub">Want to help out</div></div>
       </div>
 
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem;margin-top:1.5rem;">
@@ -585,7 +586,9 @@ async function loadAnalytics() {
   const newThisWeek = members.filter(m => new Date(m.created_at) > oneWeekAgo).length
   const openIssues = issues.filter(i => i.status === 'new' || i.status === 'reviewing').length
 
+  const volunteers = members.filter(m => m.user_metadata?.volunteer === true).length
   document.getElementById('statMembers').textContent = members.length
+  document.getElementById('statVolunteers').textContent = volunteers
   document.getElementById('statIssues').textContent = issues.length
   document.getElementById('statNewMembers').textContent = newThisWeek
   document.getElementById('statOpenIssues').textContent = openIssues
@@ -594,11 +597,14 @@ async function loadAnalytics() {
   // Recent signups
   const recent = [...members].sort((a,b) => new Date(b.created_at) - new Date(a.created_at)).slice(0, 6)
   document.getElementById('recentMembers').innerHTML = recent.map(m => {
-    const name = m.user_metadata?.full_name || m.email
+    const meta = m.user_metadata || {}
+    const name = meta.full_name || m.email
+    const hood = meta.neighbourhood || ''
+    const prof = meta.profession || ''
     const date = new Date(m.created_at).toLocaleDateString('en-CA', { month: 'short', day: 'numeric' })
-    return `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #f0f0f0;">
-      <span style="font-weight:600;color:#1a2a38;">${name}</span>
-      <span style="color:#999;">${date}</span>
+    return `<div style="padding:8px 0;border-bottom:1px solid #f0f0f0;">
+      <div style="display:flex;justify-content:space-between;"><span style="font-weight:600;color:#1a2a38;">${name}</span><span style="color:#999;font-size:0.8rem;">${date}</span></div>
+      <div style="font-size:0.8rem;color:#888;">${[hood,prof].filter(Boolean).join(' · ') || '\u2014'}</div>
     </div>`
   }).join('') || '<div style="color:#999;">No members yet</div>'
 
