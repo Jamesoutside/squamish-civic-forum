@@ -32,6 +32,10 @@
 
     .auth-btn { width: 100%; padding: 0.85rem; background: var(--teal); color: var(--navy); border: none; border-radius: 8px; font-size: 0.95rem; font-weight: 800; cursor: pointer; transition: all 0.2s; letter-spacing: 0.02em; margin-top: 0.5rem; }
     .auth-btn:hover:not(:disabled) { background: #00a898; transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,196,179,0.3); }
+    .issue-chip { display:flex;align-items:center;gap:7px;padding:6px 10px;background:#fff;border:1.5px solid #dce8ee;border-radius:8px;font-size:0.82rem;cursor:pointer;transition:all 0.15s;user-select:none; }
+    .issue-chip:hover { border-color:#2E7B8B;background:#f0f8fa; }
+    .issue-chip input[type="checkbox"],.issue-chip input[type="radio"] { width:15px;height:15px;accent-color:#2E7B8B;flex-shrink:0; }
+    .issue-chip:has(input:checked) { border-color:#2E7B8B;background:#e8f4f6; }
     .auth-btn:disabled { opacity: 0.65; cursor: not-allowed; }
 
     .auth-error { background: rgba(231,76,60,0.08); border: 1px solid rgba(231,76,60,0.25); color: #c0392b; padding: 0.75rem 1rem; border-radius: 8px; font-size: 0.85rem; margin-top: 0.75rem; display: none; }
@@ -132,6 +136,78 @@
             <label>Password <span class="opt-label">(min 8 characters)</span></label>
             <input type="password" id="j-pass" placeholder="Choose a secure password" autocomplete="new-password" />
           </div>
+
+          <div class="form-group">
+            <label>Profession / Field of Work <span class="opt-label">(optional)</span></label>
+            <input type="text" id="j-profession" placeholder="e.g. Nurse, Contractor, Teacher, Real Estate…" />
+          </div>
+
+          <!-- TOP ISSUES -->
+          <div class="form-group">
+            <label>What are your top issues in Squamish? <span class="opt-label">(pick up to 10)</span></label>
+            <div id="j-issues-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin-top:8px;">
+              <label class="issue-chip"><input type="checkbox" value="Housing" onchange="limitIssues(this)"> 🏠 Housing &amp; Affordability</label>
+              <label class="issue-chip"><input type="checkbox" value="Environment" onchange="limitIssues(this)"> 🌲 Environment</label>
+              <label class="issue-chip"><input type="checkbox" value="Infrastructure" onchange="limitIssues(this)"> 🚧 Infrastructure</label>
+              <label class="issue-chip"><input type="checkbox" value="Transportation" onchange="limitIssues(this)"> 🚌 Transportation</label>
+              <label class="issue-chip"><input type="checkbox" value="Development" onchange="limitIssues(this)"> 🏗️ Development &amp; Land Use</label>
+              <label class="issue-chip"><input type="checkbox" value="Economy" onchange="limitIssues(this)"> 💼 Jobs &amp; Economy</label>
+              <label class="issue-chip"><input type="checkbox" value="Recreation" onchange="limitIssues(this)"> 🏒 Recreation &amp; Sports</label>
+              <label class="issue-chip"><input type="checkbox" value="Community" onchange="limitIssues(this)"> 🤝 Community &amp; Services</label>
+              <label class="issue-chip"><input type="checkbox" value="Healthcare" onchange="limitIssues(this)"> 🏥 Healthcare Access</label>
+              <label class="issue-chip"><input type="checkbox" value="Safety" onchange="limitIssues(this)"> 🛡️ Safety &amp; Crime</label>
+              <label class="issue-chip"><input type="checkbox" value="Education" onchange="limitIssues(this)"> 📚 Education</label>
+              <label class="issue-chip"><input type="checkbox" value="Climate" onchange="limitIssues(this)"> ♻️ Climate &amp; Sustainability</label>
+              <label class="issue-chip"><input type="checkbox" value="Budget" onchange="limitIssues(this)"> 💰 City Budget &amp; Spending</label>
+              <label class="issue-chip"><input type="checkbox" value="Tourism" onchange="limitIssues(this)"> 🏔️ Tourism &amp; Growth</label>
+            </div>
+            <div id="j-issues-count" style="font-size:0.78rem;color:#888;margin-top:6px;">0 / 10 selected</div>
+          </div>
+
+          <div class="form-group">
+            <label>What issues are we missing? <span class="opt-label">(optional)</span></label>
+            <textarea id="j-missing" rows="2" placeholder="Anything important not listed above…" style="width:100%;padding:0.7rem 0.9rem;border:1.5px solid #ddd;border-radius:8px;font-family:inherit;font-size:0.88rem;resize:vertical;"></textarea>
+          </div>
+
+          <!-- VOLUNTEER -->
+          <div class="form-group" style="background:var(--teal-light);border:1.5px solid rgba(46,123,139,0.2);border-radius:10px;padding:14px 16px;">
+            <label style="font-weight:700;color:var(--navy);">Would you like to volunteer? <span class="opt-label">(optional)</span></label>
+            <div style="display:flex;gap:12px;margin-top:8px;">
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;cursor:pointer;"><input type="radio" name="j-volunteer" id="j-vol-yes" value="yes" onchange="toggleVolunteer(true)"> Yes, I'd like to help</label>
+              <label style="display:flex;align-items:center;gap:6px;font-size:0.9rem;cursor:pointer;"><input type="radio" name="j-volunteer" id="j-vol-no" value="no" onchange="toggleVolunteer(false)"> Not right now</label>
+            </div>
+
+            <div id="j-volunteer-fields" style="display:none;margin-top:14px;display:none;">
+              <div class="form-group" style="margin-bottom:10px;">
+                <label>Which working groups interest you?</label>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;">
+                  <label class="issue-chip"><input type="checkbox" id="wg-media" value="Media &amp; Comms"> 📣 Media &amp; Comms</label>
+                  <label class="issue-chip"><input type="checkbox" id="wg-ops" value="Operations"> ⚙️ Operations</label>
+                  <label class="issue-chip"><input type="checkbox" id="wg-research" value="Data &amp; Research"> 🔬 Data &amp; Research</label>
+                  <label class="issue-chip"><input type="checkbox" id="wg-events" value="Events"> 🎪 Events</label>
+                  <label class="issue-chip"><input type="checkbox" id="wg-coord" value="Coordination"> 🔗 Coordination</label>
+                  <label class="issue-chip"><input type="checkbox" id="wg-candidate" value="Candidate Support"> 🗳️ Candidate Support</label>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom:10px;">
+                <label>Availability</label>
+                <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+                  <label class="issue-chip"><input type="checkbox" id="av-mornings" value="Mornings"> 🌅 Mornings</label>
+                  <label class="issue-chip"><input type="checkbox" id="av-afternoons" value="Afternoons"> ☀️ Afternoons</label>
+                  <label class="issue-chip"><input type="checkbox" id="av-evenings" value="Evenings"> 🌙 Evenings</label>
+                  <label class="issue-chip"><input type="checkbox" id="av-weekends" value="Weekends"> 📅 Weekends</label>
+                  <label class="issue-chip"><input type="checkbox" id="av-events" value="Events only"> 🎪 Events only</label>
+                </div>
+              </div>
+
+              <div class="form-group" style="margin-bottom:0;">
+                <label>Your strengths &amp; background <span class="opt-label">(optional)</span></label>
+                <textarea id="j-strengths" rows="2" placeholder="e.g. graphic design, project management, door-knocking, data analysis…" style="width:100%;padding:0.7rem 0.9rem;border:1.5px solid #ddd;border-radius:8px;font-family:inherit;font-size:0.88rem;resize:vertical;margin-top:4px;"></textarea>
+              </div>
+            </div>
+          </div>
+
           <button class="auth-btn" id="j-btn" onclick="doJoin()">Join Squamish Civic Forum →</button>
           <div class="auth-error" id="join-error"></div>
         </div>
@@ -157,6 +233,21 @@ const sb = supabase.createClient(SB_URL, SB_ANON)
 sb.auth.getSession().then(({ data: { session } }) => {
   if (session) window.location.href = 'portal.html'
 })
+
+function limitIssues(cb) {
+  const checked = document.querySelectorAll('#j-issues-grid input:checked')
+  document.getElementById('j-issues-count').textContent = checked.length + ' / 10 selected'
+  if (checked.length >= 10) {
+    document.querySelectorAll('#j-issues-grid input:not(:checked)').forEach(el => el.disabled = true)
+  } else {
+    document.querySelectorAll('#j-issues-grid input').forEach(el => el.disabled = false)
+  }
+}
+
+function toggleVolunteer(show) {
+  const el = document.getElementById('j-volunteer-fields')
+  if (el) el.style.display = show ? 'block' : 'none'
+}
 
 function switchTab(tab) {
   document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'))
@@ -241,6 +332,15 @@ async function doJoin() {
   btn.textContent = 'Joining…'; btn.disabled = true
 
   // Create user via admin API — auto-confirms email, no confirmation email required
+  // Collect new intake fields
+  const profession = document.getElementById('j-profession')?.value.trim() || null
+  const topIssues = [...document.querySelectorAll('#j-issues-grid input:checked')].map(el => el.value)
+  const missingIssues = document.getElementById('j-missing')?.value.trim() || null
+  const volunteerYes = document.getElementById('j-vol-yes')?.checked || false
+  const workingGroups = [...document.querySelectorAll('[id^="wg-"]:checked')].map(el => el.value)
+  const availability = [...document.querySelectorAll('[id^="av-"]:checked')].map(el => el.value)
+  const strengths = document.getElementById('j-strengths')?.value.trim() || null
+
   const adminRes = await fetch(SB_URL + '/auth/v1/admin/users', {
     method: 'POST',
     headers: {
@@ -252,7 +352,13 @@ async function doJoin() {
       email,
       password,
       email_confirm: true,
-      user_metadata: { full_name, phone: phone || null, neighbourhood: neighbourhood || null, role: 'member' }
+      user_metadata: {
+        full_name, phone: phone || null, neighbourhood: neighbourhood || null, role: 'member',
+        profession, top_issues: topIssues.length ? topIssues : null,
+        missing_issues: missingIssues, volunteer: volunteerYes,
+        working_groups: workingGroups.length ? workingGroups : null,
+        availability: availability.length ? availability : null, strengths
+      }
     })
   })
   const adminData = await adminRes.json()

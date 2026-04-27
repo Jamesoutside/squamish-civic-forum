@@ -500,7 +500,7 @@
         </div>
         <div id="adminMemberTable" style="overflow-x:auto;">
           <table style="width:100%;border-collapse:collapse;font-size:0.83rem;">
-            <thead><tr style="background:var(--light);"><th style="padding:0.6rem 1rem;text-align:left;color:var(--navy);">Name</th><th style="padding:0.6rem 1rem;text-align:left;color:var(--navy);">Email</th><th style="padding:0.6rem 1rem;text-align:left;color:var(--navy);">Neighbourhood</th><th style="padding:0.6rem 1rem;text-align:left;color:var(--navy);">Joined</th><th style="padding:0.6rem 1rem;text-align:left;color:var(--navy);">Role</th></tr></thead>
+            <thead><tr style="background:var(--light);"><th style="padding:0.6rem 1rem;text-align:left;color:var(--navy);">Name</th><th style="padding:0.6rem 1rem;text-align:left;color:var(--navy);">Email</th><th style="padding:0.6rem 1rem;text-align:left;color:var(--navy);">Profession</th><th style="padding:0.6rem 1rem;text-align:left;color:var(--navy);">Neighbourhood</th><th style="padding:0.6rem 1rem;text-align:left;color:var(--navy);">Volunteer</th><th style="padding:0.6rem 1rem;text-align:left;color:var(--navy);">Top Issues</th><th style="padding:0.6rem 1rem;text-align:left;color:var(--navy);">Joined</th></tr></thead>
             <tbody id="adminMemberRows"><tr><td colspan="5" style="padding:1.5rem;text-align:center;color:var(--grey);">Loading members…</td></tr></tbody>
           </table>
         </div>
@@ -623,13 +623,18 @@ async function loadAnalytics() {
       const name = meta.full_name || '—'
       const hood = meta.neighbourhood || '—'
       const role = meta.role || 'member'
+      const profession = meta.profession || '—'
+      const vol = meta.volunteer ? '✅ Yes' + (meta.working_groups?.length ? ' (' + meta.working_groups.join(', ') + ')' : '') : '—'
+      const issues = (meta.top_issues || []).slice(0,3).join(', ') + (meta.top_issues?.length > 3 ? '…' : '') || '—'
       const joined = new Date(m.created_at).toLocaleDateString('en-CA', { month: 'short', day: 'numeric', year: 'numeric' })
       return `<tr style="border-bottom:1px solid #f0f0f0;">
         <td style="padding:0.6rem 1rem;font-weight:600;">${name}</td>
-        <td style="padding:0.6rem 1rem;color:#555;">${m.email}</td>
+        <td style="padding:0.6rem 1rem;color:#555;font-size:0.82rem;">${m.email}</td>
+        <td style="padding:0.6rem 1rem;color:#555;">${profession}</td>
         <td style="padding:0.6rem 1rem;color:#555;">${hood}</td>
+        <td style="padding:0.6rem 1rem;font-size:0.82rem;color:#444;">${vol}</td>
+        <td style="padding:0.6rem 1rem;font-size:0.82rem;color:#555;">${issues}</td>
         <td style="padding:0.6rem 1rem;color:#888;">${joined}</td>
-        <td style="padding:0.6rem 1rem;"><span style="background:${role==='admin'?'rgba(91,175,63,0.15)':'rgba(46,123,139,0.12)'};color:${role==='admin'?'#4A9E30':'#2E7B8B'};padding:2px 8px;border-radius:10px;font-size:0.78rem;font-weight:700;">${role}</span></td>
       </tr>`
     }).join('') || '<tr><td colspan="5" style="padding:1.5rem;text-align:center;color:#999;">No members yet</td></tr>'
 }
